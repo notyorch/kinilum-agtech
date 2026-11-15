@@ -1,8 +1,8 @@
-"""Calendario del maíz de temporal: ventana de floración y días de calor dentro de ella.
+"""Calendario del maíz de riego en otoño-invierno: ventana de floración y días de calor dentro de ella.
 
 El calendario es un SUPUESTO del equipo (`rules/maize.v1.yaml`, «a validar con el técnico»): la parcela se siembra a
-lo largo del mes declarado y el maíz florece entre 55 y 75 días después. Con `sowing: june`, la ventana va del 26 de
-julio al 13 de septiembre. Si el técnico da otros días, se cambia el archivo de reglas y nada más.
+lo largo del mes declarado y el maíz florece entre 55 y 75 días después. Con `sowing: december`, la ventana va del 25 de
+enero al 16 de marzo del año siguiente. Si el técnico da otros días, se cambia el archivo de reglas y nada más.
 """
 
 from __future__ import annotations

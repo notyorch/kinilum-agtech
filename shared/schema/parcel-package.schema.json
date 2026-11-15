@@ -22,7 +22,7 @@
       "type": "boolean"
     },
     "area_ha": { "description": "Superficie en hectáreas.", "type": "number", "exclusiveMinimum": 0 },
-    "region_key": { "description": "Región (clave de es.json: regions.*).", "enum": ["southYucatan"] },
+    "region_key": { "description": "Región (clave de es.json: regions.*).", "enum": ["northSinaloa"] },
     "reference_point": {
       "description": "Opcional. [longitud, latitud] REDONDEADA a dos decimales (≈ 1 km): ubica la zona, no la parcela. Si la ubicación tampoco puede mostrarse, se omite.",
       "type": "array",
@@ -207,8 +207,8 @@
           "uniqueItems": true,
           "items": { "$ref": "#/definitions/RotationCrop" }
         },
-        "sowing": { "enum": ["may", "june", "july"] },
-        "soil": { "description": "Suelo declarado. tsekel = delgado y pedregoso.", "enum": ["tsekel", "kankab", "undeclared"] },
+        "sowing": { "enum": ["may", "june", "july", "november", "december"] },
+        "soil": { "description": "Suelo declarado. alluvial = valle aluvial; ni alluvial ni undeclared tienen profundidad de raíz definida.", "enum": ["alluvial", "undeclared"] },
         "extreme_heat": {
           "description": "Opcional. true si la temperatura máxima de la zona (values.heat) alcanza el umbral de calor que daña (thresholds.heat_c). Lo calcula el armador; falta si no hay dato de calor.",
           "type": "boolean"
@@ -234,7 +234,7 @@
           "required": ["rotation_crop", "variant", "variant_chosen_by"],
           "properties": {
             "rotation_crop": { "const": "frijol" },
-            "variant": { "description": "Variante del frijol regional que se simula.", "enum": ["xpelon", "ib", "negro"] },
+            "variant": { "description": "Variante del frijol regional que se simula.", "enum": ["negro"] },
             "variant_chosen_by": { "description": "Quién la eligió: el técnico o, en el caso ilustrativo, el equipo.", "enum": ["technician", "team"] }
           }
         },

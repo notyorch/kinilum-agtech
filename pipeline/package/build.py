@@ -1,6 +1,6 @@
 """Paso 4 del pipeline: arma, valida y publica el paquete de una parcela (oro → app/public/packages/).
 
-    python -m package.build --parcel yuc-demo-001 [--date AAAA-MM-DD] [--out app/public/packages]
+    python -m package.build --parcel sin-demo-001 [--date AAAA-MM-DD] [--out app/public/packages]
 
 Entradas:
   - pipeline/parcels/<id>.yaml            lo que declara el técnico (shared/schema: ParcelConfig)
@@ -96,6 +96,9 @@ def load_gold(parcel_id: str) -> dict[str, Any]:
     for fname, key in {**REQUIRED_PARTS, **OPTIONAL_PARTS}.items():
         if (gold / fname).exists():
             parts[key] = json.loads((gold / fname).read_text(encoding="utf-8"))
+    # `ingest.run` escribe values.json como {"_nota", "values", "context"}: al paquete solo entran los seis valores.
+    if isinstance(parts.get("values"), dict) and "values" in parts["values"]:
+        parts["values"] = parts["values"]["values"]
     meta_path = gold / "meta.json"
     if not meta_path.exists():
         raise BuildError(f"falta {meta_path.relative_to(REPO)} con {{\"clean_pixels\": n}} (cuadros limpios de 30 m)")

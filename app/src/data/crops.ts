@@ -1,5 +1,5 @@
 /*
- * Espejo de pipeline/rules/crops.v1.yaml: los cuatro cultivos de rotación y
+ * Espejo de pipeline/rules/crops.v2.yaml: los cuatro cultivos de rotación y
  * las variantes del frijol regional. La fuente de verdad es el catálogo; la
  * prueba app/tests/data.test.mjs falla si este archivo deja de coincidir.
  *
@@ -7,7 +7,7 @@
  */
 import type { StrategyId } from './comparison.ts';
 
-export const RULES_VERSION = 'crops.v1';
+export const RULES_VERSION = 'crops.v2';
 
 export const CROP_IDS = ['frijol', 'garbanzo', 'sorgo', 'trigo'] as const;
 export type CropId = (typeof CROP_IDS)[number];
@@ -31,10 +31,10 @@ export const CROPS: Record<CropId, CropProfile> = {
   trigo: { tipo: 'cereal', estrategia: 'E5', fijaNitrogeno: false, exigeMaquinaria: null, requiereVenta: null, cicloDias: null, estadoEvidencia: 'a_validar' },
 };
 
-/** Variantes del frijol regional (E2). La elige el técnico en la configuración de la parcela. */
-export const BEAN_VARIANTS = ['xpelon', 'ib', 'negro'] as const;
+/** Variantes del frijol (E2). Hoy solo frijol negro; las demás se agregan con el técnico. La elige el técnico en la configuración de la parcela. */
+export const BEAN_VARIANTS = ['negro'] as const;
 export type BeanVariant = (typeof BEAN_VARIANTS)[number];
-export const DEFAULT_BEAN_VARIANT: BeanVariant = 'xpelon';
+export const DEFAULT_BEAN_VARIANT: BeanVariant = 'negro';
 
 /** Qué trae cada estrategia además del maíz. E1 es una leguminosa de cobertura, fuera del catálogo. */
 export const ROTATION: Record<StrategyId, CropId | 'cover' | null> = {

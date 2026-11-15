@@ -1,6 +1,6 @@
 """Paso 3 del pipeline: simulador de rotación (plata → oro).  PENDIENTE.
 
-    python -m simulate.run --parcel yuc-demo-001
+    python -m simulate.run --parcel sin-demo-001
 
 Debe escribir en pipeline/data/gold/<parcela>/simulation.json el bloque `simulation` del paquete
 (shared/schema: Simulation), con:
@@ -23,7 +23,7 @@ Debe escribir en pipeline/data/gold/<parcela>/simulation.json el bloque `simulat
 Hasta que exista, el paquete no lleva `simulation` y la app usa los resultados de ejemplo de
 app/src/data/scenarios.ts. NO se generan puntajes de mentira aquí.
 
-Hoy el catálogo (crops.v1) tiene todos los parámetros de cultivo «por definir»: con él, agua, clima
+Hoy el catálogo (crops.v2) tiene todos los parámetros de cultivo «por definir»: con él, agua, clima
 e ingreso de E2–E5 saldrían sin dato. El simulador espera a que el técnico los llene, con fuente.
 """
 

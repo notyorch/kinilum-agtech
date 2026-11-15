@@ -50,7 +50,7 @@ export interface ParcelPackage {
   /**
    * Región (clave de es.json: regions.*).
    */
-  region_key: 'southYucatan';
+  region_key: 'northSinaloa';
   /**
    * Opcional. [longitud, latitud] REDONDEADA a dos decimales (≈ 1 km): ubica la zona, no la parcela. Si la ubicación tampoco puede mostrarse, se omite.
    *
@@ -231,11 +231,11 @@ export interface Restrictions {
    * Para qué cultivos tiene comprador o venta local.
    */
   market: RotationCrop[];
-  sowing: 'may' | 'june' | 'july';
+  sowing: 'may' | 'june' | 'july' | 'november' | 'december';
   /**
-   * Suelo declarado. tsekel = delgado y pedregoso.
+   * Suelo declarado. alluvial = valle aluvial; ni alluvial ni undeclared tienen profundidad de raíz definida.
    */
-  soil: 'tsekel' | 'kankab' | 'undeclared';
+  soil: 'alluvial' | 'undeclared';
   /**
    * Opcional. true si la temperatura máxima de la zona (values.heat) alcanza el umbral de calor que daña (thresholds.heat_c). Lo calcula el armador; falta si no hay dato de calor.
    */
@@ -254,7 +254,7 @@ export interface Rotation {
     /**
      * Variante del frijol regional que se simula.
      */
-    variant: 'xpelon' | 'ib' | 'negro';
+    variant: 'negro';
     /**
      * Quién la eligió: el técnico o, en el caso ilustrativo, el equipo.
      */

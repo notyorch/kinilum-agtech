@@ -1,0 +1,126 @@
+# Catálogo de cultivos de rotación — versión crops.v2 (caso de estudio: Guasave, Sinaloa)
+#
+# Qué cultivos se comparan con el maíz de riego del ciclo otoño-invierno y con qué reglas. Es la fuente de verdad:
+# la app lleva un espejo en app/src/data/crops.ts y restrictions.ts, y una prueba (app/tests/data.test.mjs) falla si
+# dejan de decir lo mismo.
+#
+# Qué viene de una fuente y qué no:
+#   - Los coeficientes de cultivo (kc_por_etapa) son los de FAO-56 (Allen et al., 1998, Tabla 12) que se pudieron leer
+#     con certeza. Lo que no se pudo leer queda `null`: se completa del documento, no de memoria.
+#   - Todo lo local (ciclo, fechas de siembra, profundidad de raíz, rendimiento, precio) está `null`: falta una fuente
+#     local (por ejemplo, la Agenda Técnica de Sinaloa de INIFAP o el Campo Experimental Valle del Fuerte).
+#   - NADA está validado por un técnico. `null` significa «por definir»: si falta un parámetro, el criterio que lo
+#     necesita se declara «sin dato»; nunca se rellena con un valor inventado.
+# No se simulan más cultivos de rotación que estos cuatro.
+#
+# A diferencia del caso anterior, garbanzo y trigo SÍ son cultivos del ciclo otoño-invierno en Sinaloa (el plan de
+# siembras 2026-2027 aprobó 62,863 ha de garbanzo, 55,500 de frijol y 48,250 de trigo; Luz Noticias, 16-jul-2026). Ya no
+# se marcan «poco comunes en la zona».
+
+rules_version: crops.v2
+fuente: "FAO-56 (Allen et al., 1998), Tabla 12, solo los coeficientes marcados; el resto, por definir"
+validado_por: null      # nombre del técnico que lo revisó
+method: assumed         # supuestos del equipo mientras no haya fuente local
+
+# El cultivo que se rota: maíz de riego en otoño-invierno. Mismos criterios que el resto; no es una estrategia.
+maiz_base:
+  kc_por_etapa: { inicial: null, media: 1.20, final: 0.35 }   # FAO-56 T12: media 1.20; final 0.60 (cosecha con grano húmedo) a 0.35 (grano seco): se toma 0.35. Inicial no legible: por definir.
+  ciclo_dias: 140                                              # FAO-56 T11, maíz en clima árido sembrado en dic/ene (25+40+45+30): referencia, no dato de Guasave
+  estado_evidencia: a_validar
+
+cultivos:
+  frijol:
+    tipo: leguminosa
+    estrategia: E2
+    fija_nitrogeno: true
+    exige_maquinaria: false
+    requiere_venta: true      # regla de ejemplo ya existente
+    ciclo_dias: null
+    estado_evidencia: a_validar
+    variante_por_defecto: negro
+    # Cada variante es un perfil completo, no una etiqueta. La elige el técnico
+    # en pipeline/parcels/<id>.yaml (campo frijol_variante). El paquete lleva
+    # solo la variante elegida. Hoy solo está «negro», el único con un perfil de FAO-56; los
+    # tipos de frijol que más se siembran en Guasave se agregan con el técnico (y al enum
+    # `frijol_variante` de shared/schema/).
+    variantes:
+      negro:
+        nombre: Frijol negro
+        que_es: frijol negro
+        nombre_cientifico: Phaseolus vulgaris  # a revisar con el técnico antes de publicarlo
+        kc_por_etapa: { inicial: 0.4, media: 1.15, final: 0.35 }   # FAO-56 T12, «Beans, dry»
+        profundidad_raiz_m: null
+        ventana_siembra: null
+        ciclo_dias: null
+        umbral_calor_c: null
+        rendimiento_t_ha: null
+        precio_mxn_t: null
+        estado_evidencia: a_validar
+
+  garbanzo:
+    tipo: leguminosa
+    estrategia: E4
+    fija_nitrogeno: true
+    exige_maquinaria: null
+    requiere_venta: null
+    ciclo_dias: null
+    kc_por_etapa: { inicial: null, media: 1.00, final: 0.35 }   # FAO-56 T12, «Chick pea»; el inicial no se pudo leer: por definir
+    profundidad_raiz_m: null
+    ventana_siembra: null
+    umbral_calor_c: null
+    rendimiento_t_ha: null
+    precio_mxn_t: null
+    estado_evidencia: a_validar
+
+  sorgo:
+    tipo: cereal
+    estrategia: E3
+    fija_nitrogeno: false
+    exige_maquinaria: true    # regla de ejemplo ya existente
+    requiere_venta: true      # regla de ejemplo ya existente
+    ciclo_dias: null
+    kc_por_etapa: { inicial: null, media: 1.00, final: 0.55 }   # FAO-56 T12, «Sorghum, grain»: media 1.00–1.10, se toma 1.00 (el extremo bajo); inicial no legible
+    profundidad_raiz_m: null
+    ventana_siembra: null
+    umbral_calor_c: null
+    rendimiento_t_ha: null
+    precio_mxn_t: null
+    estado_evidencia: a_validar
+
+  trigo:
+    tipo: cereal
+    estrategia: E5
+    fija_nitrogeno: false
+    exige_maquinaria: null
+    requiere_venta: null
+    ciclo_dias: null
+    kc_por_etapa: { inicial: 0.7, media: 1.15, final: 0.25 }   # FAO-56 T12, trigo de invierno sin heladas: inicial 0.7; final 0.25–0.41 (el más alto es para cosecha a mano): se toma 0.25, cosecha con máquina
+    profundidad_raiz_m: null
+    ventana_siembra: null
+    umbral_calor_c: null
+    rendimiento_t_ha: null
+    precio_mxn_t: null
+    estado_evidencia: a_validar
+
+# Reglas de restricción. Son filtros (WHERE), no pesos: una estrategia que no
+# cumple no se oculta; va al final con su razón. Todas son hipótesis a validar.
+# Se quitó `calor_extremo_suelo_delgado`: describía suelo delgado sobre roca caliza, que no es el caso de
+# Guasave. El agua no es un filtro aquí: es el objetivo «Ahorrar agua», que pesa el criterio de agua.
+reglas:
+  - id: no_aceptado
+    que_dice: Si el agricultor no acepta sembrar el cultivo, su estrategia queda fuera.
+    excluye: [frijol, garbanzo, sorgo, trigo]
+    estado_evidencia: a_validar
+    fuente: null
+  - id: sin_venta
+    que_dice: Sin dónde vender el cultivo, su estrategia queda fuera.
+    excluye: [frijol, garbanzo, sorgo, trigo]
+    estado_evidencia: a_validar
+    fuente: null
+    nota: garbanzo y trigo tienen requiere_venta por definir; se aplica como regla de ejemplo.
+  - id: sin_maquinaria
+    que_dice: Sin tractor ni maquila, la estrategia queda fuera.
+    excluye: [sorgo, trigo]
+    estado_evidencia: a_validar
+    fuente: null
+    nota: el trigo tiene exige_maquinaria por definir; se aplica como regla de ejemplo.

@@ -21,31 +21,31 @@ Lo que la distingue de una calculadora cualquiera:
 
 | Quién | Descripción | Peso en las decisiones |
 |---|---|---|
-| **Primario** | Agricultor o agricultora de temporal en el sur de Yucatán, 3–10 ha, milpa y maíz, **Android básico**, señal intermitente, **sin formación técnica**. | Todo texto y toda pantalla se juzgan contra esta persona. |
+| **Primario** | Agricultor o agricultora de riego en el norte de Sinaloa (distrito de Guasave), maíz de otoño-invierno, **Android básico**, señal intermitente, **sin formación técnica**. | Todo texto y toda pantalla se juzgan contra esta persona. |
 | Secundario | Técnico o extensionista que configura la parcela y valida reglas. | Para él es la pantalla «Ver evidencia» y los textos «a validar». |
 | Demo | Jurado de Space Apps. Envío en inglés: video de hasta 30 s con subtítulos en inglés, o hasta 7 diapositivas; enlace público sin login. | Por eso existe el selector ES \| EN y la pantalla de comparación debe verse completa y pulida. |
 
-Caso de estudio: calor extremo, suelo delgado sobre roca caliza (*tsek'el* pedregoso, *k'ankab* rojo) y lluvias concentradas. El calor es el riesgo central.
+Caso de estudio: **Guasave, Sinaloa**. El maíz de riego depende del agua de las presas, que bajó mucho: según el anuario agrícola del estado (CEIEG Sinaloa, con datos del SIAP), Sinaloa pasó de 6,656 mil toneladas de maíz en 2023 a 3,368 mil en 2024, y Guasave aportó el 27 % del total de 2024. El agua es el riesgo central y la pregunta es qué rotación gasta menos agua de riego sin perder la cosecha. (Cifras a verificar contra el SIAP antes de publicarlas.)
 
 ### Honestidad del caso (no negociable)
 
-No hay agricultor ni caso real todavía. «Doña Rosa» es una persona ficticia de diseño. La parcela `yuc-demo-001` es **de ejemplo** y se rotula **«Caso ilustrativo»** en todas las pantallas, el video y el envío. Todo lo que hoy se ve en la app es **dato de ejemplo escrito a mano**, incluidos los resultados por objetivo y por escenario. Nunca presentes el ejemplo como un productor real ni inventes citas, nombres, validaciones o fuentes.
+No hay agricultor ni caso real todavía. «Doña Rosa» es una persona ficticia de diseño. La parcela `sin-demo-001` es **de ejemplo** y se **sorteó** cerca de Guasave (semilla 20261115); nadie la eligió ni la visitó y se rotula **«Caso ilustrativo»** en todas las pantallas, el video y el envío. Todo lo que hoy se ve en la app es **dato de ejemplo escrito a mano**, incluidos los resultados por objetivo y por escenario. Nunca presentes el ejemplo como un productor real ni inventes citas, nombres, validaciones o fuentes.
 
 ---
 
 ## 2. Alcance del MVP (estricto)
 
-- **1 región** (Yucatán) y **1 parcela de ejemplo**.
+- **1 región** (norte de Sinaloa, Guasave) y **1 parcela de ejemplo**.
 - **6 estrategias** (cada una responde 5 preguntas):
-  - **E0** — actual: maíz de temporal, suelo desnudo en secas.
+  - **E0** — actual: maíz de riego en otoño-invierno, ciclo tras ciclo.
   - **E1** — maíz + cobertura de leguminosa en relevo (mucuna o canavalia).
-  - **E2** — maíz → frijol regional → maíz. La variante (xpelón por defecto, ib o negro) la elige el técnico con `frijol_variante`; cada variante es un perfil completo del catálogo y el paquete lleva solo la elegida.
+  - **E2** — maíz → frijol → maíz. La variante (hoy solo frijol negro) la elige el técnico con `frijol_variante`; cada variante es un perfil completo del catálogo y el paquete lleva solo la elegida.
   - **E3** — maíz → sorgo → maíz.
-  - **E4** — maíz → garbanzo → maíz. Poco común en la zona: sin datos locales validados.
-  - **E5** — maíz → trigo → maíz. Poco común en la zona: sin datos locales validados.
+  - **E4** — maíz → garbanzo → maíz. Se siembra en Sinaloa en invierno; sin datos locales validados.
+  - **E5** — maíz → trigo → maíz. Se siembra en Sinaloa en invierno; sin datos locales validados.
 - **Catálogo de cultivos de rotación:** frijol, garbanzo, sorgo y trigo, en `pipeline/rules/crops.<versión>.yaml`. Solo las leguminosas (frijol, garbanzo) suman nitrógeno. Todo lo que no tenga fuente va «a validar con el técnico»; un parámetro que falta deja su criterio «sin dato», nunca un valor inventado.
 - **5 objetivos** con pesos predefinidos: ahorrar agua, mejorar el suelo, ingreso, reducir riesgo, equilibrado.
-- **Restricciones como filtros** (equivalen a un `WHERE`, no a un peso): agua (temporal o riego), maquinaria, cultivos de rotación que acepta (frijol, garbanzo, sorgo o trigo), dónde vender y fecha de siembra. Con calor extremo y suelo delgado, garbanzo y trigo se marcan «poco viable», con la razón visible.
+- **Restricciones como filtros** (equivalen a un `WHERE`, no a un peso): agua (riego o temporal), maquinaria, cultivos de rotación que acepta (frijol, garbanzo, sorgo o trigo), dónde vender y fecha de siembra. (La regla «calor extremo y suelo delgado» no aplica a Guasave y se quitó: el agua es el objetivo «Ahorrar agua», no un filtro.)
 - **4 pantallas del núcleo:** Mi parcela · Comparar rotaciones · ¿Qué pasa si…? · Ver evidencia. Hay además Ajustes (idioma y tema).
 - **Funciona sin señal:** PWA más un paquete de parcela en JSON precalculado (menos de 500 KB; objetivo ≈ 260 KB).
 - **Idiomas:** español e inglés. Todo texto de interfaz vive en archivos de idioma; nada de cadenas sueltas en componentes.
@@ -74,7 +74,7 @@ GRACE → E5 (trigo) y E4 (garbanzo) → mapa de 30 m → árbol de evidencia (q
    - Frases de **20 palabras o menos**; rangos en vez de cifras exactas.
    - **Sugerir, no ordenar.** Sin emoji ni exclamaciones.
    - «kinilum» siempre en minúsculas.
-   - Riesgo en **naranja con palabra e ícono**; no hay rojo.
+   - Riesgo en **naranja con palabra e ícono**; no hay rojo, salvo el indicador «Sin señal», que va en rojo por pedido del equipo (y «Con señal» en verde), siempre con palabra e ícono.
 9. **Usa el sistema de diseño kinilum** (tokens, StrategyCard, Confidence, SourceTag, Badge, Callout, Button). No inventes estilos fuera de los tokens.
 10. **Privacidad:** el contorno exacto de la parcela **no se publica**. El paquete lleva solo un punto redondeado a 2 decimales y las hectáreas. El mapa de 30 m usa coordenadas locales en metros, sin ubicación ni mosaicos externos.
 11. **Nunca presentes datos de ejemplo como reales.** Si una fuente falla, el paquete la declara «sin dato».
@@ -127,7 +127,7 @@ normal · seco (−10 % lluvia) · muy seco (−20 %) · húmedo (+10 %) · cali
 
 ### Suelo y cubierta
 
-- La profundidad efectiva de raíz para FAO-56 **no sale de SoilGrids**: tsek'el 15–25 cm, k'ankab 40–60 cm, sin declarar 15–60 cm (rangos a validar). Una medición de campo reemplaza el rango.
+- La profundidad efectiva de raíz para FAO-56 **no sale de SoilGrids**: ni el suelo aluvial (Guasave) ni el «sin declarar» tienen un rango con fuente, así que queda **«sin dato» hasta que el técnico la mida** (`root_depth_cm`).
 - El índice de vegetación detecta «sin cubierta verde» (en la interfaz: «sin plantas verdes»), no «suelo desnudo». El riesgo de erosión combina eso con el manejo del rastrojo que declara el agricultor (se deja, se quema, se retira, se pastorea).
 
 ---
@@ -157,7 +157,7 @@ Celular:
 | [app/](app/) | **La interfaz**, hecha a partir de los prototipos de diseño: barra inferior de vidrio, cinco pantallas y seis estrategias con datos de ejemplo. Con service worker y guardado del paquete en la Cache API (verificados en Chrome de escritorio, no en Android: ver §6); todavía sin motor y sin usar el paquete en las pantallas. |
 | [docs/](docs/) | `AGENTS-context.md` y `ARQUITECTURA-DEV.md`. El PRD ágil (`.odt`) y los starter kits (`.pptx`) no están en este repositorio. |
 | [shared/schema/](shared/schema/README.md) | **Esquema del contrato y del paquete** (valor, paquete, índice, configuración de parcela). Lo validan `npm run check:schema` y `pytest`. |
-| [pipeline/](pipeline/README.md) | **Esqueleto.** Hechos y con pruebas: `common/`, `package/` (armar, validar y publicar el paquete) y `rules/` (catálogo `crops.v1.yaml`, todo «a validar»). `simulate/`: escenarios, grilla, codificación y lectura del catálogo listos para E0–E5; `run.py` pendiente. `ingest/`: hecho para las fuentes abiertas (POWER, Open-Meteo, SoilGrids, escenas de HLS y Sentinel-2) y el EDA; IMERG, NASADEM, SMAP y los píxeles de HLS (NDVI de la parcela) leen valores reales con el token de Earthdata (que va en el `.env`, que git ignora); MODIS, ECOSTRESS y GRACE son esqueletos «por integrar» (el acceso a MODIS y HLS ya está confirmado con `python -m ingest.access`). `harmonize/values.py`: los seis valores del contrato listos (`rain_season`, `slope`, `tmax_may`, `soil_moisture_rootzone`, `root_depth` y `days_without_green_cover`); `values.json` sale completo. Sin Dockerfile todavía. Hallazgos de la primera corrida real en [docs/EDA-hallazgos.md](docs/EDA-hallazgos.md). |
+| [pipeline/](pipeline/README.md) | **Esqueleto.** Hechos y con pruebas: `common/`, `package/` (armar, validar y publicar el paquete) y `rules/` (catálogo `crops.v2.yaml`, todo «a validar»). `simulate/`: escenarios, grilla, codificación y lectura del catálogo listos para E0–E5; `run.py` pendiente. `ingest/`: hecho para las fuentes abiertas (POWER, Open-Meteo, SoilGrids, escenas de HLS y Sentinel-2) y el EDA; IMERG, NASADEM, SMAP y los píxeles de HLS (NDVI de la parcela) leen valores reales con el token de Earthdata (que va en el `.env`, que git ignora); MODIS, ECOSTRESS y GRACE son esqueletos «por integrar» (el acceso a MODIS y HLS ya está confirmado con `python -m ingest.access`). `harmonize/values.py`: los seis valores del contrato listos (`rain_season`, `slope`, `tmax_may`, `soil_moisture_rootzone`, `root_depth` y `days_without_green_cover`); `values.json` sale completo. Sin Dockerfile todavía. Hallazgos de la primera corrida real en [docs/EDA-hallazgos.md](docs/EDA-hallazgos.md). |
 
 No hagas commit ni push sin que el usuario lo pida.
 
@@ -169,7 +169,7 @@ Tres personas: Jorge, Isis e Isabella. Sin módulos asignados: cualquiera toma c
 
 ## 6. La app (`app/`)
 
-> **Estado en este repositorio (15 de noviembre de 2026).** «Pila», «Comandos», «Estructura», «Rutas» y «Las pantallas» describen lo que hay hoy. **Modo avión: construido y verificado en Chrome de escritorio (15 de noviembre de 2026); sin probar en Android.** Hay service worker (`sw/sw.template.js`), guardado y relectura del paquete (`src/offline/`), indicador «Con señal / Sin señal» y los dos avisos de versión nueva. Lo verifican `npm test` (lógica del paquete y del service worker, simulados), `npm run build` (`scripts/check-offline.mjs`) y una prueba a mano en Chrome con `build` + `preview` en un origen limpio: registro, precache de 12 archivos, «Listo para usar sin señal», recarga con el servidor apagado, y los dos avisos aplicándose solo al aceptar. **Falta Android real** (y Safari/Firefox). El panel integrado de Claude no admite service workers: ahí se ve «Este navegador no guarda la aplicación». **Para probar usted, use un puerto o perfil limpio:** un service worker o una caché de otra versión en el mismo `localhost:<puerto>` contamina la prueba. Las pantallas todavía leen el espejo de datos y **no el paquete**: «Listo para usar sin señal» dice que el paquete y la app están guardados, no que las pantallas lo usen. Siguen sin construir: mapa de 30 m, selector ES \| EN, manifiesto para «Instalar» y barra lateral en escritorio (el indicador va en el encabezado). De lo guardado en el celular hoy: `kinilum.theme` y `kinilum.package.<id>`.
+> **Estado en este repositorio (15 de noviembre de 2026).** «Pila», «Comandos», «Estructura», «Rutas» y «Las pantallas» describen lo que hay hoy. **Modo avión: construido y verificado en Chrome de escritorio (15 de noviembre de 2026); sin probar en Android.** Hay service worker (`sw/sw.template.js`), guardado y relectura del paquete (`src/offline/`), indicador «Con señal / Sin señal» y los dos avisos de versión nueva. Lo verifican `npm test` (lógica del paquete y del service worker, simulados), `npm run build` (`scripts/check-offline.mjs`) y una prueba a mano en Chrome con `build` + `preview` en un origen limpio: registro, precache de 12 archivos, «Listo para usar sin señal», recarga con el servidor apagado, y los dos avisos aplicándose solo al aceptar. **Falta Android real** (y Safari/Firefox). El panel integrado de Claude no admite service workers: ahí se ve «Este navegador no guarda la aplicación». **Para probar usted, use un puerto o perfil limpio:** un service worker o una caché de otra versión en el mismo `localhost:<puerto>` contamina la prueba. Las pantallas todavía leen el espejo de datos y **no el paquete**: «Listo para usar sin señal» dice que el paquete y la app están guardados, no que las pantallas lo usen. **Idioma:** hay selector ES \| EN en Ajustes (`src/i18n/lang.tsx`, `en.ts`, `strategies.en.json`; se guarda en `kinilum.lang`); una prueba vigila que ambos idiomas tengan las mismas claves. «Mi parcela» **lee el paquete guardado** (valores reales de Guasave); Comparar, ¿Qué pasaría si…? y Evidencia siguen mostrando un **orden de ejemplo escrito a mano** (`data/scenarios.ts`) y lo dicen en pantalla: el simulador no existe. Siguen sin construir: mapa de 30 m, manifiesto para «Instalar» y barra lateral en escritorio (el indicador va en el encabezado). De lo guardado en el celular hoy: `kinilum.theme` y `kinilum.package.<id>`.
 
 ### Pila
 
@@ -203,7 +203,7 @@ En el repo, `.claude/launch.json` define `kinilum-app` (dev, 5173).
 
 ### Rutas
 
-Por hash, para funcionar en cualquier hosting estático: `#/<pantalla>` con pantallas `parcela`, `comparar`, `simular`, `evidencia` y `ajustes`. Todavía sin identificador de parcela en la ruta: solo existe la de ejemplo, `yuc-demo-001`.
+Por hash, para funcionar en cualquier hosting estático: `#/<pantalla>` con pantallas `parcela`, `comparar`, `simular`, `evidencia` y `ajustes`. Todavía sin identificador de parcela en la ruta: solo existe la de ejemplo, `sin-demo-001`.
 
 Ejemplo: `http://localhost:5173/#/comparar`.
 
@@ -217,7 +217,7 @@ Ejemplo: `http://localhost:5173/#/comparar`.
 
 ### El paquete de la parcela
 
-`app/public/packages/index.json` apunta al archivo vigente; el archivo se llama `<id>.<fecha>.json` (si se regenera el mismo día, `.r2`, `.r3`…). **Si cambias el contenido, cambia el nombre**: así ningún celular mezcla uno nuevo con uno viejo en caché. El paquete actual es `yuc-demo-001.2026-11-14.json` (≈ 6 KB compacto, formato `kinilum-package/2`, cumple `shared/schema/`) e incluye valores, serie de lluvia, cubierta, temporadas, umbrales, normales, restricciones del técnico, el bloque `rotation` (cultivo por estrategia y variante de frijol) y el mapa de 30 m. **Todavía sin el bloque `simulation`** (puntajes por corrida): los resultados por objetivo y por escenario siguen siendo de ejemplo en la app. La app rechaza un `package_format` que no conoce y vuelve a descargarlo.
+`app/public/packages/index.json` apunta al archivo vigente; el archivo se llama `<id>.<fecha>.json` (si se regenera el mismo día, `.r2`, `.r3`…). **Si cambias el contenido, cambia el nombre**: así ningún celular mezcla uno nuevo con uno viejo en caché. El paquete actual es `sin-demo-001.2026-11-15.json` (≈ 6 KB compacto, formato `kinilum-package/2`, cumple `shared/schema/`) y **sale de datos reales** (`python -m ingest.run` y `python -m package.build`, ver `docs/EDA-hallazgos.md`): los seis valores, lluvia de la temporada, cubierta por mes, temporadas (falta de agua y calor en la floración), umbrales, normales, restricciones del técnico y el bloque `rotation`. **Sin mapa de 30 m todavía** (`map_30m` es opcional). **Todavía sin el bloque `simulation`** (puntajes por corrida): los resultados por objetivo y por escenario siguen siendo de ejemplo en la app. La app rechaza un `package_format` que no conoce y vuelve a descargarlo.
 
 ### Modo avión: cómo funciona y la trampa conocida
 
@@ -226,13 +226,13 @@ Ejemplo: `http://localhost:5173/#/comparar`.
 - Hay un aviso «Hay datos nuevos» y otro «Hay una versión nueva de kinilum»; ninguno cambia nada sin que el usuario acepte. Los datos nuevos se bajan y verifican antes de soltar los viejos; la versión nueva del service worker espera hasta que el usuario toca «Actualizar».
 - **«Listo para usar sin señal» exige dos cosas:** el paquete guardado y releído (idéntico byte a byte) **y** la app guardada (el `index.html` se lee de la caché). Si falta una, se dice cuál: «Este navegador no guarda la aplicación», «Hace falta señal una sola vez» o «No pudimos guardar los datos». Un formato de paquete desconocido se rechaza y, si ya estaba guardado, se descarta para volver a bajarlo.
 - **Si el service worker da problemas en producción:** el índice y el paquete nunca pasan por él, y solo se registra en el build. Para quitarlo, publicar un `sw.js` que llame a `registration.unregister()` y vacíe las cachés `kinilum-shell-*`.
-- **Indicador «Con señal / Sin señal»** siempre a la vista (encabezado en móvil, barra lateral en escritorio, también en Ajustes). No usa solo `navigator.onLine`: además prueba si el sitio responde (al abrir, al volver a la pestaña, con los eventos `online`/`offline` y cada minuto con la pantalla a la vista). Sin señal va en azul informativo, no en naranja: no es un riesgo.
+- **Indicador «Con señal / Sin señal»** (verde / rojo, ver §3) siempre a la vista (encabezado en móvil, barra lateral en escritorio, también en Ajustes). No usa solo `navigator.onLine`: además prueba si el sitio responde (al abrir, al volver a la pestaña, con los eventos `online`/`offline` y cada minuto con la pantalla a la vista). Sin señal va en rojo y con señal en verde (tokens `--offline` en `offline.css`; antes iba en azul informativo).
 - **`npm run dev` no registra el service worker.** El modo avión **solo se prueba con `npm run build` + `npm run preview`**, apagando el servidor o poniendo el navegador sin conexión. En `dev` el paquete siempre se descarga fresco, y la insignia dice «Desarrollo: sin modo avión».
 - `scripts/check-offline.mjs` falla el build si algún archivo de `dist/` (JS, CSS, fuentes, marca; incluido el del mapa cuando exista) queda fuera del precache, si el paquete excede 500 KB, si lleva polígono o coordenadas, o si el nombre no lleva parcela y fecha.
 
 ### Almacenamiento local (todo es por celular, nada sale)
 
-`kinilum.lang` · `kinilum.theme` · `kinilum.objective` (por defecto `soil`) · `kinilum.stubble` · `kinilum.restrictions` · `kinilum.package.<id>` (puntero al archivo en caché; el archivo está en la Cache API, `kinilum-packages-v1`). Hoy solo se guardan `kinilum.theme` y `kinilum.package.<id>`. **Importante para probar:** el empate «No podemos distinguir» solo aparece con el objetivo **Equilibrado**; el valor guardado en `kinilum.objective` cambia lo que ve cada sesión.
+`kinilum.lang` · `kinilum.theme` · `kinilum.objective` (por defecto `soil`) · `kinilum.stubble` · `kinilum.restrictions` · `kinilum.package.<id>` (puntero al archivo en caché; el archivo está en la Cache API, `kinilum-packages-v1`). Hoy se guardan `kinilum.theme`, `kinilum.lang` y `kinilum.package.<id>`. **Importante para probar:** el empate «No podemos distinguir» solo aparece con el objetivo **Equilibrado**; el valor guardado en `kinilum.objective` cambia lo que ve cada sesión.
 
 ---
 
@@ -304,7 +304,7 @@ Se instaló la skill `launch-qa` (en `.agents/skills/launch-qa`, enlazada para C
 
 - **Navegador real y capturas reales.** Un hallazgo sin captura no cuenta. Los personajes reportan lo que ven, no lo que dice el código.
 - **Contexto aislado por usuario.** El estado vive en `localStorage` del navegador; un contexto nuevo por usuario evita que se mezclen objetivo, restricciones y rastrojo.
-- **Sin sesión ni cuentas:** no hay login. La URL de entrada es `…/#/p/yuc-demo-001/parcela`.
+- **Sin sesión ni cuentas:** no hay login. La URL de entrada es `…/#/p/sin-demo-001/parcela`.
 - **Servidor:** `npm run dev` (5173) sirve para casi todo; **el modo avión, la instalación y el service worker solo se prueban en `npm run preview` (4173)**.
 - **Los personajes no leen el código.** Evalúan la interfaz como la vería esa persona. Quien coordina la prueba arregla errores de código y **propone** los cambios de texto y de flujo para que el usuario los apruebe antes de aplicarlos.
 - **Lo que no se puede probar se dice.** Sin pantalla bajo el sol, sin celular real ni red lenta real, se anota.
@@ -317,7 +317,7 @@ Que una persona agricultora llegue a **Comparar rotaciones**, entienda **qué se
 
 Cada uno es un modelo de Claude que **actúa** como esa persona. Todos parten de la URL de la parcela, en teléfono (375 × 812) salvo que se diga otra cosa, y todos recorren las cuatro pantallas.
 
-1. **Doña Rosa, agricultora (personaje de diseño).** Productora de temporal de unos 50 años, usa WhatsApp y poco más, **no tiene formación técnica**, lee despacio y desconfía de lo que no entiende. Solo conoce palabras del campo: «tsek'el», «temporal», «siembra», «rastrojo». Quiere saber: ¿qué me conviene sembrar y por qué? Marca todo término que no entendería («robustez», «modelado», «resolución», «NASA GPM IMERG 0.1°»), cada frase de más de 20 palabras y cada lugar donde no sabría qué tocar.
+1. **Doña Rosa, agricultora (personaje de diseño).** Productora de riego de unos 50 años, usa WhatsApp y poco más, **no tiene formación técnica**, lee despacio y desconfía de lo que no entiende. Solo conoce palabras del campo: «riego», «presa», «siembra», «rastrojo». Quiere saber: ¿qué me conviene sembrar y por qué? Marca todo término que no entendería («robustez», «modelado», «resolución», «NASA GPM IMERG 0.1°»), cada frase de más de 20 palabras y cada lugar donde no sabría qué tocar.
 2. **El técnico extensionista.** Conoce FAO-56, NDVI y rotaciones de cultivo. Busca **procedencia y honestidad**: ¿de dónde sale cada número?, ¿se distingue lo medido de lo supuesto?, ¿lo que no se sabe está dicho?, ¿las reglas de restricción tienen sentido agronómico? Evalúa Ver evidencia, «Qué no sabemos» y los numerales de fuentes.
 3. **La persona impaciente en un celular barato.** Hojea, no lee párrafos, toca el primer botón que parece correcto, se va al primer problema o espera de más de 3 segundos. Registra el momento exacto en que se habría ido y qué le haría falta ver en la primera pantalla sin hacer scroll. Prueba con red lenta, sin señal (`npm run preview`) y en horizontal.
 4. **El jurado de Space Apps (anglohablante, 3 minutos).** Abre la app, cambia a **EN**, y quiere entender en un minuto el problema, el uso de datos de la NASA y qué hace distinto a kinilum. Evalúa si la traducción suena natural (no a texto traducido), si el «caso ilustrativo» queda claro y si **«No podemos distinguir»** se nota como diferenciador. Para encontrarlo debe elegir el objetivo **Equilibrado** en Comparar.
@@ -349,7 +349,7 @@ Se unen los hallazgos en una sola lista ordenada por severidad y por cuántos us
 
 **Datos y contenido**
 - Todo es de ejemplo: valores de tarjetas, mapa, contorno, normales de lluvia y calor, resultados por objetivo y por escenario. Se borra cuando lleguen el motor y la grilla real.
-- Reglas de restricción y cortes de «tierra sobre la piedra» (< 30 cm «poca», > 60 cm «profunda») son hipótesis a validar con un técnico de la región. El control de agua no excluye nada en este ejemplo (todas son de temporal).
+- Reglas de restricción y cortes de «tierra sobre la piedra» (< 30 cm «poca», > 60 cm «profunda») son hipótesis a validar con un técnico de la región. El control de agua no excluye nada en este ejemplo (la parcela es de riego).
 - Textos de las tarjetas: borrador del PRD; los de E0 los escribió el equipo de desarrollo.
 - La línea «Lluvia de esta temporada» sigue dibujada sólida (ahí significa «ya llovió»); su fuente sí dice «Estimado».
 - Los rangos normales todavía no aparecen en Ver evidencia.

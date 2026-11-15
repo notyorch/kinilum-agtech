@@ -24,7 +24,7 @@
     },
     "region_key": {
       "enum": [
-        "southYucatan"
+        "northSinaloa"
       ]
     },
     "illustrative": {
@@ -45,10 +45,9 @@
       }
     },
     "soil": {
-      "description": "Suelo declarado. La profundidad de raíz para FAO-56 sale de aquí, no de SoilGrids: tsek'el 15–25 cm, k'ankab 40–60 cm, sin declarar 15–60 cm (rangos a validar con un técnico).",
+      "description": "Suelo declarado. La profundidad de raíz para FAO-56 sale de aquí, no de SoilGrids. Ni alluvial (valle aluvial) ni undeclared tienen un rango definido: la profundidad de raíz queda sin dato hasta que el técnico la mida (root_depth_cm).",
       "enum": [
-        "tsekel",
-        "kankab",
+        "alluvial",
         "undeclared"
       ]
     },
@@ -99,7 +98,9 @@
       "enum": [
         "may",
         "june",
-        "july"
+        "july",
+        "november",
+        "december"
       ]
     },
     "stubble": {
@@ -112,10 +113,8 @@
       ]
     },
     "frijol_variante": {
-      "description": "Opcional. Variante del frijol regional que se simula en la estrategia E2. La elige el técnico; si falta, vale la variante por defecto del catálogo (xpelon). Cada variante es un perfil completo del catálogo, no una etiqueta.",
+      "description": "Opcional. Variante del frijol que se simula en la estrategia E2. La elige el técnico; si falta, vale la variante por defecto del catálogo (negro). Cada variante es un perfil completo del catálogo, no una etiqueta.",
       "enum": [
-        "xpelon",
-        "ib",
         "negro"
       ]
     },

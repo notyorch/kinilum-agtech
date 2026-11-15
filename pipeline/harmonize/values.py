@@ -151,7 +151,11 @@ def soil_value(config: dict[str, Any], generated_at: str) -> dict[str, Any]:
     if config.get("root_depth_cm") is not None:
         cm = float(config["root_depth_cm"])
         return contract_value("root_depth", cm, cm, cm, method="measured", assumptions=[], provenance=["medición de campo declarada por el técnico (root_depth_cm)"], **common)
-    lo, hi = rules["profundidad_raiz_cm"][kind]
+    span = rules["profundidad_raiz_cm"][kind]
+    if span is None:  # un tipo de suelo sin rango definido: sin dato, nunca un valor inventado
+        return contract_value("root_depth", None, None, None, method="assumed", assumptions=list(rules["supuestos"][kind]),
+                              provenance=[f"{name}: sin profundidad de raíz definida", "la mide el técnico en campo (root_depth_cm)"], **common)
+    lo, hi = span
     return contract_value(
         "root_depth", (lo + hi) / 2, lo, hi, method="assumed", assumptions=list(rules["supuestos"][kind]),
         provenance=[f"{name}: {lo}–{hi} cm, supuesto del equipo a validar con el técnico", f"reglas {rules['rules_version']}", "el valor es la mitad del rango; el rango es p10–p90"],

@@ -1,5 +1,5 @@
-// Textos de la interfaz. Nada de cadenas sueltas en componentes:
-// cuando llegue el inglés, va en un en.ts con la misma forma.
+// Textos de la interfaz en español. Nada de cadenas sueltas en componentes: el inglés vive en en.ts con la misma forma.
+// `t` apunta a los textos del idioma elegido (lo cambia lang.tsx); los componentes lo leen al dibujarse.
 export const es = {
   app: {
     name: 'kinilum',
@@ -28,25 +28,30 @@ export const es = {
   parcela: {
     title: 'Su parcela',
     name: 'Parcela de ejemplo',
-    area: '2 ha',
-    crop: 'Maíz de temporal · sur de Yucatán',
+    area: (ha: number) => `${ha} ha`,
+    crop: 'Maíz de riego · norte de Sinaloa',
     bare: {
-      label: 'Meses sin cubierta verde',
-      value: '5',
-      unit: 'de 12',
-      detail: 'De noviembre a marzo.',
+      label: 'Meses sin plantas verdes',
+      atLeast: 'Al menos',
+      unit: 'de 12 meses',
+      detail: 'Visto por satélite. Los meses con nubes no se cuentan, por eso es un mínimo.',
+      none: 'No pudimos medirlo con las imágenes que tenemos.',
     },
     rain: {
       label: 'Lluvia de mayo a octubre',
-      value: '820',
       unit: 'mm',
-      detail: 'Lo normal en su zona en temporada de lluvias.',
+      detail: (low: number, high: number) => `En su zona, según el año, suele quedar entre ${low} y ${high} mm.`,
+      none: 'No pudimos leer la lluvia de su zona.',
     },
     soil: {
-      label: 'Suelo',
-      value: 'Delgado y pedregoso',
-      detail: 'Poca tierra sobre la roca caliza.',
+      label: 'Profundidad de la tierra',
+      value: 'Sin medir',
+      source: 'Técnico local',
+      sourceDetail: 'medición de campo',
+      detail: 'Un técnico debe medir cuánta tierra hay para las raíces. Hasta entonces no la damos por conocida.',
+      measured: (cm: number) => `Unos ${cm} cm de tierra para las raíces, medidos en campo.`,
     },
+    waiting: 'Aún no hay datos guardados en este teléfono. Conéctese una vez para bajarlos.',
     unknown: 'Qué hizo con el rastrojo: si lo dejó, lo quemó o lo retiró.',
     cta: 'Comparar rotaciones',
   },
@@ -75,6 +80,7 @@ export const es = {
     income: 'Ingreso',
   },
   noData: 'Sin dato',
+  estimated: 'estimado',
   comparar: {
     title: 'Comparar rotaciones',
     intro: 'Seis caminos para su parcela, con el mismo clima.',
@@ -97,6 +103,8 @@ export const es = {
         ? 'Una opción no es compatible con lo que nos dijo. Está al final, con su razón.'
         : `${n} opciones no son compatibles con lo que nos dijo. Están al final, con su razón.`,
     evidence: 'Ver evidencia',
+    exampleTitle: 'Ejemplo ilustrativo.',
+    exampleNote: 'El orden y las barras son un ejemplo del modelo. Todavía no se calculan con los datos de su parcela.',
   },
   scenarios: {
     normal: 'Clima normal',
@@ -143,12 +151,12 @@ export const es = {
     othersTitle: 'Quién quedó primera en las demás',
     othersNone: 'Ninguna otra opción quedó primera.',
     variantTitle: 'Frijol que simulamos',
-    variantOthers: 'También se puede simular ib o frijol negro. Lo decide su técnico.',
+    variantOthers: 'También se pueden simular otras variantes de frijol del catálogo. Lo decide su técnico.',
     rulesTitle: 'Reglas de cultivo',
     rulesIntro: 'Son hipótesis nuestras. Ninguna tiene fuente todavía.',
     toValidate: 'A validar con el técnico',
     methodTitle: 'Cómo se calculó',
-    method: 'Simulamos muchas temporadas con el clima de las últimas décadas y los datos de su parcela.',
+    method: 'Esta pantalla muestra un ejemplo del modelo. El simulador con los datos de su parcela todavía no está terminado.',
     noteTitle: 'Simulado, no medido.',
     note: 'Esto no asegura el resultado en su parcela.',
   },
@@ -181,6 +189,7 @@ export const es = {
   ajustes: {
     title: 'Ajustes',
     theme: 'Tema',
+    language: 'Idioma',
     themes: { system: 'Dispositivo', light: 'Claro', dark: 'Oscuro' },
     about: 'Acerca de kinilum',
     aboutText: 'kinilum compara rotaciones de cultivo con datos satelitales de la NASA. Apoya; no decide.',
@@ -188,5 +197,12 @@ export const es = {
   },
 } as const;
 
-export type Strings = typeof es;
-export const t = es;
+/** La misma forma que `es`, con cualquier texto: `en.ts` debe traer todas las claves. */
+type Widen<T> = T extends string ? string : T extends (...a: infer A) => infer R ? (...a: A) => R : T extends object ? { [K in keyof T]: Widen<T[K]> } : T;
+export type Strings = Widen<typeof es>;
+
+/** Los textos del idioma elegido. Es un enlace vivo: lang.tsx lo cambia y los componentes que se vuelven a dibujar lo leen. */
+export let t: Strings = es;
+export function setStrings(next: Strings): void {
+  t = next;
+}

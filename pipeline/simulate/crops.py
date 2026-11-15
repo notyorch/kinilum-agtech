@@ -18,7 +18,7 @@ from common.schema import REPO
 from .scenarios import ROTATION_CROP
 
 RULES_DIR = REPO / "pipeline" / "rules"
-RULES_VERSION = "crops.v1"
+RULES_VERSION = "crops.v2"
 
 # Qué parámetros del perfil necesita cada criterio. Erosión y suelo no dependen del perfil del
 # cultivo de rotación (salen de la cubierta, la pendiente y la lluvia), así que nunca faltan por él.
@@ -53,9 +53,9 @@ def crop_profile(crop: str, variant: str | None = None, version: str = RULES_VER
 
 
 def _missing(value: Any) -> bool:
-    """`null` es «por definir»; un bloque con todos sus campos nulos, también."""
+    """`null` es «por definir»; un bloque al que le falta CUALQUIER campo, también (un Kc sin la etapa inicial no sirve)."""
     if isinstance(value, dict):
-        return all(_missing(v) for v in value.values())
+        return any(_missing(v) for v in value.values())
     return value is None
 
 

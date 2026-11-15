@@ -1,4 +1,20 @@
 /* Señal, avisos y estado sin señal: solo tokens del sistema de diseño. */
+:root,
+[data-theme='dark'] {
+  --offline: #ff6b6b; /* Sin señal: rojo, por pedido del equipo. Solo para este indicador. */
+  --offline-soft: #2d1012;
+}
+[data-theme='light'] {
+  --offline: #b3261e;
+  --offline-soft: #fdeceb;
+}
+
+.kn-badge.kn-badge-offline {
+  background: var(--offline-soft);
+  color: var(--offline);
+  border-color: transparent;
+}
+
 .kn-signal {
   display: inline-flex;
 }

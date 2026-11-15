@@ -6,14 +6,14 @@
  * «no compatible con lo que nos dijo», con su razón, al final de la lista.
  *
  * REGLAS DE EJEMPLO, todas a validar con el técnico. Son el espejo de la
- * sección `reglas` de pipeline/rules/crops.v1.yaml; la prueba
+ * sección `reglas` de pipeline/rules/crops.v2.yaml; la prueba
  * app/tests/data.test.mjs falla si dejan de coincidir.
  */
 import { STRATEGIES, type StrategyId } from './comparison.ts';
 import { cropOf, type BeanVariant, type CropId, type EvidenceState } from './crops.ts';
 
 export type Machinery = 'manual' | 'hired';
-export type Soil = 'tsekel' | 'kankab' | 'undeclared';
+export type Soil = 'alluvial' | 'undeclared';
 
 /** Lo que declaran el técnico (en la parcela) y el agricultor (en su celular). */
 export interface Declaration {
@@ -31,19 +31,19 @@ export interface Declaration {
 
 /**
  * Espejo de `restrictions` y `rotation` del paquete publicado (public/packages), que arma
- * pipeline/package/build.py desde pipeline/parcels/yuc-demo-001.yaml. Caso ilustrativo.
+ * pipeline/package/build.py desde pipeline/parcels/sin-demo-001.yaml. Caso ilustrativo.
  */
 export const PARCEL: Declaration = {
-  soil: 'tsekel',
+  soil: 'alluvial',
   extremeHeat: true,
   machinery: 'hired',
   accepted: ['frijol', 'garbanzo', 'sorgo', 'trigo'],
   market: ['frijol', 'sorgo'],
-  beanVariant: 'xpelon',
+  beanVariant: 'negro',
   beanVariantChosenBy: 'team',
 };
 
-export type RuleId = 'notAccepted' | 'noMarket' | 'noMachinery' | 'heatThinSoil';
+export type RuleId = 'notAccepted' | 'noMarket' | 'noMachinery';
 
 export interface Rule {
   id: RuleId;
@@ -59,7 +59,6 @@ export const RULES: readonly Rule[] = [
   { id: 'notAccepted', catalogId: 'no_aceptado', crops: ['frijol', 'garbanzo', 'sorgo', 'trigo'], effect: 'exclude', evidence: 'a_validar' },
   { id: 'noMarket', catalogId: 'sin_venta', crops: ['frijol', 'garbanzo', 'sorgo', 'trigo'], effect: 'exclude', evidence: 'a_validar' },
   { id: 'noMachinery', catalogId: 'sin_maquinaria', crops: ['sorgo', 'trigo'], effect: 'exclude', evidence: 'a_validar' },
-  { id: 'heatThinSoil', catalogId: 'calor_extremo_suelo_delgado', crops: ['garbanzo', 'trigo'], effect: 'lowViability', evidence: 'a_validar' },
 ];
 
 /** Cuándo se dispara cada regla. Ninguna depende del objetivo (eso es un peso, no un filtro). */
@@ -67,7 +66,6 @@ const BROKEN: Record<RuleId, (crop: CropId, d: Declaration) => boolean> = {
   notAccepted: (crop, d) => !d.accepted.includes(crop),
   noMarket: (crop, d) => !d.market.includes(crop),
   noMachinery: (_crop, d) => d.machinery === 'manual',
-  heatThinSoil: (_crop, d) => d.extremeHeat && d.soil === 'tsekel',
 };
 
 export interface Reason {

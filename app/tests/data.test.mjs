@@ -21,10 +21,10 @@ import {
 } from '../src/data/scenarios.ts';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
-const catalog = parse(read('../../pipeline/rules/crops.v1.yaml'));
-const parcel = parse(read('../../pipeline/parcels/yuc-demo-001.yaml'));
+const catalog = parse(read('../../pipeline/rules/crops.v2.yaml'));
+const parcel = parse(read('../../pipeline/parcels/sin-demo-001.yaml'));
 const index = JSON.parse(read('../public/packages/index.json'));
-const published = JSON.parse(read(`../public/packages/${index.parcels['yuc-demo-001'].file}`));
+const published = JSON.parse(read(`../public/packages/${index.parcels['sin-demo-001'].file}`));
 const es = JSON.parse(read('../src/i18n/strategies.es.json'));
 const en = JSON.parse(read('../src/i18n/strategies.en.json'));
 
@@ -32,7 +32,7 @@ const sorted = (xs) => [...xs].sort();
 
 /* ---- El espejo de la app y el catálogo dicen lo mismo ------------------- */
 
-test('crops.ts es el espejo de pipeline/rules/crops.v1.yaml', () => {
+test('crops.ts es el espejo de pipeline/rules/crops.v2.yaml', () => {
   assert.equal(catalog.rules_version, RULES_VERSION);
   assert.deepEqual(sorted(Object.keys(catalog.cultivos)), sorted(CROP_IDS));
   for (const id of CROP_IDS) {
@@ -76,7 +76,7 @@ test('la declaración de la app es la del paquete publicado y la de la parcela',
     beanVariantChosenBy: rotation.E2.variant_chosen_by,
   });
   assert.equal(rotation.rules_version, RULES_VERSION);
-  // …que sale de lo que declara el técnico en pipeline/parcels/yuc-demo-001.yaml.
+  // …que sale de lo que declara el técnico en pipeline/parcels/sin-demo-001.yaml.
   assert.equal(parcel.frijol_variante, PARCEL.beanVariant);
   assert.deepEqual(parcel.cultivos_aceptados, PARCEL.accepted);
   assert.deepEqual(parcel.market, PARCEL.market);
@@ -90,25 +90,22 @@ test('las estrategias de la app traen el cultivo que dice el paquete', () => {
 
 /* ---- Variantes del frijol regional -------------------------------------- */
 
-test('las tres variantes de frijol son perfiles completos y xpelón es la variante por defecto', () => {
+test('la variante de frijol es un perfil completo y el frijol negro es la variante por defecto de Sinaloa', () => {
   const { variantes, variante_por_defecto } = catalog.cultivos.frijol;
   assert.deepEqual(sorted(Object.keys(variantes)), sorted(BEAN_VARIANTS));
   assert.equal(variante_por_defecto, DEFAULT_BEAN_VARIANT);
-  assert.equal(DEFAULT_BEAN_VARIANT, 'xpelon');
+  assert.equal(DEFAULT_BEAN_VARIANT, 'negro');
   const params = ['kc_por_etapa', 'profundidad_raiz_m', 'ventana_siembra', 'ciclo_dias', 'umbral_calor_c', 'rendimiento_t_ha', 'precio_mxn_t'];
   for (const v of BEAN_VARIANTS) {
     for (const p of params) assert.ok(p in variantes[v], `${v}.${p}`);
     assert.equal(variantes[v].estado_evidencia, 'a_validar');
   }
-  // La tolerancia del xpelón es una hipótesis sin fuente: no ordena con peso fuerte.
-  assert.equal(variantes.xpelon.tolerancia_calor_sequia.valor, null);
-  assert.equal(variantes.xpelon.tolerancia_calor_sequia.usa_en_orden, false);
 });
 
-test('cambiar la variante de frijol cambia el nombre de E2', () => {
+test('el nombre de E2 sale de la variante de frijol elegida', () => {
   const names = BEAN_VARIANTS.map((v) => es.variants[v].E2.name);
   assert.equal(new Set(names).size, BEAN_VARIANTS.length);
-  assert.match(es.variants.xpelon.E2.name, /xpelón/);
+  assert.match(es.variants.negro.E2.name, /frijol negro/);
 });
 
 /* ---- Nitrógeno ---------------------------------------------------------- */
@@ -171,12 +168,12 @@ test('un criterio sin parámetros queda «sin dato» y la comparación no falla'
 
 /* ---- Restricciones ------------------------------------------------------ */
 
-test('en el caso ilustrativo, garbanzo y trigo quedan excluidos con su razón, nunca ocultos', () => {
+test('en el caso ilustrativo, garbanzo y trigo quedan excluidos por no tener dónde vender, con su razón, nunca ocultos', () => {
   const r = scenarioResult('water', 0, 0, excludedSet(PARCEL));
   assert.deepEqual(sorted(r.excluded), ['E4', 'E5']);
   for (const id of ['E4', 'E5']) {
     assert.deepEqual(reasonsFor(id, PARCEL).map((x) => x.rule), ['noMarket']);
-    assert.deepEqual(flagsFor(id, PARCEL).map((x) => x.rule), ['heatThinSoil']);
+    assert.deepEqual(flagsFor(id, PARCEL), []); // la regla de calor y suelo delgado no aplica a Guasave y se quitó
   }
 });
 
@@ -186,8 +183,8 @@ test('sin maquinaria salen sorgo y trigo; sin dónde vender salen los cuatro cul
   assert.deepEqual(sorted(excludedSet({ ...PARCEL, market: [] })), ['E2', 'E3', 'E4', 'E5']);
   assert.deepEqual(sorted(excludedSet({ ...everywhere, accepted: [] })), ['E2', 'E3', 'E4', 'E5']);
   assert.equal(excludedSet(everywhere).size, 0);
-  // «Poco viable» solo con calor extremo y suelo delgado a la vez.
-  assert.deepEqual(flagsFor('E4', { ...PARCEL, soil: 'kankab' }), []);
+  // Ya no hay reglas de «poco viable»: la de calor y suelo delgado no aplica a Guasave.
+  for (const id of STRATEGIES) assert.deepEqual(flagsFor(id, PARCEL), []);
 });
 
 test('todas las reglas de cultivo siguen «a validar» mientras no tengan fuente', () => {
@@ -211,12 +208,20 @@ test('strategies.es.json y strategies.en.json tienen las mismas claves', () => {
   assert.deepEqual(sorted(Object.keys(es.strategies)), sorted(STRATEGIES));
 });
 
-test('E4 y E5 dicen que el cultivo es poco común y que no hay datos locales validados', () => {
+test('E4 y E5 no dicen que el cultivo es poco común (en Sinaloa se siembran) y sí que faltan sus datos locales', () => {
   for (const id of ['E4', 'E5']) {
-    assert.match(es.strategies[id].missing[0], /poco común en su zona/);
-    assert.match(es.strategies[id].missing[0], /No hay datos locales validados/);
-    assert.match(en.strategies[id].missing[0], /uncommon in your area/);
+    for (const lang of [es, en]) {
+      assert.doesNotMatch(lang.strategies[id].missing.join(' '), /poco común|uncommon/i);
+    }
+    assert.match(es.strategies[id].missing[0], /fechas, rendimiento y precio locales/);
+    assert.match(en.strategies[id].missing[0], /local dates, yield and price/);
   }
+});
+
+test('ningún texto nombra una fuente que todavía no está integrada, ni un lugar o suelo de Yucatán', () => {
+  const all = [...strings(es.strategies), ...strings(en.strategies)].join('\n');
+  assert.doesNotMatch(all, /MODIS|ECOSTRESS|GRACE|SRTM|SIAP/, 'fuentes sin integrar');
+  assert.doesNotMatch(all, /Yucat|tsek|k.ankab|milpa|caliza|limestone|xpel/i);
 });
 
 test('los textos en español pasan la lectura de «doña Rosa»', () => {

@@ -69,14 +69,14 @@ Requisitos: Python 3.14 (ver sección 13), cuenta de NASA Earthdata (gratis) y u
 docker build -t kinilum-pipeline pipeline/
 docker run --rm -e EARTHDATA_TOKEN -v "$PWD/pipeline/data:/work/data" \
   -v "$PWD/app/public/packages:/work/out" kinilum-pipeline \
-  python -m package.build --parcel yuc-demo-001
+  python -m package.build --parcel sin-demo-001
 
 # Sin Docker (rasterio y las demás librerías geoespaciales traen sus binarios; se instalan con pip)
 cd pipeline && pip install -r requirements.txt
-python -m ingest.run --parcel yuc-demo-001      # bronce
-python -m harmonize.run --parcel yuc-demo-001   # plata
-python -m simulate.run --parcel yuc-demo-001    # oro
-python -m package.build --parcel yuc-demo-001   # JSON final + validación
+python -m ingest.run --parcel sin-demo-001      # bronce
+python -m harmonize.run --parcel sin-demo-001   # plata
+python -m simulate.run --parcel sin-demo-001    # oro
+python -m package.build --parcel sin-demo-001   # JSON final + validación
 ```
 
 Cada paso lee de la capa anterior y escribe en la siguiente (bronce → plata → oro). Se puede volver a correr un solo paso sin repetir los anteriores. La ingesta guarda la respuesta cruda de cada fuente con fecha y versión: de ahí sale el campo `provenance` del contrato.
@@ -129,7 +129,7 @@ El paquete de la parcela es un `.json` dentro de `public/packages/`. Con `vite-p
 
 ### 5.1 Flujo real (lo que el producto promete)
 
-1. **El técnico configura la parcela** en un archivo `parcels/<id>.yaml`: polígono, tipo de suelo (tsek'el, k'ankab o sin declarar), agua (temporal o riego), maquinaria, cultivos aceptables, manejo del rastrojo.
+1. **El técnico configura la parcela** en un archivo `parcels/<id>.yaml`: polígono, tipo de suelo (aluvial o sin declarar), agua (riego o temporal), maquinaria, cultivos aceptables, manejo del rastrojo.
 2. **El técnico corre el pipeline** y publica el paquete. Hoy es un comando; en el MVP no hay pantalla de administración.
 3. **El agricultor recibe un enlace o un código QR** con el identificador de la parcela: `https://<sitio>/#/p/<id-opaco>`.
 4. **Abre el enlace en su celular**, el navegador ofrece «Instalar», y la app descarga el paquete una sola vez y lo guarda.
@@ -152,9 +152,9 @@ Todo lo que va a `dist/` es público. Para la demo, usar **una parcela de ejempl
 
 - **El paquete no lleva el polígono exacto.** Los puntajes y la evidencia no lo necesitan: el cálculo con el polígono (búfer de 30 m, extracciones por píxel) ocurre en el pipeline. En el paquete solo va un **punto de referencia redondeado a dos decimales** (unos 1 000 m) y la superficie en hectáreas, lo suficiente para ubicar la zona y no la parcela.
 - **El polígono exacto y `parcels/<id>.yaml` no se publican.** Viven en el repositorio privado o en la máquina del pipeline. Si el repositorio es público, el archivo de la parcela de demo contiene solo datos de la parcela de ejemplo.
-- **Ni nombres ni datos personales** del agricultor en el paquete, en el repositorio ni en el video. La parcela se identifica con un código opaco (`yuc-demo-001`).
+- **Ni nombres ni datos personales** del agricultor en el paquete, en el repositorio ni en el video. La parcela se identifica con un código opaco (`sin-demo-001`).
 - **Revisión antes de publicar.** Buscar en `app/dist/` coordenadas con más de dos decimales y cualquier nombre propio (prueba de la sección 4.4).
-- **Si la ubicación aproximada tampoco puede mostrarse**, la «Ver evidencia» dice «región sur de Yucatán» sin punto de referencia. La explicación no pierde nada: las fuentes de zona ya se presentan como contexto, no como mancha dentro de la parcela.
+- **Si la ubicación aproximada tampoco puede mostrarse**, la «Ver evidencia» dice «región norte de Sinaloa» sin punto de referencia. La explicación no pierde nada: las fuentes de zona ya se presentan como contexto, no como mancha dentro de la parcela.
 
 El mapa de 30 m (opcional, de los primeros en cortarse) necesita el polígono. Si sobrevive al orden de corte, solo se publica para la parcela de ejemplo, nunca para una real sin permiso.
 

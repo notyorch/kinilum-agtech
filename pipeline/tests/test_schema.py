@@ -22,7 +22,7 @@ def synthetic_simulation() -> dict:
     return {
         "strategies": list(STRATEGIES),
         "criteria": list(CRITERIA),
-        "rules_version": "crops.v1",
+        "rules_version": "crops.v2",
         "no_data": NO_INCOME,
         "cells": [cell_to_json(c, rng.integers(0, 101, size=(*shape, c.runs)), NO_INCOME) for c in cells()],
     }
@@ -76,7 +76,7 @@ def test_crop_outside_the_catalog_is_rejected(example_package):
 
 
 def test_example_package_names_the_bean_variant(example_package):
-    assert example_package["rotation"]["E2"] == {"rotation_crop": "frijol", "variant": "xpelon", "variant_chosen_by": "team"}
+    assert example_package["rotation"]["E2"] == {"rotation_crop": "frijol", "variant": "negro", "variant_chosen_by": "team"}
     assert NO_DATA == 255
 
 
@@ -94,7 +94,7 @@ def test_missing_range_is_rejected(example_package):
 
 def test_null_value_with_range_is_rejected(example_package):
     pkg = copy.deepcopy(example_package)
-    pkg["values"]["moisture"]["p10"] = 0.2
+    pkg["values"]["soil"]["p10"] = 20  # el suelo aluvial no tiene valor (sin dato): un rango sin valor se rechaza
     assert package_problems(pkg)
 
 

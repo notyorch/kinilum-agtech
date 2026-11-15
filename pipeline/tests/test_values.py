@@ -3,7 +3,9 @@
 import numpy as np
 import pytest
 
-from harmonize import values
+from datetime import date
+
+from harmonize import phenology, values
 from ingest import nasadem
 from ingest.contract import Fetch, Provenance, Series
 from ingest.load import Result
@@ -138,29 +140,38 @@ def test_heat_days_are_counted_only_inside_the_window_and_only_for_complete_year
 
 # ---- soil: lo que declara el técnico -------------------------------------------------------------------------------
 
-@pytest.mark.parametrize("kind,name,lo,hi,assumptions", [
-    ("tsekel", "Tsek'el", 15, 25, ["karstDepth", "teamAssumption"]),
-    ("kankab", "K'ankab", 40, 60, ["teamAssumption"]),
-    ("undeclared", "Sin declarar", 15, 60, ["karstDepth", "teamAssumption"]),
-])
-def test_the_declared_soil_gives_a_root_depth_range_that_is_an_assumption(kind, name, lo, hi, assumptions):
+@pytest.mark.parametrize("kind,name", [("alluvial", "Aluvial"), ("undeclared", "Sin declarar")])
+def test_a_soil_without_a_defined_range_is_no_data_until_the_technician_measures_it(kind, name):
     v = values.soil_value({"soil": kind}, "2026-11-15")
     assert (v["variable"], v["unit"], v["source"], v["native_resolution"], v["support_level"], v["method"]) == ("root_depth", "cm", name, "declared", "parcel", "assumed")
-    assert (v["value"], v["p10"], v["p90"]) == ((lo + hi) / 2, lo, hi) and v["assumptions"] == assumptions and v["timestamp"] == "2026-11"
-    assert not any("pedido el" in step for step in v["provenance"])  # no se «pidió» a nadie: lo declaró el técnico
+    assert (v["value"], v["p10"], v["p90"]) == (None, None, None) and v["assumptions"] == ["teamAssumption"] and v["timestamp"] == "2026-11"
+    assert not any("pedido el" in step for step in v["provenance"])  # no se «pidió» a nadie: lo declara el técnico
+
+
+def test_an_alluvial_soil_has_no_defined_range_so_the_root_depth_is_no_data_until_it_is_measured():
+    v = values.soil_value({"soil": "alluvial"}, "2026-11-15")
+    assert (v["value"], v["p10"], v["p90"], v["method"], v["assumptions"]) == (None, None, None, "assumed", ["teamAssumption"])
+    assert any("la mide el técnico" in step for step in v["provenance"])
+    m = values.soil_value({"soil": "alluvial", "root_depth_cm": 90}, "2026-11-15")  # con medición de campo sí hay valor
+    assert (m["value"], m["method"]) == (90.0, "measured")
+
+
+def test_the_flowering_window_for_a_winter_sowing_crosses_into_the_next_year_of_the_season():
+    # 1 de diciembre + 55 días y 31 de diciembre + 75 días: la ventana cae en el año siguiente al de la siembra
+    assert phenology.flowering_window("december", 2024) == (date(2025, 1, 25), date(2025, 3, 16))
 
 
 def test_a_field_measurement_replaces_the_range_and_is_measured():
-    v = values.soil_value({"soil": "tsekel", "root_depth_cm": 18}, "2026-11-15")
+    v = values.soil_value({"soil": "alluvial", "root_depth_cm": 18}, "2026-11-15")
     assert (v["value"], v["p10"], v["p90"], v["method"], v["assumptions"]) == (18.0, 18.0, 18.0, "measured", [])
 
 
 def test_the_soil_rules_say_they_are_to_validate_and_do_not_come_from_soilgrids():
     r = values.soil_rules()
     assert (r["estado_evidencia"], r["method"], r["fuente"]) == ("a_validar", "assumed", None)
-    assert set(r["profundidad_raiz_cm"]) == {"tsekel", "kankab", "undeclared"} == set(r["supuestos"]) == set(r["nombre"])
+    assert set(r["profundidad_raiz_cm"]) == {"alluvial", "undeclared"} == set(r["supuestos"]) == set(r["nombre"])
 
 
 def test_the_declared_soil_joins_the_partial_values_without_any_source():
-    out = values.partial_values({}, {"soil": "tsekel"}, "2026-11-15")
-    assert list(out) == ["soil"] and out["soil"]["value"] == 20.0
+    out = values.partial_values({}, {"soil": "alluvial", "root_depth_cm": 90}, "2026-11-15")
+    assert list(out) == ["soil"] and out["soil"]["value"] == 90.0

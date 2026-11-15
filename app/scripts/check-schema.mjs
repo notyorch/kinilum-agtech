@@ -157,7 +157,7 @@ export function syntheticSimulation() {
   return {
     strategies: STRATEGIES,
     criteria: CRITERIA,
-    rules_version: 'crops.v1',
+    rules_version: 'crops.v2',
     no_data: { E4: ['income'], E5: ['income'] },
     cells,
   };
@@ -186,7 +186,7 @@ function selfTest(base) {
   expect(packageProblems(noRange).length > 0, 'autoprueba: sin p10 se rechaza');
 
   const nullWithRange = clone();
-  nullWithRange.values.moisture.p10 = 0.2;
+  nullWithRange.values.soil.p10 = 20; // el suelo aluvial no tiene valor (sin dato): un rango sin valor se rechaza
   expect(packageProblems(nullWithRange).length > 0, 'autoprueba: value nulo con rango se rechaza');
 
   const unordered = clone();

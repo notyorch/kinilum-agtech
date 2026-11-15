@@ -6,13 +6,16 @@ import './ds/primitives.css';
 import { AppShell } from './shell/AppShell';
 import { ThemeProvider } from './shell/theme';
 import { OfflineProvider } from './offline/OfflineProvider';
+import { LangProvider } from './i18n/lang';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider>
-      <OfflineProvider>
-        <AppShell />
-      </OfflineProvider>
-    </ThemeProvider>
+    <LangProvider>
+      <ThemeProvider>
+        <OfflineProvider>
+          <AppShell />
+        </OfflineProvider>
+      </ThemeProvider>
+    </LangProvider>
   </StrictMode>,
 );

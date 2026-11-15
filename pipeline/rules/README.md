@@ -1,6 +1,6 @@
 # rules — catálogo de cultivos versionado
 
-`crops.<versión>.yaml` dice qué cultivos de rotación se comparan con el maíz y con qué reglas. Hoy: `crops.v1.yaml`, con **frijol, garbanzo, sorgo y trigo**. No se simulan más cultivos que estos cuatro.
+`crops.<versión>.yaml` dice qué cultivos de rotación se comparan con el maíz y con qué reglas. Hoy: `crops.v2.yaml`, con **frijol, garbanzo, sorgo y trigo**. No se simulan más cultivos que estos cuatro.
 
 ## El contrato
 
@@ -12,9 +12,9 @@
 
 ## Variantes del frijol regional (E2)
 
-Cada variante es un perfil completo, con los mismos campos que un cultivo: `xpelon` (por defecto en Yucatán), `ib` y `negro`. La elige el técnico en `pipeline/parcels/<id>.yaml`, campo `frijol_variante`. El paquete lleva solo la variante elegida (`rotation.E2.variant`), cambiarla cambia el nombre del archivo y la app la nombra en «Evidencia».
+Cada variante es un perfil completo, con los mismos campos que un cultivo. Hoy solo hay `negro` (por defecto); los tipos de frijol que más se siembran en Guasave se agregan con el técnico. La elige el técnico en `pipeline/parcels/<id>.yaml`, campo `frijol_variante`. El paquete lleva solo la variante elegida (`rotation.E2.variant`), cambiarla cambia el nombre del archivo y la app la nombra en «Evidencia».
 
-La tolerancia del xpelón al calor y a la sequía es una hipótesis sin fuente: queda `a_validar` y no se usa para ordenar con peso fuerte. Los nombres científicos se revisan con el técnico antes de publicarlos.
+Los nombres científicos se revisan con el técnico antes de publicarlos.
 
 ## Reglas de restricción
 
@@ -30,7 +30,7 @@ Son filtros, no pesos. Una estrategia que no cumple **no se oculta**: va al fina
 ## Otras reglas: maíz y suelo
 
 - `maize.v1.yaml`: días entre siembra y floración (55 a 75) y el umbral de calor que daña (35 °C). Con ellos se define la ventana de floración (`harmonize/phenology.py`).
-- `soil.v1.yaml`: profundidad de raíz por tipo de suelo declarado (tsek'el 15–25 cm, k'ankab 40–60 cm, sin declarar 15–60 cm). El valor `root_depth` sale de aquí, **no de SoilGrids**.
+- `soil.v1.yaml`: profundidad de raíz por tipo de suelo declarado (aluvial o sin declarar). Ninguno tiene hoy un rango con fuente, así que `root_depth` queda **sin dato** hasta que el técnico la mida (`root_depth_cm`). No sale de SoilGrids.
 
 Ambos son supuestos del equipo, sin fuente, y dicen `estado_evidencia: a_validar`: el técnico local los corrige.
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type AnimationEvent, type CSSProperties, type ReactNode } from 'react';
 import { t } from '../i18n/es';
+import { useLang } from '../i18n/lang';
 import { ChartIcon, DocIcon, GearIcon, PinIcon, SparkIcon } from './icons';
 import { TabBar, type TabItem } from './TabBar';
 import { useTheme } from './theme';
@@ -15,13 +16,15 @@ import './shell.css';
 
 export type SectionId = 'parcela' | 'comparar' | 'simular' | 'evidencia' | 'ajustes';
 
-const TABS: readonly TabItem<SectionId>[] = [
+/** Las pestañas con el texto del idioma elegido: se arman al dibujar, no al cargar el módulo. */
+const tabs = (): readonly TabItem<SectionId>[] => [
   { id: 'parcela', label: t.tabs.parcela, Icon: PinIcon },
   { id: 'comparar', label: t.tabs.comparar, Icon: ChartIcon },
   { id: 'simular', label: t.tabs.simular, Icon: SparkIcon },
   { id: 'evidencia', label: t.tabs.evidencia, Icon: DocIcon },
   { id: 'ajustes', label: t.tabs.ajustes, Icon: GearIcon },
 ];
+const IDS: readonly SectionId[] = ['parcela', 'comparar', 'simular', 'evidencia', 'ajustes'];
 
 const SCREENS: Record<SectionId, () => ReactNode> = {
   parcela: () => <MiParcela />,
@@ -31,12 +34,12 @@ const SCREENS: Record<SectionId, () => ReactNode> = {
   ajustes: () => <Ajustes />,
 };
 
-const order = (id: SectionId) => TABS.findIndex((tab) => tab.id === id);
+const order = (id: SectionId) => IDS.indexOf(id);
 
 /** La sección vive en el hash (#/ajustes) para que recargar no la pierda. */
 function readHash(): SectionId {
   const id = window.location.hash.replace(/^#\/?/, '');
-  return TABS.some((tab) => tab.id === id) ? (id as SectionId) : 'parcela';
+  return (IDS as readonly string[]).includes(id) ? (id as SectionId) : 'parcela';
 }
 
 interface View {
@@ -57,6 +60,7 @@ function Lockup() {
 }
 
 export function AppShell() {
+  const { lang } = useLang();
   const [view, setView] = useState<View>(() => ({ current: readHash(), leaving: null, dir: 1 }));
 
   const go = useCallback((id: SectionId) => {
@@ -87,7 +91,7 @@ export function AppShell() {
 
   return (
     <AppStateProvider go={go}>
-      <div className="kn-app">
+      <div className="kn-app" key={lang}>
         <header className="kn-topbar">
           <Lockup />
           <span className="kn-topbar__badges">
@@ -114,7 +118,7 @@ export function AppShell() {
           </div>
         </main>
 
-        <TabBar items={TABS} active={view.current} onChange={go} label={t.app.nav} />
+        <TabBar items={tabs()} active={view.current} onChange={go} label={t.app.nav} />
       </div>
     </AppStateProvider>
   );

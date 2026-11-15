@@ -122,7 +122,7 @@ def load_sources(
     *,
     enabled: list[str] | None = None,
     bronze_dir: Path | None = None,
-    parcel_id: str = "yuc-demo-001",
+    parcel_id: str = "sin-demo-001",
 ) -> dict[str, Result]:
     unknown = set(enabled or []) - set(BY_ID)
     if unknown:

@@ -109,7 +109,7 @@ export function Evidencia() {
       <Card title={e.methodTitle}>
         <p className="kn-card__text">{e.method}</p>
         <div className="kn-tags">
-          <SourceTag source="NASA POWER" resolution="~50 km" estimated />
+          <SourceTag source="NASA POWER" resolution="~50 km" estimated estimatedLabel={t.estimated} />
           <SourceTag source="GPM IMERG" resolution="11 km" />
           <SourceTag source="HLS" resolution="30 m" />
         </div>

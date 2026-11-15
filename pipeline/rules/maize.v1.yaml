@@ -1,4 +1,4 @@
-# Maíz de temporal: lo que hace falta de su calendario para medir calor y agua en la floración — versión maize.v1
+# Maíz de riego en otoño-invierno: lo que hace falta de su calendario para medir calor y agua en la floración — versión maize.v1
 #
 # NADA aquí está validado. Son supuestos del equipo, sin fuente: el técnico local los corrige. Un valor aquí
 # cambia el resultado de `heat_days` y de la ventana de floración, no los datos de las fuentes.
@@ -19,4 +19,4 @@ dias_a_floracion: [55, 75]
 umbral_calor_c: 35
 
 # Mes de siembra → número de mes.
-meses_de_siembra: {may: 5, june: 6, july: 7}
+meses_de_siembra: {may: 5, june: 6, july: 7, november: 11, december: 12}

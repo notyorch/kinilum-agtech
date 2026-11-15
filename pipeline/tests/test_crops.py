@@ -58,11 +58,11 @@ def test_a_complete_profile_has_every_criterion():
     assert criteria_without_data(profile) == ["income"]
 
 
-def test_bean_variants_are_complete_profiles_and_xpelon_is_the_default():
+def test_bean_variants_are_complete_profiles_and_negro_is_the_default_for_sinaloa():
     frijol = load_catalog()["cultivos"]["frijol"]
-    assert set(frijol["variantes"]) == {"xpelon", "ib", "negro"}
-    assert frijol["variante_por_defecto"] == "xpelon"
-    assert crop_profile("frijol")["nombre"] == crop_profile("frijol", "xpelon")["nombre"] == "Xpelón"
+    assert set(frijol["variantes"]) == {"negro"}
+    assert frijol["variante_por_defecto"] == "negro"
+    assert crop_profile("frijol")["nombre"] == crop_profile("frijol", "negro")["nombre"] == "Frijol negro"
     for variant in frijol["variantes"]:
         profile = crop_profile("frijol", variant)
         for params in PARAMS_BY_CRITERION.values():
@@ -71,13 +71,6 @@ def test_bean_variants_are_complete_profiles_and_xpelon_is_the_default():
         assert profile["estado_evidencia"] == "a_validar"
     with pytest.raises(ValueError):
         crop_profile("frijol", "espelon")
-
-
-def test_xpelon_heat_tolerance_is_a_hypothesis_that_does_not_rank():
-    tolerance = crop_profile("frijol", "xpelon")["tolerancia_calor_sequia"]
-    assert tolerance["valor"] is None
-    assert tolerance["usa_en_orden"] is False
-    assert tolerance["estado_evidencia"] == "a_validar"
 
 
 def test_every_rule_without_a_source_is_to_validate():
@@ -91,10 +84,10 @@ def test_every_rule_without_a_source_is_to_validate():
 
 
 def test_rotation_block_carries_only_the_chosen_variant():
-    block = rotation_block("ib", "technician")
+    block = rotation_block("negro", "technician")
     assert block == {
-        "rules_version": "crops.v1",
-        "E2": {"rotation_crop": "frijol", "variant": "ib", "variant_chosen_by": "technician"},
+        "rules_version": "crops.v2",
+        "E2": {"rotation_crop": "frijol", "variant": "negro", "variant_chosen_by": "technician"},
         "E3": {"rotation_crop": "sorgo"},
         "E4": {"rotation_crop": "garbanzo"},
         "E5": {"rotation_crop": "trigo"},

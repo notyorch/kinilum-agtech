@@ -68,7 +68,7 @@ export function DataSource({
 }) {
   return (
     <div className="kn-datasrc">
-      <SourceTag source={source} resolution={resolution} estimated={estimated} />
+      <SourceTag source={source} resolution={resolution} estimated={estimated} estimatedLabel={t.estimated} />
       <span>{t.scale[scale]}</span>
     </div>
   );

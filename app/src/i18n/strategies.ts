@@ -1,12 +1,16 @@
 // Textos de las estrategias, las variantes de frijol y las reglas de cultivo.
 // Viven en strategies.es.json y strategies.en.json, con las mismas claves.
-// La app todavía no tiene selector de idioma: hoy usa el español.
+// `s` es un enlace vivo al idioma elegido (lang.tsx lo cambia).
 import type { StrategyId } from '../data/comparison';
 import type { BeanVariant, CropId } from '../data/crops';
 import type { Reason } from '../data/restrictions';
+import en from './strategies.en.json';
 import es from './strategies.es.json';
 
-export const s = es;
+export let s: typeof es = es;
+export function setStrategyStrings(lang: 'es' | 'en'): void {
+  s = lang === 'en' ? en : es;
+}
 
 export interface StrategyText {
   name: string;

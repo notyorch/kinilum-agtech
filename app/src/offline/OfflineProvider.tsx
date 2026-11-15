@@ -1,17 +1,20 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { watchConnectivity } from './connectivity';
-import { applyUpdate, start, type Deps, type PackageStatus } from './packageStore.ts';
+import type { ParcelPackage } from '../data/schema.gen.ts';
+import { applyUpdate, readPackageData, start, type Deps, type PackageStatus } from './packageStore.ts';
 import { readinessOf, type OfflineReadiness } from './readiness.ts';
 import { applyShellUpdate, registerShell, shellSnapshot, subscribeShell } from './shell';
 
 /** Hoy solo existe la parcela de ejemplo; cuando haya más, el id saldrá de la ruta. */
-export const PARCEL_ID = 'yuc-demo-001';
+export const PARCEL_ID = 'sin-demo-001';
 
 interface OfflineState {
   online: boolean;
   readiness: OfflineReadiness;
   /** Fecha de generación del paquete guardado (AAAA-MM-DD), si hay uno. */
   dataDate: string | null;
+  /** El paquete guardado y releído, o `null` si todavía no hay uno bueno. Las pantallas leen de aquí, no de un espejo. */
+  data: ParcelPackage | null;
   newData: boolean;
   newApp: boolean;
   useNewData: () => void;
@@ -31,6 +34,7 @@ export function OfflineProvider({ children }: { children: ReactNode }) {
   const [online, setOnline] = useState(() => navigator.onLine);
   const [pkg, setPkg] = useState<PackageStatus>({ kind: 'checking' });
   const shell = useSyncExternalStore(subscribeShell, shellSnapshot);
+  const [data, setData] = useState<ParcelPackage | null>(null);
 
   useEffect(() => {
     registerShell();
@@ -48,6 +52,16 @@ export function OfflineProvider({ children }: { children: ReactNode }) {
     if (online && (pkg.kind === 'needs-signal' || pkg.kind === 'failed')) load();
   }, [online, pkg.kind, load]);
 
+  const savedFile = pkg.kind === 'ready' ? pkg.current.file : null;
+  useEffect(() => {
+    if (!savedFile) return;
+    let alive = true;
+    readPackageData(realDeps(), PARCEL_ID).then((d) => alive && setData(d as ParcelPackage | null), () => alive && setData(null));
+    return () => {
+      alive = false;
+    };
+  }, [savedFile]);
+
   const useNewData = useCallback(() => {
     if (pkg.kind !== 'ready' || !pkg.update) return;
     setPkg({ kind: 'downloading' });
@@ -59,12 +73,13 @@ export function OfflineProvider({ children }: { children: ReactNode }) {
       online,
       readiness: readinessOf(pkg, shell.state),
       dataDate: pkg.kind === 'ready' ? pkg.current.generatedAt : null,
+      data,
       newData: pkg.kind === 'ready' && !!pkg.update,
       newApp: shell.update,
       useNewData,
       updateApp: applyShellUpdate,
     }),
-    [online, pkg, shell, useNewData],
+    [online, pkg, shell, data, useNewData],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

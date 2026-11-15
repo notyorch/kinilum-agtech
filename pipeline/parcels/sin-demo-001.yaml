@@ -1,0 +1,26 @@
+# Parcela de EJEMPLO (caso ilustrativo) cerca de Guasave, Sinaloa. No es un productor real.
+# Forma: shared/schema/parcel-config.schema.json. Este archivo NO se publica.
+#
+# El punto se SORTEÓ: semilla 20261115, a menos de 12 km del centro de la ciudad de Guasave (-108.4667, 25.5667),
+# y es el primero del sorteo cuyo NDVI de HLS se ve como el de una parcela de cultivo (ciclo anual con mínimo y
+# máximo claros). No lo eligió ningún productor ni se visitó. Punto del sorteo: -108.45673, 25.50826 (a 6.6 km).
+# Cómo se corre: .venv/bin/python -m ingest.run --parcel sin-demo-001 --lon -108.45673 --lat 25.50826
+id: sin-demo-001
+region_key: northSinaloa
+illustrative: true
+
+# Sin polígono elegido: el pipeline usa un cuadrado de 200 m (4 ha) alrededor del punto, como supuesto del equipo.
+area_ha: 4
+
+# Lo siguiente son SUPUESTOS DEL EQUIPO, sin visita de campo; el técnico local los corrige.
+soil: alluvial        # valle aluvial de riego; sin profundidad de raíz definida (queda «sin dato» hasta medirla)
+water: irrigation     # el NDVI muestra un ciclo de invierno con pico en marzo, propio de un cultivo de riego
+machinery: hired      # manual | hired (maquila)
+sowing: december      # el NDVI sube de enero a marzo: siembra hacia diciembre (supuesto, a validar)
+
+# Sin cambios respecto a la parcela de ejemplo anterior: no hay información nueva para decidirlos.
+cultivos_aceptados: [frijol, garbanzo, sorgo, trigo]
+market: [frijol, sorgo]
+
+frijol_variante: negro
+frijol_variante_elegida_por: team

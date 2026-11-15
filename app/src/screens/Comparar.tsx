@@ -16,7 +16,7 @@ import { t } from '../i18n/es';
 import { reasonText, s, strategyText } from '../i18n/strategies';
 import { useAppState } from '../shell/state';
 import { useFlip } from '../shell/useFlip';
-import { Bar, ScreenHead } from './parts';
+import { Bar, DashedNote, ScreenHead } from './parts';
 
 export function Comparar() {
   const c = t.comparar;
@@ -45,6 +45,7 @@ export function Comparar() {
   return (
     <div className="kn-screen">
       <ScreenHead title={c.title} intro={c.intro} />
+      <DashedNote title={c.exampleTitle}>{c.exampleNote}</DashedNote>
 
       <div className="kn-field">
         <p className="kn-field__label">{c.objective}</p>
@@ -138,6 +139,7 @@ export function Comparar() {
                   risks={text.risks}
                   footer={t.app.closing}
                   labels={s.labels}
+                  estimatedLabel={t.estimated}
                 />
               )}
             </div>

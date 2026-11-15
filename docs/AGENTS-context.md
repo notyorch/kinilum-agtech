@@ -4,13 +4,13 @@
 kinilum es una herramienta de apoyo a decisiones para el reto "Field Shift: Adapting Farms with NASA Data" (NASA Space Apps 2026, 14–15 nov 2026). Compara rotaciones de cultivo para una parcela usando observaciones de la Tierra de la NASA, datos locales y las prioridades del agricultor. Sabe cuándo tiene evidencia suficiente, cuánto pesa cada fuente y qué tan estable es una sugerencia cuando cambian el clima o las prioridades. Apoya; no decide. La última palabra es del agricultor y de su técnico local.
 
 ## Usuario
-- Primario: agricultor/a de temporal en Yucatán (sur del estado, municipio por confirmar), 3–10 ha, milpa y maíz, Android básico, señal intermitente, sin formación técnica.
-- Caso de estudio: calor extremo, suelo delgado sobre roca caliza (tsek'el pedregoso, k'ankab rojo), lluvias concentradas. El calor es el riesgo central; ECOSTRESS está en P0.
+- Primario: agricultor/a de riego en el norte de Sinaloa (distrito de Guasave), maíz de otoño-invierno, Android básico, señal intermitente, sin formación técnica.
+- Caso de estudio: Guasave, Sinaloa. El maíz de riego depende del agua de las presas, que bajó mucho (el estado pasó de 6,656 mil toneladas de maíz en 2023 a 3,368 mil en 2024, según el anuario agrícola de Sinaloa con datos del SIAP; a verificar). El agua es el riesgo central; ECOSTRESS no está integrado.
 - Secundario: técnico o extensionista que configura la parcela y valida reglas.
 - Demo: jurado de Space Apps. Envío en inglés: video de hasta 30 s con subtítulos en inglés o hasta 7 diapositivas; enlace público al proyecto sin login; datos de la NASA usados; declaración de uso de IA (confirmar guía 2026).
 
 ## Alcance del MVP (estricto)
-- 1 región (Yucatán), 1 parcela de ejemplo (polígono dibujado por el equipo en una zona agrícola representativa; no es el terreno de una persona identificada), 6 estrategias: E0 actual (maíz de temporal, suelo desnudo en secas), E1 maíz + cobertura de leguminosa en relevo, E2 maíz -> frijol regional -> maíz (variante xpelón por defecto, ib o negro; la elige el técnico con `frijol_variante` y cada una es un perfil completo), E3 maíz -> sorgo -> maíz, E4 maíz -> garbanzo -> maíz, E5 maíz -> trigo -> maíz. Garbanzo y trigo son poco comunes en la zona y no tienen datos locales validados.
+- 1 región (norte de Sinaloa, Guasave), 1 parcela de ejemplo (un punto sorteado cerca de Guasave; no es el terreno de una persona identificada), 6 estrategias: E0 actual (maíz de riego en otoño-invierno, ciclo tras ciclo), E1 maíz + cobertura de leguminosa en relevo, E2 maíz -> frijol -> maíz (hoy solo la variante frijol negro; la elige el técnico con `frijol_variante` y cada una es un perfil completo), E3 maíz -> sorgo -> maíz, E4 maíz -> garbanzo -> maíz, E5 maíz -> trigo -> maíz. Garbanzo y trigo se siembran en Sinaloa en invierno, pero no tienen datos locales validados.
 - Catálogo de cultivos de rotación versionado (`pipeline/rules/crops.<versión>.yaml`): frijol, garbanzo, sorgo y trigo. Solo las leguminosas suman nitrógeno. Lo que no tiene fuente va «a validar con el técnico»; un parámetro que falta deja su criterio «sin dato».
 - Objetivos con pesos predefinidos: ahorrar agua, mejorar suelo, ingreso, reducir riesgo, equilibrado.
 - Restricciones como filtros: agua (temporal/riego), maquinaria, cultivos de rotación aceptados (frijol, garbanzo, sorgo, trigo), mercado accesible, fecha de siembra. Con calor extremo y suelo delgado, garbanzo y trigo se marcan «poco viable».
@@ -41,7 +41,7 @@ El paquete lleva solo puntajes 0-100 por criterio y por corrida (matriz principa
 GRACE -> E5 (trigo) y E4 (garbanzo) -> mapa 30 m -> árbol de evidencia (queda como lista) -> selector ES | EN (quedan subtítulos) -> SMAP -> ECOSTRESS. Núcleo que no se corta: POWER, GPM, HLS, SRTM, MODIS, FAO-56, estrategias E0–E3 × 5 preguntas, robustez, «no podemos distinguir», modo avión.
 
 ## Suelo y cubierta
-- La profundidad efectiva de raíz para FAO-56 NO sale de SoilGrids: tsek'el 15-25 cm, k'ankab 40-60 cm, sin declarar 15-60 cm (rangos a validar); una medición de campo reemplaza el rango.
+- La profundidad efectiva de raíz para FAO-56 NO sale de SoilGrids: ni el suelo aluvial ni el «sin declarar» tienen un rango con fuente: queda sin dato hasta que el técnico la mida (`root_depth_cm`).
 - El índice de vegetación detecta "sin cubierta verde", no "suelo desnudo". El riesgo de erosión combina cubierta verde con el manejo del rastrojo que declara el agricultor (se deja, se quema, se retira, se pastorea).
 
 ## Sensibilidad y consistencia

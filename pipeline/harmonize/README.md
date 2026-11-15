@@ -25,6 +25,20 @@ Todos usan **mediana, p10 y p90 entre años (o días)**, y exigen un mínimo: co
 | `soil` → `root_depth` | Lo declara el técnico | Mitad del rango del tipo de suelo (`rules/soil.v1.yaml`), con el rango como p10–p90; una medición de campo lo reemplaza. | — |
 | `bare` → `days_without_green_cover` | HLS (parcela); Sentinel-2 de respaldo | NDVI de los píxeles completos dentro de la parcela tras descartar 30 m de borde, solo con Fmask limpio (SCL en Sentinel-2); la mediana por mes se compara con **0.35** (propuesta, a calibrar). Días de los meses por debajo del umbral, por año; mediana y rango entre años. Los meses sin escena despejada **no cuentan** como «sin plantas verdes», así que es un **mínimo**. No se calcula BSI: afirmaría «suelo desnudo». | 9 meses con dato por año y 3 años |
 
+## Partes del oro que no son un valor (`season.py`)
+
+Salen de las mismas series; si falta una fuente, la parte no se escribe y `ingest.run` dice por qué.
+
+| Archivo | Cómo se arma |
+|---|---|
+| `seasons.json` | Por **año de floración** (la siembra de diciembre florece en enero a marzo del año siguiente): falta de agua en la ventana de floración (`Kc` de la etapa media del maíz × ET0 − lluvia, en mm; con riego, cuánta agua tiene que poner el riego) y días de calor que daña. El rango p10/p50/p90 es el mínimo, la mediana y el máximo **entre las cuatro combinaciones de fuente** (lluvia de IMERG u Open-Meteo; ET0 de Open-Meteo o de Penman–Monteith con POWER y viento de 2 m/s): dispersión entre fuentes, no probabilidad. |
+| `rain_this_season.json` | Lluvia acumulada por mes del último año con datos (IMERG) y, para los meses que faltan, la banda p10, mediana y p90 de lo que llovió en esos meses en los demás años (empírico, no un pronóstico). |
+| `normals.json` | Lluvia de mayo a octubre y máximo de mayo, p10–p90 entre los años con datos, con su periodo y fuente. |
+| `thresholds.json` | Propuesta, a validar con el técnico: temporada difícil si su falta de agua pasa del **p75** de las temporadas; calor de `maize.v1.yaml` (35 °C). |
+| `meta.json` | Cuadros de 30 m limpios de la parcela (los que leyó HLS). |
+
+El coeficiente `Kc` medio del maíz sale de `rules/crops.v2.yaml` (`maiz_base`, FAO-56 Tabla 12). El Kc inicial no se pudo leer de la fuente y no se usa: no se calcula ninguna etapa inicial.
+
 ## Ventana de floración (`phenology.py`)
 
-Es el calendario del maíz de temporal, y es un **supuesto del equipo, a validar con el técnico** (`rules/maize.v1.yaml`, sin fuente): la parcela se siembra a lo largo del mes declarado (`sowing`) y el maíz florece **55 a 75 días después**. La ventana empieza 55 días después del primer día del mes y termina 75 días después del último: con siembra en junio, del 26 de julio al 13 de septiembre. Dentro de ella se cuentan los días con temperatura máxima ≥ 35 °C (`heat_days_in_window`), solo en años con la ventana completa. Si el técnico da otros días o otro umbral, se cambia el archivo de reglas y nada más.
+Es el calendario del maíz de riego en otoño-invierno, y es un **supuesto del equipo, a validar con el técnico** (`rules/maize.v1.yaml`, sin fuente): la parcela se siembra a lo largo del mes declarado (`sowing`) y el maíz florece **55 a 75 días después**. La ventana empieza 55 días después del primer día del mes y termina 75 días después del último: con siembra en diciembre, del 25 de enero al 16 de marzo del año siguiente. Dentro de ella se cuentan los días con temperatura máxima ≥ 35 °C (`heat_days_in_window`), solo en años con la ventana completa. Si el técnico da otros días o otro umbral, se cambia el archivo de reglas y nada más.

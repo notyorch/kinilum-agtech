@@ -6,7 +6,7 @@ import { PACKAGE_CACHE, PACKAGE_FORMAT, applyUpdate, readSaved, start } from '..
 import { readinessOf } from '../src/offline/readiness.ts';
 
 const BASE = 'https://kinilum.test/packages/';
-const ID = 'yuc-demo-001';
+const ID = 'sin-demo-001';
 const OLD = `${ID}.2026-11-14.json`;
 const NEW = `${ID}.2026-11-15.json`;
 

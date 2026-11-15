@@ -91,6 +91,14 @@ export async function readSaved(d: Deps, id: string): Promise<PackageRef | null>
   }
 }
 
+/** El contenido del paquete guardado (ya verificado por `readSaved`), o `null` si no hay uno bueno. */
+export async function readPackageData(d: Deps, id: string): Promise<unknown | null> {
+  const saved = await readSaved(d, id);
+  if (!saved) return null;
+  const hit = await (await d.caches.open(PACKAGE_CACHE)).match(`${d.base}${saved.file}`);
+  return hit ? JSON.parse(await hit.text()) : null;
+}
+
 /** Baja, guarda y RELEE un paquete. Solo si la relectura coincide byte a byte con lo descargado se da por guardado. */
 async function saveVerified(d: Deps, id: string, ref: PackageRef): Promise<PackageRef> {
   const url = `${d.base}${ref.file}`;

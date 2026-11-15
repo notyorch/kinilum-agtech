@@ -123,7 +123,7 @@ test('los archivos de la app salen de la caché primero y, si faltan, de la red'
 test('el índice y el paquete de la parcela NO los atiende el service worker', async () => {
   const sw = boot();
   await sw.fire('install', {});
-  for (const path of ['packages/index.json', 'packages/index.json?probe=1', 'packages/yuc-demo-001.2026-11-14.json']) {
+  for (const path of ['packages/index.json', 'packages/index.json?probe=1', 'packages/sin-demo-001.2026-11-14.json']) {
     assert.equal(await dispatch(sw, request(path)), undefined, path);
   }
 });

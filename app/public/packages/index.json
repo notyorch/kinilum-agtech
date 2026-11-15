@@ -1,9 +1,9 @@
 {
   "_nota": "Índice de paquetes publicados. La app lo pide SIEMPRE a la red (nunca de caché) para saber si hay un paquete más nuevo. El nombre del archivo lleva la parcela y la fecha de generación; si se genera otra vez el mismo día, lleva .r2, .r3…",
   "parcels": {
-    "yuc-demo-001": {
-      "file": "yuc-demo-001.2026-11-14.json",
-      "generated_at": "2026-11-14"
+    "sin-demo-001": {
+      "file": "sin-demo-001.2026-11-15.json",
+      "generated_at": "2026-11-15"
     }
   }
 }

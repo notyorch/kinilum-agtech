@@ -317,13 +317,13 @@ def test_each_source_ends_in_one_of_three_states_and_none_stops_the_rest(monkeyp
 
 def test_bronze_gets_a_manifest_per_source_with_the_files_that_fed_it(monkeypatch, tmp_path):
     monkeypatch.delenv("EARTHDATA_TOKEN", raising=False)
-    load.load_sources(client(all_routes()), PARAMS, bronze_dir=tmp_path, parcel_id="yuc-demo-001")
-    m = json.loads((tmp_path / "yuc-demo-001" / "power" / "manifest.json").read_text())
-    assert (m["status"], m["parcel"], m["requested"]) == ("ok", "yuc-demo-001", {"start": "2024-01-01", "end": "2024-01-05"})
-    assert m["files"] and all((tmp_path / "yuc-demo-001" / "power" / f).exists() for f in m["files"])
-    pending = json.loads((tmp_path / "yuc-demo-001" / "imerg" / "manifest.json").read_text())
+    load.load_sources(client(all_routes()), PARAMS, bronze_dir=tmp_path, parcel_id="sin-demo-001")
+    m = json.loads((tmp_path / "sin-demo-001" / "power" / "manifest.json").read_text())
+    assert (m["status"], m["parcel"], m["requested"]) == ("ok", "sin-demo-001", {"start": "2024-01-01", "end": "2024-01-05"})
+    assert m["files"] and all((tmp_path / "sin-demo-001" / "power" / f).exists() for f in m["files"])
+    pending = json.loads((tmp_path / "sin-demo-001" / "imerg" / "manifest.json").read_text())
     assert pending["status"] == "pending" and pending["files"] == [] and "EARTHDATA_TOKEN" in pending["notes"][0]
-    nodata = json.loads((tmp_path / "yuc-demo-001" / "soilgrids" / "manifest.json").read_text())
+    nodata = json.loads((tmp_path / "sin-demo-001" / "soilgrids" / "manifest.json").read_text())
     assert nodata["status"] == "no_data"
 
 

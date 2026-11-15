@@ -83,7 +83,7 @@ Por cada producto busca en CMR (abierto) un granulo que cruce el punto, pide **s
 {
   "source": "HLS (NASA LP DAAC)",
   "product": "HLSL30_2.0+HLSS30_2.0",
-  "parcel": "yuc-demo-001",
+  "parcel": "sin-demo-001",
   "requested": {"start": "2016-01-01", "end": "2025-12-31"},
   "retrieved_at": "2026-11-15T13:31:09Z",
   "status": "ok",

@@ -1,6 +1,6 @@
 """Pide las fuentes, deja bronce con su manifiesto y escribe el informe del EDA.
 
-    python -m ingest.run --lon -89.42 --lat 20.30 [--parcel yuc-demo-001] [--start 2016-01-01 --end 2025-12-31]
+    python -m ingest.run --lon -89.42 --lat 20.30 [--parcel sin-demo-001] [--start 2016-01-01 --end 2025-12-31]
                          [--plot-side-m 200] [--only power,openmeteo] [--data-dir pipeline/data]
 
 El punto es obligatorio: el polígono de la parcela de ejemplo aún no está elegido y nadie lo inventa aquí.
@@ -19,6 +19,7 @@ from pathlib import Path
 from common.schema import REPO
 from harmonize.cover import green_cover_json
 from harmonize.values import context_values, partial_values
+from harmonize.season import gold_parts
 
 from package.build import BuildError, load_config
 
@@ -40,7 +41,7 @@ def to_markdown(report: dict, parcel: str, results: dict) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--parcel", default="yuc-demo-001")
+    ap.add_argument("--parcel", default="sin-demo-001")
     ap.add_argument("--lon", type=float, required=True)
     ap.add_argument("--lat", type=float, required=True)
     ap.add_argument("--start", default="2016-01-01")
@@ -81,6 +82,12 @@ def main(argv: list[str] | None = None) -> int:
         (gold / ("values.json" if not missing else "values.partial.json")).write_text(json.dumps(doc, ensure_ascii=False, indent=1, allow_nan=False) + "\n", encoding="utf-8")
         if "hls_ndvi" in results and results["hls_ndvi"].fetch:
             (gold / "green_cover.json").write_text(json.dumps(green_cover_json(results["hls_ndvi"].fetch), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        if config is not None:
+            parts, why = gold_parts(results, config, args.lat, args.lon)
+            for name, content in parts.items():
+                (gold / name).write_text(json.dumps(content, ensure_ascii=False, indent=1, allow_nan=False) + "\n", encoding="utf-8")
+            for line in why:
+                print(f"oro: {line}")
 
     print(to_markdown(report, args.parcel, results))
     print(f"Peticiones reales: {client.calls}. Archivos en {out}")

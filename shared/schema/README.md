@@ -51,6 +51,6 @@ cd pipeline && pytest                  # lo mismo desde Python, más el armador 
 
 ## Estado (14 de noviembre de 2026)
 
-- El paquete de ejemplo (`yuc-demo-001.2026-11-14.json`, formato `kinilum-package/2`) cumple el esquema, **sin** el bloque `simulation`: los resultados por objetivo y por escenario siguen siendo ejemplo escrito a mano en `app/src/data/scenarios.ts`.
+- El paquete de ejemplo (`sin-demo-001.2026-11-14.json`, formato `kinilum-package/2`) cumple el esquema, **sin** el bloque `simulation`: los resultados por objetivo y por escenario siguen siendo ejemplo escrito a mano en `app/src/data/scenarios.ts`.
 - Un bloque `simulation` sintético (bytes pseudoaleatorios, solo para probar la forma) con las seis estrategias mide unos 293 KB: pasa el objetivo de ≈ 260 KB, pero cabe en el límite de 500 KB.
 - Pendiente: que el simulador y el motor acuerden sobre este bloque; la validación completa en la app (hoy solo rechaza un `package_format` que no conoce).

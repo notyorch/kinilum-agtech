@@ -1,0 +1,10 @@
+# Dependencias DIRECTAS del pipeline, con versión exacta (ARQUITECTURA-DEV §13.3).
+# PENDIENTE (necesita Python): generar el archivo con sumas de verificación y las
+# dependencias transitivas fijadas:  pip-compile --generate-hashes requirements.in
+# y en CI/Docker instalar con  pip install --require-hashes -r requirements.txt
+# Las fuentes de ingesta (earthaccess, rasterio, xarray…) las agrega Isis con su módulo.
+jsonschema==4.26.0
+referencing==0.37.0
+PyYAML==6.0.3
+numpy==2.5.4
+pytest==9.2.0

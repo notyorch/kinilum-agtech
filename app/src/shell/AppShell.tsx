@@ -3,6 +3,8 @@ import { t } from '../i18n/es';
 import { ChartIcon, DocIcon, GearIcon, PinIcon, SparkIcon } from './icons';
 import { TabBar, type TabItem } from './TabBar';
 import { useTheme } from './theme';
+import { AppStateProvider } from './state';
+import { Badge } from '../ds/components';
 import { MiParcela } from '../screens/MiParcela';
 import { Comparar } from '../screens/Comparar';
 import { Simular } from '../screens/Simular';
@@ -70,34 +72,45 @@ export function AppShell() {
     return () => window.removeEventListener('hashchange', sync);
   }, [go]);
 
+  // Si la animación de salida no llega a terminar (pestaña en segundo plano,
+  // animaciones apagadas), la sección anterior se retira igual.
+  useEffect(() => {
+    if (!view.leaving) return;
+    const id = window.setTimeout(() => setView((v) => ({ ...v, leaving: null })), 400);
+    return () => window.clearTimeout(id);
+  }, [view.leaving, view.current]);
+
   const onLeft = (e: AnimationEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) setView((v) => ({ ...v, leaving: null }));
   };
 
   return (
-    <div className="kn-app">
-      <header className="kn-topbar">
-        <Lockup />
-      </header>
+    <AppStateProvider go={go}>
+      <div className="kn-app">
+        <header className="kn-topbar">
+          <Lockup />
+          <Badge tone="unknown">{t.app.illustrative}</Badge>
+        </header>
 
-      <main id="kn-main" className="kn-stage" role="tabpanel" aria-labelledby={`tab-${view.current}`}>
-        {view.leaving && (
-          <div
-            key={`out-${view.leaving}`}
-            className="kn-scene is-leaving"
-            style={{ '--dir': view.dir } as CSSProperties}
-            onAnimationEnd={onLeft}
-            aria-hidden="true"
-          >
-            {SCREENS[view.leaving]()}
+        <main id="kn-main" className="kn-stage" role="tabpanel" aria-labelledby={`tab-${view.current}`}>
+          {view.leaving && (
+            <div
+              key={`out-${view.leaving}`}
+              className="kn-scene is-leaving"
+              style={{ '--dir': view.dir } as CSSProperties}
+              onAnimationEnd={onLeft}
+              aria-hidden="true"
+            >
+              {SCREENS[view.leaving]()}
+            </div>
+          )}
+          <div key={view.current} className="kn-scene is-entering" style={{ '--dir': view.dir } as CSSProperties}>
+            {SCREENS[view.current]()}
           </div>
-        )}
-        <div key={view.current} className="kn-scene is-entering" style={{ '--dir': view.dir } as CSSProperties}>
-          {SCREENS[view.current]()}
-        </div>
-      </main>
+        </main>
 
-      <TabBar items={TABS} active={view.current} onChange={go} label={t.app.nav} />
-    </div>
+        <TabBar items={TABS} active={view.current} onChange={go} label={t.app.nav} />
+      </div>
+    </AppStateProvider>
   );
 }

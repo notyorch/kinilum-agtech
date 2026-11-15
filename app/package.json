@@ -8,11 +8,17 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "test": "node --test tests/",
+    "gen:schema": "node scripts/gen-schema-types.mjs",
+    "check:schema": "node scripts/check-schema.mjs",
+    "build": "node scripts/gen-schema-types.mjs --check && npm test && tsc -b && vite build && node scripts/check-schema.mjs",
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc -b"
   },
   "dependencies": {
+    "@radix-ui/react-collapsible": "1.2.1",
+    "@radix-ui/react-slider": "1.6.1",
+    "@radix-ui/react-toggle-group": "1.2.1",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
@@ -20,7 +26,10 @@
     "@types/react": "18.3.31",
     "@types/react-dom": "18.3.7",
     "@vitejs/plugin-react": "5.2.0",
+    "ajv": "8.20.0",
+    "json-schema-to-typescript": "16.0.0",
     "typescript": "5.9.3",
-    "vite": "7.3.8"
+    "vite": "7.3.8",
+    "yaml": "2.8.1"
   }
 }

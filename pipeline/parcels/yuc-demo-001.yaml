@@ -1,0 +1,28 @@
+# Parcela de EJEMPLO (caso ilustrativo). No es un productor real: «Doña Rosa» es un personaje de diseño.
+# Forma: shared/schema/parcel-config.schema.json. Este archivo NO se publica.
+id: yuc-demo-001
+region_key: southYucatan
+illustrative: true
+
+# PENDIENTE (equipo): elegir y congelar el polígono de ejemplo, como [longitud, latitud] cerrado
+# (el primer punto se repite al final). Sin polígono no se pueden pedir HLS, MODIS ni SRTM; mientras
+# tanto vale area_ha. Nadie inventa un polígono aquí: que sea una zona de ejemplo representativa o la
+# de un productor que haya aceptado por escrito.
+# polygon:
+#   - [-89.00000, 20.00000]
+area_ha: 4
+
+soil: tsekel          # tsekel (delgado y pedregoso) | kankab | undeclared
+water: rainfed        # rainfed | irrigation
+machinery: hired      # manual | hired (maquila)
+sowing: june          # may | june | july
+
+# Además del maíz, qué cultivos de rotación acepta sembrar (subconjunto del catálogo).
+cultivos_aceptados: [frijol, garbanzo, sorgo, trigo]
+# Para qué cultivos tiene dónde vender.
+market: [frijol, sorgo]
+
+# Variante del frijol regional que se simula en E2: xpelon | ib | negro.
+frijol_variante: xpelon
+# Quién la eligió: technician | team. En este caso ilustrativo no hay técnico.
+frijol_variante_elegida_por: team

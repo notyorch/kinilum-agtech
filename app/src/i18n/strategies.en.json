@@ -1,0 +1,243 @@
+{
+  "_nota": "Initial answers to the five questions. Starting hypotheses: each row is validated with a local advisor. E4 and E5 have no validated local data. Same content and same keys as strategies.es.json.",
+  "labels": {
+    "why": "Why we suggest it",
+    "evidence": "Evidence",
+    "benefits": "Benefits",
+    "missing": "What we don't know",
+    "risks": "What to check with your technician",
+    "current": "Current"
+  },
+  "strategies": {
+    "E0": {
+      "name": "Maize → bare soil → maize",
+      "short": "Maize only",
+      "summary": "What you do today: rain-fed maize, with the plot bare in the dry season.",
+      "why": "It is your current rotation. We measure it with the same yardstick as the other five.",
+      "evidence": [
+        { "source": "HLS", "resolution": "30 m", "estimated": false, "detail": "Your plot has no green plants from November to March." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "The first rains of the season arrive heavy, in your area." },
+        { "source": "NASA POWER", "resolution": "~50 km", "estimated": true, "detail": "Days of strong heat when the maize flowers, in your area." }
+      ],
+      "benefits": [
+        "No change in seed, labor or market.",
+        "You already know it and how your plot responds."
+      ],
+      "missing": [
+        "How much soil your plot loses each season.",
+        "Whether maize yield has dropped over the years."
+      ],
+      "risks": [
+        "Signs of erosion after the first rains.",
+        "Pests that build up with several years of maize in a row."
+      ]
+    },
+    "E1": {
+      "name": "Maize + velvet bean → mulch → maize",
+      "short": "Maize with cover crop",
+      "summary": "A legume cover crop, such as velvet bean or jack bean, grows as a relay and leaves mulch in the dry season.",
+      "why": "Your plot is bare in the dry season and gets heavy rain at the start of the season.",
+      "evidence": [
+        { "source": "HLS", "resolution": "30 m", "estimated": false, "detail": "No green plants from November to March on your plot." },
+        { "source": "MODIS", "resolution": "250 m", "estimated": false, "detail": "Months without green plants around your plot, since 2000." },
+        { "source": "SRTM", "resolution": "30 m", "estimated": false, "detail": "Terrain slope, which speeds up running water." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Heavy rain at the start of the season, in your area." }
+      ],
+      "benefits": [
+        "Less erosion: the mulch shields the soil from heavy rain.",
+        "You might need less nitrogen fertilizer.",
+        "More organic matter over the years."
+      ],
+      "missing": [
+        "How much nitrogen it adds on your plot.",
+        "Whether it competes with maize for water in dry years."
+      ],
+      "risks": [
+        "Planting date of the relay crop.",
+        "Velvet bean is not fodder without treatment.",
+        "Dry mulch can raise the risk of fire."
+      ]
+    },
+    "E2": {
+      "name": "Maize → regional bean → maize",
+      "short": "Maize with beans",
+      "summary": "One year of regional bean between two years of maize.",
+      "why": "Several years of maize in a row build up pests. Beans are part of the milpa and sell locally.",
+      "evidence": [
+        { "source": "FAO-56", "resolution": "by stage", "estimated": true, "detail": "Water the bean needs at each stage, against the rain of past years." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Rain in past seasons, in your area." },
+        { "source": "SIAP", "resolution": "municipality", "estimated": false, "detail": "Bean price and planted area in the region." }
+      ],
+      "benefits": [
+        "One more sale in the cycle.",
+        "Leaves nitrogen for the next maize.",
+        "Spreads the risk across two crops."
+      ],
+      "missing": [
+        "The local price when you harvest.",
+        "Yield of the local variety on your soil."
+      ],
+      "risks": [
+        "Whitefly and viruses.",
+        "Whether native seed is available.",
+        "Grain moisture at harvest."
+      ]
+    },
+    "E3": {
+      "name": "Maize → sorghum → maize",
+      "short": "Maize with sorghum",
+      "summary": "One year of sorghum between two years of maize.",
+      "why": "In dry years, maize runs short of water or gets hit by heat right at flowering.",
+      "evidence": [
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "How often rain fails at flowering, in your area." },
+        { "source": "ECOSTRESS", "resolution": "70 m", "estimated": false, "detail": "Days of heat that harms the crop, on your plot." },
+        { "source": "Scenario", "resolution": "−20% rain", "estimated": true, "detail": "How it would do in a very dry season." }
+      ],
+      "benefits": [
+        "Lower risk of losing the harvest in a dry year.",
+        "The stubble works as fodder."
+      ],
+      "missing": [
+        "Price and buyer for sorghum in your area."
+      ],
+      "risks": [
+        "Sugarcane aphid on sorghum.",
+        "Bird damage.",
+        "Effect of the stubble on the next maize."
+      ]
+    },
+    "E4": {
+      "name": "Maize → chickpea → maize",
+      "short": "Maize with chickpea",
+      "summary": "One year of chickpea between two years of maize.",
+      "why": "It is a legume other than beans. We include it to compare more rotation crops.",
+      "evidence": [
+        { "source": "FAO-56", "resolution": "by stage", "estimated": true, "detail": "Water chickpea needs at each stage. Validated values for your area are missing." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Rain in past seasons, in your area." },
+        { "source": "NASA POWER", "resolution": "~50 km", "estimated": true, "detail": "Heat in past seasons, in your area." }
+      ],
+      "benefits": [
+        "It might leave nitrogen for the next maize, being a legume.",
+        "It might spread the risk across two crops."
+      ],
+      "missing": [
+        "Chickpea is uncommon in your area. There is no validated local data.",
+        "Its yield and its price: that is why we do not compare its income.",
+        "How much water it needs and how much heat it stands on your plot."
+      ],
+      "risks": [
+        "Whether chickpea grows in the heat of your area.",
+        "Which months suit planting it.",
+        "Where to get seed and who buys it."
+      ]
+    },
+    "E5": {
+      "name": "Maize → wheat → maize",
+      "short": "Maize with wheat",
+      "summary": "One year of wheat between two years of maize.",
+      "why": "It is a cereal other than sorghum. We include it to compare more rotation crops.",
+      "evidence": [
+        { "source": "FAO-56", "resolution": "by stage", "estimated": true, "detail": "Water wheat needs at each stage. Validated values for your area are missing." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Rain in past seasons, in your area." },
+        { "source": "NASA POWER", "resolution": "~50 km", "estimated": true, "detail": "Heat in past seasons, in your area." }
+      ],
+      "benefits": [
+        "It might give one more sale in the cycle, if there is a buyer.",
+        "The stubble might leave cover on the soil."
+      ],
+      "missing": [
+        "Wheat is uncommon in your area. There is no validated local data.",
+        "Its yield and its price: that is why we do not compare its income.",
+        "How much water it needs and how much heat it stands on your plot."
+      ],
+      "risks": [
+        "Whether wheat grows in the heat of your area.",
+        "Whether machinery is needed to harvest it.",
+        "Where to get seed and who buys it."
+      ]
+    }
+  },
+  "variants": {
+    "xpelon": {
+      "label": "Xpelón",
+      "what": "Yucatecan bean",
+      "E2": {
+        "name": "Maize → xpelón → maize",
+        "short": "Maize with xpelón",
+        "summary": "One year of xpelón, the Yucatecan bean, between two years of maize.",
+        "missing": [
+          "The local price when you harvest.",
+          "Yield of xpelón on your soil.",
+          "Whether xpelón stands heat and drought better. It is a hypothesis with no source yet."
+        ],
+        "risks": [
+          "Planting date and days to harvest for xpelón.",
+          "Whitefly and viruses.",
+          "Whether native seed is available.",
+          "Grain moisture at harvest."
+        ]
+      }
+    },
+    "ib": {
+      "label": "Ib",
+      "what": "regional lima bean",
+      "E2": {
+        "name": "Maize → ib → maize",
+        "short": "Maize with ib",
+        "summary": "One year of ib, the regional lima bean, between two years of maize.",
+        "missing": [
+          "The local price when you harvest.",
+          "Yield of ib on your soil."
+        ],
+        "risks": [
+          "Planting date and days to harvest for ib.",
+          "Whitefly and viruses.",
+          "Whether native seed is available.",
+          "Grain moisture at harvest."
+        ]
+      }
+    },
+    "negro": {
+      "label": "Black bean",
+      "what": "black bean",
+      "E2": {
+        "name": "Maize → black bean → maize",
+        "short": "Maize with black bean",
+        "summary": "One year of black bean between two years of maize.",
+        "missing": [
+          "The local price when you harvest.",
+          "Yield of black bean on your soil."
+        ],
+        "risks": [
+          "Planting date and days to harvest for black bean.",
+          "Whitefly and viruses.",
+          "Whether seed is available.",
+          "Grain moisture at harvest."
+        ]
+      }
+    }
+  },
+  "crops": {
+    "frijol": "beans",
+    "garbanzo": "chickpea",
+    "sorgo": "sorghum",
+    "trigo": "wheat"
+  },
+  "reasons": {
+    "notAccepted": "You don't want to plant {crop}.",
+    "noMarket": "You have nowhere to sell {crop}.",
+    "noMachinery": "Without a tractor or hired service, harvesting {crop} by hand is not viable on this area.",
+    "heatThinSoil": "With extreme heat and thin soil, {crop} might not grow."
+  },
+  "rules": {
+    "notAccepted": "If you don't want to plant a crop, its option is left out.",
+    "noMarket": "With nowhere to sell, beans, chickpea, sorghum and wheat are left out.",
+    "noMachinery": "Without a tractor or hired service, sorghum and wheat are left out.",
+    "heatThinSoil": "With extreme heat and thin soil, chickpea and wheat are marked hardly viable.",
+    "nitrogen": "Only legumes add nitrogen: beans and chickpea do; sorghum and wheat do not."
+  },
+  "variantChosenBy": {
+    "technician": "Your technician chose it.",
+    "team": "The kinilum team chose it for this illustrative case. On a real plot your technician chooses it."
+  }
+}

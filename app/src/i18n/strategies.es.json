@@ -1,0 +1,243 @@
+{
+  "_nota": "Respuestas iniciales a las cinco preguntas. Son hipótesis de partida: cada fila se valida con un técnico de la región. E4 y E5 no tienen datos locales validados. Mismo contenido y mismas claves que strategies.en.json.",
+  "labels": {
+    "why": "Por qué se sugiere",
+    "evidence": "Evidencia",
+    "benefits": "Beneficios",
+    "missing": "Qué no sabemos",
+    "risks": "Qué revisar con su técnico",
+    "current": "Actual"
+  },
+  "strategies": {
+    "E0": {
+      "name": "Maíz → suelo sin cubierta → maíz",
+      "short": "Maíz solo",
+      "summary": "Lo que hace hoy: maíz de temporal y la parcela sin cubierta en secas.",
+      "why": "Es su rotación actual. La comparamos con la misma vara que las otras cinco.",
+      "evidence": [
+        { "source": "HLS", "resolution": "30 m", "estimated": false, "detail": "Su parcela queda sin plantas verdes de noviembre a marzo." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Las primeras lluvias de la temporada llegan fuertes, en su zona." },
+        { "source": "NASA POWER", "resolution": "~50 km", "estimated": true, "detail": "Días de calor fuerte cuando el maíz florece, en su zona." }
+      ],
+      "benefits": [
+        "No cambia semilla, trabajo ni mercado.",
+        "Usted ya la conoce y sabe cómo responde su parcela."
+      ],
+      "missing": [
+        "Cuánto suelo pierde su parcela cada temporada.",
+        "Si el rendimiento de maíz ha bajado con los años."
+      ],
+      "risks": [
+        "Señales de erosión después de las primeras lluvias.",
+        "Plagas que se acumulan con varios años seguidos de maíz."
+      ]
+    },
+    "E1": {
+      "name": "Maíz + mucuna → mantillo → maíz",
+      "short": "Maíz con cobertura",
+      "summary": "Una leguminosa de cobertura, como mucuna o canavalia, crece en relevo y deja mantillo en secas.",
+      "why": "Su parcela queda sin cubierta en secas y recibe lluvias fuertes al inicio de la temporada.",
+      "evidence": [
+        { "source": "HLS", "resolution": "30 m", "estimated": false, "detail": "Sin plantas verdes de noviembre a marzo en su parcela." },
+        { "source": "MODIS", "resolution": "250 m", "estimated": false, "detail": "Meses sin plantas verdes alrededor de su parcela, desde el año 2000." },
+        { "source": "SRTM", "resolution": "30 m", "estimated": false, "detail": "Pendiente del terreno, que acelera el agua que corre." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Lluvias fuertes al inicio de la temporada, en su zona." }
+      ],
+      "benefits": [
+        "Menos erosión: el mantillo protege el suelo de la lluvia fuerte.",
+        "Podría necesitar menos fertilizante nitrogenado.",
+        "Más materia orgánica con los años."
+      ],
+      "missing": [
+        "Cuánto nitrógeno aporta en su parcela.",
+        "Si compite con el maíz por agua en años secos."
+      ],
+      "risks": [
+        "Fecha de siembra del relevo.",
+        "La mucuna no sirve de forraje sin tratamiento.",
+        "El mantillo seco puede aumentar el riesgo de fuego."
+      ]
+    },
+    "E2": {
+      "name": "Maíz → frijol regional → maíz",
+      "short": "Maíz con frijol",
+      "summary": "Un año de frijol regional entre dos años de maíz.",
+      "why": "Varios años seguidos de maíz acumulan plagas. El frijol es parte de la milpa y tiene venta local.",
+      "evidence": [
+        { "source": "FAO-56", "resolution": "por etapa", "estimated": true, "detail": "Agua que necesita el frijol en cada etapa, frente a la lluvia de años pasados." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Lluvia de las temporadas pasadas, en su zona." },
+        { "source": "SIAP", "resolution": "municipio", "estimated": false, "detail": "Precio y superficie sembrada de frijol en la región." }
+      ],
+      "benefits": [
+        "Una venta más en el ciclo.",
+        "Deja nitrógeno para el maíz siguiente.",
+        "Reparte el riesgo entre dos cultivos."
+      ],
+      "missing": [
+        "El precio local cuando usted coseche.",
+        "El rendimiento de la variedad local en su suelo."
+      ],
+      "risks": [
+        "Mosca blanca y virus.",
+        "Si hay semilla criolla disponible.",
+        "Humedad del grano en la cosecha."
+      ]
+    },
+    "E3": {
+      "name": "Maíz → sorgo → maíz",
+      "short": "Maíz con sorgo",
+      "summary": "Un año de sorgo entre dos años de maíz.",
+      "why": "En años secos, al maíz le falta agua o le pega el calor justo en la floración.",
+      "evidence": [
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Qué tan seguido falta lluvia en la floración, en su zona." },
+        { "source": "ECOSTRESS", "resolution": "70 m", "estimated": false, "detail": "Días de calor que daña al cultivo, en su parcela." },
+        { "source": "Escenario", "resolution": "−20 % lluvia", "estimated": true, "detail": "Cómo le iría en una temporada muy seca." }
+      ],
+      "benefits": [
+        "Menor riesgo de perder la cosecha en un año seco.",
+        "El rastrojo sirve de forraje."
+      ],
+      "missing": [
+        "Precio y comprador de sorgo en su zona."
+      ],
+      "risks": [
+        "Pulgón amarillo del sorgo.",
+        "Daño por aves.",
+        "Efecto del rastrojo en el maíz siguiente."
+      ]
+    },
+    "E4": {
+      "name": "Maíz → garbanzo → maíz",
+      "short": "Maíz con garbanzo",
+      "summary": "Un año de garbanzo entre dos años de maíz.",
+      "why": "Es una leguminosa distinta al frijol. La incluimos para comparar más cultivos de rotación.",
+      "evidence": [
+        { "source": "FAO-56", "resolution": "por etapa", "estimated": true, "detail": "Agua que necesita el garbanzo en cada etapa. Faltan valores validados para su zona." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Lluvia de las temporadas pasadas, en su zona." },
+        { "source": "NASA POWER", "resolution": "~50 km", "estimated": true, "detail": "Calor de las temporadas pasadas, en su zona." }
+      ],
+      "benefits": [
+        "Podría dejar nitrógeno para el maíz siguiente, por ser leguminosa.",
+        "Podría repartir el riesgo entre dos cultivos."
+      ],
+      "missing": [
+        "El garbanzo es poco común en su zona. No hay datos locales validados.",
+        "Su rendimiento y su precio: por eso no comparamos su ingreso.",
+        "Cuánta agua necesita y cuánto calor aguanta en su parcela."
+      ],
+      "risks": [
+        "Si el garbanzo se da con el calor de su zona.",
+        "En qué meses conviene sembrarlo.",
+        "Dónde conseguir semilla y quién lo compra."
+      ]
+    },
+    "E5": {
+      "name": "Maíz → trigo → maíz",
+      "short": "Maíz con trigo",
+      "summary": "Un año de trigo entre dos años de maíz.",
+      "why": "Es un cereal distinto al sorgo. Lo incluimos para comparar más cultivos de rotación.",
+      "evidence": [
+        { "source": "FAO-56", "resolution": "por etapa", "estimated": true, "detail": "Agua que necesita el trigo en cada etapa. Faltan valores validados para su zona." },
+        { "source": "GPM IMERG", "resolution": "11 km", "estimated": true, "detail": "Lluvia de las temporadas pasadas, en su zona." },
+        { "source": "NASA POWER", "resolution": "~50 km", "estimated": true, "detail": "Calor de las temporadas pasadas, en su zona." }
+      ],
+      "benefits": [
+        "Podría dar una venta más en el ciclo, si hay comprador.",
+        "El rastrojo podría dejar cubierta sobre el suelo."
+      ],
+      "missing": [
+        "El trigo es poco común en su zona. No hay datos locales validados.",
+        "Su rendimiento y su precio: por eso no comparamos su ingreso.",
+        "Cuánta agua necesita y cuánto calor aguanta en su parcela."
+      ],
+      "risks": [
+        "Si el trigo se da con el calor de su zona.",
+        "Si hace falta maquinaria para cosecharlo.",
+        "Dónde conseguir semilla y quién lo compra."
+      ]
+    }
+  },
+  "variants": {
+    "xpelon": {
+      "label": "Xpelón",
+      "what": "frijol yucateco",
+      "E2": {
+        "name": "Maíz → xpelón → maíz",
+        "short": "Maíz con xpelón",
+        "summary": "Un año de xpelón, el frijol yucateco, entre dos años de maíz.",
+        "missing": [
+          "El precio local cuando usted coseche.",
+          "El rendimiento del xpelón en su suelo.",
+          "Si el xpelón aguanta mejor el calor y la seca. Es una hipótesis sin fuente todavía."
+        ],
+        "risks": [
+          "Fecha de siembra y días a cosecha del xpelón.",
+          "Mosca blanca y virus.",
+          "Si hay semilla criolla disponible.",
+          "Humedad del grano en la cosecha."
+        ]
+      }
+    },
+    "ib": {
+      "label": "Ib",
+      "what": "frijol lima regional",
+      "E2": {
+        "name": "Maíz → ib → maíz",
+        "short": "Maíz con ib",
+        "summary": "Un año de ib, el frijol lima regional, entre dos años de maíz.",
+        "missing": [
+          "El precio local cuando usted coseche.",
+          "El rendimiento del ib en su suelo."
+        ],
+        "risks": [
+          "Fecha de siembra y días a cosecha del ib.",
+          "Mosca blanca y virus.",
+          "Si hay semilla criolla disponible.",
+          "Humedad del grano en la cosecha."
+        ]
+      }
+    },
+    "negro": {
+      "label": "Frijol negro",
+      "what": "frijol negro",
+      "E2": {
+        "name": "Maíz → frijol negro → maíz",
+        "short": "Maíz con frijol negro",
+        "summary": "Un año de frijol negro entre dos años de maíz.",
+        "missing": [
+          "El precio local cuando usted coseche.",
+          "El rendimiento del frijol negro en su suelo."
+        ],
+        "risks": [
+          "Fecha de siembra y días a cosecha del frijol negro.",
+          "Mosca blanca y virus.",
+          "Si hay semilla disponible.",
+          "Humedad del grano en la cosecha."
+        ]
+      }
+    }
+  },
+  "crops": {
+    "frijol": "frijol",
+    "garbanzo": "garbanzo",
+    "sorgo": "sorgo",
+    "trigo": "trigo"
+  },
+  "reasons": {
+    "notAccepted": "Usted no quiere sembrar {crop}.",
+    "noMarket": "No tiene dónde vender el {crop}.",
+    "noMachinery": "Sin tractor ni maquila, cosechar el {crop} a mano no es viable en esta superficie.",
+    "heatThinSoil": "Con calor extremo y suelo delgado, el {crop} podría no darse."
+  },
+  "rules": {
+    "notAccepted": "Si usted no quiere sembrar un cultivo, su opción queda fuera.",
+    "noMarket": "Sin dónde vender, frijol, garbanzo, sorgo y trigo quedan fuera.",
+    "noMachinery": "Sin tractor ni maquila, sorgo y trigo quedan fuera.",
+    "heatThinSoil": "Con calor extremo y suelo delgado, garbanzo y trigo se marcan poco viables.",
+    "nitrogen": "Solo las leguminosas suman nitrógeno: frijol y garbanzo sí; sorgo y trigo no."
+  },
+  "variantChosenBy": {
+    "technician": "Lo eligió su técnico.",
+    "team": "Lo eligió el equipo de kinilum para este caso ilustrativo. En una parcela real lo elige su técnico."
+  }
+}

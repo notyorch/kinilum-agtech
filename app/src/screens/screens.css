@@ -1,19 +1,16 @@
+/* Pantallas. Solo tokens de tokens.css; los componentes del sistema traen su propio CSS. */
 .kn-screen {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-8) var(--space-4) 0;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4) 0;
 }
 
 .kn-head {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  margin-bottom: var(--space-4);
-}
-.kn-head__kicker {
-  display: flex;
-  gap: var(--space-2);
+  margin-bottom: var(--space-3);
 }
 .kn-head__title {
   margin: 0;
@@ -27,20 +24,36 @@
   max-width: 34em;
 }
 
+/* Tarjeta: superficie elevada con hairline; la elegida, con borde brand. */
 .kn-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
   background: var(--surface-raised);
+}
+.kn-card[data-selected] {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand);
 }
 .kn-card__top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
+}
+.kn-card__titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.kn-card__label {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--ink-muted);
 }
 .kn-card__title {
   margin: 0;
@@ -52,150 +65,396 @@
   font: var(--text-body-sm);
   color: var(--ink-muted);
 }
-
-.kn-badge {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  height: 24px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-sm);
-  font: var(--text-caption);
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-.kn-badge--unknown {
+.kn-area {
+  font: var(--text-data);
   color: var(--ink-muted);
+}
+
+.kn-metric {
+  margin: 0;
+  font: var(--text-metric);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.kn-metric__unit {
+  margin-left: var(--space-2);
+  font: var(--text-data);
+  color: var(--ink-muted);
+}
+
+.kn-datasrc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  font: var(--text-caption);
+  color: var(--ink-muted);
+}
+
+.kn-dashed {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
   border: 1px dashed var(--line-strong);
 }
-.kn-badge--info {
-  color: var(--info);
-  background: var(--info-soft);
-}
-
-.kn-src {
-  flex: none;
-  display: inline-flex;
-  height: 22px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--line-strong);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 20px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.kn-src__name {
-  padding: 0 6px;
-  background: var(--surface-sunken);
-}
-.kn-src__res {
-  padding: 0 6px;
+.kn-dashed__icon {
   color: var(--ink-muted);
-  border-left: 1px solid var(--line-strong);
+  padding-top: 2px;
+}
+.kn-dashed__text {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--ink-muted);
+}
+.kn-dashed__text strong {
+  color: var(--ink);
+  font-weight: 600;
 }
 
-.kn-skel {
+.kn-cta {
+  align-self: stretch;
+  justify-content: center;
+  margin-top: var(--space-2);
+}
+
+.kn-hint {
+  margin: 0;
+  font: var(--text-caption);
+  color: var(--ink-muted);
+}
+
+.kn-field {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  margin-bottom: var(--space-1);
 }
-.kn-skel span {
-  display: block;
-  height: 10px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-sunken);
+/* Control segmentado a todo el ancho, con objetivo táctil de 40 px. */
+.kn-toggle-segmented.kn-fill {
+  display: flex;
+}
+.kn-toggle-segmented.kn-fill .kn-toggle-item {
+  flex: 1;
+  height: 40px;
+}
+.kn-field__label {
+  margin: 0;
+  font: var(--text-label);
+  color: var(--ink-muted);
 }
 
-/* Mi parcela: la grilla común. Medido = sólido; sin dato = diagonales. */
-.kn-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
+/* Barras: más larga es mejor. Medido = relleno sólido; sin dato = diagonales. */
+.kn-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.kn-bar__head {
+  display: flex;
+  justify-content: space-between;
   gap: var(--space-2);
+  font: var(--text-body-sm);
+  color: var(--ink-muted);
 }
-.kn-grid__cell {
-  aspect-ratio: 1;
-  border-radius: var(--radius-sm);
-  background: var(--brand);
+.kn-bar[data-emphasis] .kn-bar__label {
+  color: var(--ink);
+  font-weight: 600;
 }
-.kn-grid__cell--empty,
-.kn-legend__swatch.kn-legend__swatch--empty {
+.kn-bar__value {
+  font: var(--text-data);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.kn-bar__track {
+  display: block;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--surface-sunken);
+  box-shadow: inset 0 0 0 1px var(--line);
+  overflow: hidden;
+}
+.kn-bar__track[data-nodata] {
   background:
     repeating-linear-gradient(135deg, var(--line-strong) 0 1px, transparent 1px 6px),
     var(--surface-sunken);
 }
-.kn-legend {
+.kn-bar__fill--ink,
+.kn-bar__fill--brand {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  transition: width 250ms ease-out;
+}
+.kn-bar__fill--ink {
+  background: var(--ink);
+}
+.kn-bar__fill--brand {
+  background: var(--brand);
+}
+/* En listas largas: etiqueta a la izquierda y barra a la derecha, en una línea. */
+.kn-bar[data-compact] {
+  display: grid;
+  grid-template-columns: 9.5em 1fr;
+  align-items: center;
+  gap: var(--space-2);
+}
+.kn-bar[data-compact] .kn-bar__head {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/* Comparar: cada opción es una tarjeta que se puede tocar. */
+.kn-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.kn-option-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.kn-option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--surface-raised);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out,
+    background-color 150ms ease-out;
+}
+.kn-option:hover {
+  background: var(--surface-sunken);
+}
+.kn-option[aria-checked='true'] {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand);
+}
+.kn-option:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: var(--focus-ring);
+}
+.kn-option__top {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.kn-option__name {
+  font: var(--text-title);
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+}
+.kn-option[data-muted] .kn-option__name {
+  color: var(--ink-muted);
+}
+.kn-option__bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.kn-option__notes,
+.kn-option__note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font: var(--text-body-sm);
+  color: var(--ink-muted);
+}
+.kn-option__flag {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font: var(--text-body-sm);
+  color: var(--ink);
+}
+/* La tarjeta de las cinco respuestas va pegada a la opción elegida. */
+.kn-option-wrap .kn-sc-head {
+  padding: var(--space-4);
+}
+
+/* ¿Qué pasaría si…? */
+.kn-reading {
+  font: var(--text-metric);
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.kn-ticks {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-top: calc(var(--space-2) * -1);
+  font: var(--text-data);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* El cero de la temperatura no queda al centro: va de −2 a +4. */
+.kn-ticks--temp span:nth-child(2) {
+  position: absolute;
+  left: calc(100% / 3);
+  transform: translateX(-50%);
+}
+
+/* Orden con el clima elegido: filas que se reacomodan. */
+.kn-rank {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.kn-rank__title {
+  margin: 0;
+  font: var(--text-title);
+  letter-spacing: -0.01em;
+}
+.kn-rank__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.kn-rank__row {
+  display: grid;
+  grid-template-columns: 1.5em minmax(0, 1fr) 96px;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--surface-raised);
+  color: var(--ink);
+  font: var(--text-label);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out;
+}
+.kn-rank__row[aria-pressed='true'] {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand);
+}
+.kn-rank__row:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: var(--focus-ring);
+}
+.kn-rank__row[data-muted] {
+  grid-template-columns: 1.5em minmax(0, 1fr);
+  color: var(--ink-muted);
+}
+.kn-rank__pos {
+  font: var(--text-data);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.kn-rank__tag {
+  grid-column: 2;
+  font: var(--text-caption);
+}
+.kn-rank__meter {
+  display: block;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--surface-sunken);
+  box-shadow: inset 0 0 0 1px var(--line);
+  overflow: hidden;
+}
+
+/* Evidencia: un cuadro por temporada simulada. */
+.kn-runs-figure {
+  margin: 0;
+  font: var(--text-metric);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.kn-runs-figure__yes {
+  color: var(--brand);
+}
+.kn-runsgrid {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: var(--space-2);
+}
+.kn-runsgrid .is-yes,
+.kn-runs-legend .is-yes {
+  fill: var(--brand);
+  background: var(--brand);
+}
+.kn-runsgrid .is-no,
+.kn-runs-legend .is-no {
+  fill: var(--ink);
+  background: var(--ink);
+}
+.kn-runs-legend {
+  display: flex;
   gap: var(--space-4);
   font: var(--text-caption);
   color: var(--ink-muted);
 }
-.kn-legend span {
+.kn-runs-legend span {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
 }
-.kn-legend__swatch {
-  width: 12px;
-  height: 12px;
+.kn-runs-legend i {
+  width: 10px;
+  height: 10px;
   border-radius: 2px;
-  background: var(--brand);
 }
 
-.kn-list {
+.kn-rows,
+.kn-rules {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--line);
-  background: var(--surface-raised);
-}
-.kn-list li {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+}
+.kn-rows li,
+.kn-rules li {
+  display: flex;
+  justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--line);
-}
-.kn-list li:last-child {
-  border-bottom: 0;
-}
-.kn-list__text {
-  flex: 1;
-  min-width: 0;
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--line);
   font: var(--text-body-sm);
 }
-
-.kn-segmented {
-  display: flex;
-  padding: 3px;
-  gap: 3px;
-  border-radius: var(--radius-md);
-  background: var(--surface-sunken);
+.kn-rules li {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
 }
-.kn-segmented button {
-  flex: 1;
-  height: 36px;
-  border: 0;
-  border-radius: calc(var(--radius-md) - 2px);
-  background: none;
+.kn-rows__n {
+  font: var(--text-data);
   color: var(--ink-muted);
-  font: var(--text-label);
-  cursor: pointer;
-  transition:
-    background-color 150ms ease-out,
-    color 150ms ease-out;
+  font-variant-numeric: tabular-nums;
 }
-.kn-segmented button[aria-checked='true'] {
-  background: var(--surface-raised);
-  color: var(--ink);
-  box-shadow: 0 0 0 1px var(--line);
-}
-.kn-segmented button:focus-visible {
-  outline: 2px solid transparent;
-  box-shadow: var(--focus-ring);
+
+.kn-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .kn-meta {
@@ -203,8 +462,11 @@
   font: var(--text-data);
   color: var(--ink-muted);
 }
-.kn-closing {
-  margin: var(--space-4) 0 0;
-  font: var(--text-body-sm);
-  color: var(--ink-muted);
+
+/* En teléfono, la fuente va arriba y su explicación debajo: juntas no caben. */
+@media (max-width: 560px) {
+  .kn-sc-evidence .kn-sc-list li {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
 }

@@ -1,0 +1,46 @@
+/* Aspecto kinilum para las primitivas de Radix (./primitives.tsx). Solo tokens. */
+
+/* SegmentedControl · segmented (ajustes cortos) ---------------------------- */
+.kn-toggle { display: inline-flex; }
+.kn-toggle-item { font-family: var(--font-sans); font-weight: 500; cursor: pointer; border: 0; background: transparent; color: var(--ink-muted); transition: background-color 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out; }
+.kn-toggle-item:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); position: relative; z-index: 1; }
+
+.kn-toggle-segmented { border: 1px solid var(--line-strong); border-radius: var(--radius-md); overflow: hidden; }
+.kn-toggle-segmented .kn-toggle-item { font-size: 13px; line-height: 18px; min-width: 40px; height: 32px; padding: 0 var(--space-2); }
+.kn-toggle-segmented .kn-toggle-item + .kn-toggle-item { border-left: 1px solid var(--line-strong); }
+.kn-toggle-segmented .kn-toggle-item:hover { background: var(--surface-sunken); color: var(--ink); }
+.kn-toggle-segmented .kn-toggle-item[data-state="on"] { background: var(--ink); color: var(--on-ink); }
+
+/* SegmentedControl · chips (decisiones del agricultor) --------------------- */
+.kn-toggle-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.kn-toggle-chips .kn-toggle-item { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 40px; padding: 0 var(--space-4); font-size: 14px; line-height: 20px; border-radius: var(--radius-md); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); }
+.kn-toggle-chips .kn-toggle-item:hover { background: var(--surface-sunken); }
+.kn-toggle-chips .kn-toggle-item[data-state="on"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-text); box-shadow: inset 0 0 0 1px var(--brand); }
+.kn-toggle-chips .kn-toggle-item[data-state="on"]:focus-visible { box-shadow: inset 0 0 0 1px var(--brand), var(--focus-ring); }
+.kn-toggle-check { display: none; }
+.kn-toggle-chips .kn-toggle-item[data-state="on"] .kn-toggle-check { display: inline-flex; }
+
+/* Disclosure --------------------------------------------------------------- */
+.kn-disclosure-trigger { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 40px; padding: 0 var(--space-2); margin-left: calc(var(--space-2) * -1); font: var(--text-label); color: var(--ink); background: transparent; border: 0; border-radius: var(--radius-md); cursor: pointer; transition: background-color 150ms ease-out; }
+.kn-disclosure-trigger:hover { background: var(--surface-sunken); }
+.kn-disclosure-trigger:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
+.kn-disclosure-chevron { color: var(--ink-muted); transition: transform 200ms ease-out; }
+.kn-disclosure-trigger[data-state="open"] .kn-disclosure-chevron { transform: rotate(90deg); }
+.kn-disclosure-content { overflow: hidden; }
+.kn-disclosure-content[data-state="open"] { animation: kn-open 200ms ease-out; }
+@keyframes kn-open { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+/* Slider ------------------------------------------------------------------- */
+.kn-slider { position: relative; display: flex; align-items: center; width: 100%; height: 40px; touch-action: none; user-select: none; }
+.kn-slider-track { position: relative; flex: 1; height: 4px; border-radius: var(--radius-full); background: var(--surface-sunken); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.kn-slider-range { position: absolute; height: 100%; border-radius: var(--radius-full); background: var(--ink); }
+.kn-slider-thumb { position: relative; display: block; width: 20px; height: 20px; border-radius: var(--radius-full); background: var(--ink); border: 2px solid var(--surface); cursor: grab; transition: transform 150ms ease-out; }
+.kn-slider-thumb:hover { transform: scale(1.1); }
+.kn-slider-thumb:active { cursor: grabbing; }
+.kn-slider-thumb:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
+/* Objetivo táctil de 40px sin agrandar el círculo */
+.kn-slider-thumb::before { content: ""; position: absolute; inset: -10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kn-disclosure-content[data-state="open"] { animation: none; }
+}

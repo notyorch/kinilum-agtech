@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kinilum.invalid/schema/contract-value.schema.json",
+  "title": "ContractValue",
+  "description": "Un valor del contrato de datos. El motor nunca recibe un número suelto: cada valor trae su rango, su fuente, su resolución, su nivel de soporte y cómo se obtuvo (docs/AGENTS-context.md). Si falta support_level, p10 o p90, el valor no sale del pipeline.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["variable", "value", "p10", "p90", "unit", "source", "native_resolution", "support_level", "timestamp", "method"],
+  "properties": {
+    "variable": {
+      "description": "Nombre de la variable en el código (snake_case): rain_season, tmax_may, root_depth…",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "value": {
+      "description": "Mejor estimación. null = sin dato (la fuente falló o no cubre la parcela): nunca se inventa.",
+      "type": ["number", "null"]
+    },
+    "p10": { "description": "Percentil 10 del rango. null solo si value es null.", "type": ["number", "null"] },
+    "p90": { "description": "Percentil 90 del rango. null solo si value es null.", "type": ["number", "null"] },
+    "unit": { "description": "Unidad: mm, °C, days, cm, %, m³/m³…", "type": "string", "minLength": 1 },
+    "source": { "description": "Fuente en palabras cortas: «GPM IMERG», «NASA POWER», «HLS»…", "type": "string", "minLength": 1 },
+    "native_resolution": { "description": "Resolución con que la fuente mide: «30 m», «0.1°». «declared» si lo declaró el técnico.", "type": "string", "minLength": 1 },
+    "derived_resolution": { "description": "Resolución a la que kinilum lo usa, si es distinta.", "type": "string" },
+    "support_level": { "$ref": "#/definitions/SupportLevel" },
+    "timestamp": {
+      "description": "Fecha del dato: AAAA, AAAA-MM o AAAA-MM-DD.",
+      "type": "string",
+      "pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$"
+    },
+    "method": { "$ref": "#/definitions/Method" },
+    "quality": { "$ref": "#/definitions/Quality" },
+    "assumptions": {
+      "description": "Supuestos que el valor arrastra. Cada clave tiene su texto en es.json y en.json (assumptions.*).",
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/Assumption" }
+    },
+    "provenance": {
+      "description": "De dónde salió, paso a paso: producto y versión, máscara, agregación. Lo escribe la ingesta; una fuente que falla lo dice aquí.",
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "allOf": [
+    {
+      "description": "Sin dato: ni valor ni rango.",
+      "if": { "properties": { "value": { "type": "null" } }, "required": ["value"] },
+      "then": { "properties": { "p10": { "type": "null" }, "p90": { "type": "null" } } },
+      "else": { "properties": { "p10": { "type": "number" }, "p90": { "type": "number" } } }
+    }
+  ],
+  "definitions": {
+    "SupportLevel": {
+      "title": "SupportLevel",
+      "description": "Dónde aplica el dato. zone y region son contexto («en su zona»), nunca color dentro del polígono.",
+      "enum": ["parcel", "surroundings", "zone", "region"]
+    },
+    "Method": {
+      "title": "Method",
+      "description": "Cómo se obtuvo. Solo measured es sólido; el resto se dibuja punteado.",
+      "enum": ["measured", "interpolated", "modeled", "assumed"]
+    },
+    "Quality": {
+      "title": "Quality",
+      "enum": ["high", "medium", "low", "none"]
+    },
+    "Assumption": {
+      "title": "Assumption",
+      "enum": ["innerBuffer", "greenNotStubble", "modeledClimate", "karstDepth", "teamAssumption", "contextOnly"]
+    }
+  }
+}

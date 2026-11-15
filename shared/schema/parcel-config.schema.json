@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kinilum.invalid/schema/parcel-config.schema.json",
+  "title": "ParcelConfig",
+  "description": "pipeline/parcels/<id>.yaml: lo que declara el técnico al configurar una parcela. Es ENTRADA del pipeline y NUNCA se publica: lleva el polígono exacto. En el repositorio solo vive la parcela de ejemplo (yuc-demo-001); las reales, en el repositorio privado o en la máquina del pipeline.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "region_key",
+    "illustrative",
+    "soil",
+    "water",
+    "machinery",
+    "cultivos_aceptados",
+    "market",
+    "sowing"
+  ],
+  "properties": {
+    "id": {
+      "description": "Código opaco de la parcela. Sin nombres de personas ni de lugares.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$"
+    },
+    "region_key": {
+      "enum": [
+        "southYucatan"
+      ]
+    },
+    "illustrative": {
+      "description": "true = caso ilustrativo; no es una parcela real.",
+      "type": "boolean"
+    },
+    "polygon": {
+      "description": "Anillo exterior del polígono, [longitud, latitud] en grados (WGS84), cerrado (el primer punto se repite al final). Solo el pipeline lo ve: de aquí salen el búfer interno de 30 m y las extracciones por píxel. Obligatorio para pedir datos a la NASA; el caso ilustrativo puede declarar solo area_ha mientras el equipo no elija el polígono.",
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "soil": {
+      "description": "Suelo declarado. La profundidad de raíz para FAO-56 sale de aquí, no de SoilGrids: tsek'el 15–25 cm, k'ankab 40–60 cm, sin declarar 15–60 cm (rangos a validar con un técnico).",
+      "enum": [
+        "tsekel",
+        "kankab",
+        "undeclared"
+      ]
+    },
+    "root_depth_cm": {
+      "description": "Opcional. Medición de campo de la profundidad de raíz: reemplaza el rango del suelo declarado.",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "water": {
+      "enum": [
+        "rainfed",
+        "irrigation"
+      ]
+    },
+    "machinery": {
+      "enum": [
+        "manual",
+        "hired"
+      ]
+    },
+    "cultivos_aceptados": {
+      "description": "Además del maíz, qué cultivos de rotación acepta sembrar. Subconjunto del catálogo (pipeline/rules/crops.<versión>.yaml); no se simulan más cultivos que estos cuatro.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "frijol",
+          "garbanzo",
+          "sorgo",
+          "trigo"
+        ]
+      }
+    },
+    "market": {
+      "description": "Para qué cultivos tiene comprador o venta local.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "frijol",
+          "garbanzo",
+          "sorgo",
+          "trigo"
+        ]
+      }
+    },
+    "sowing": {
+      "enum": [
+        "may",
+        "june",
+        "july"
+      ]
+    },
+    "stubble": {
+      "description": "Opcional. Manejo del rastrojo declarado por el técnico (el agricultor puede cambiarlo en su celular).",
+      "enum": [
+        "leave",
+        "burn",
+        "remove",
+        "graze"
+      ]
+    },
+    "frijol_variante": {
+      "description": "Opcional. Variante del frijol regional que se simula en la estrategia E2. La elige el técnico; si falta, vale la variante por defecto del catálogo (xpelon). Cada variante es un perfil completo del catálogo, no una etiqueta.",
+      "enum": [
+        "xpelon",
+        "ib",
+        "negro"
+      ]
+    },
+    "frijol_variante_elegida_por": {
+      "description": "Opcional. Quién eligió la variante: el técnico de la parcela o, en el caso ilustrativo, el equipo. Si falta, vale technician.",
+      "enum": [
+        "technician",
+        "team"
+      ]
+    },
+    "area_ha": {
+      "description": "Superficie en hectáreas. Si hay polígono, el pipeline la calcula de él y esta no se usa.",
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "polygon"
+      ]
+    },
+    {
+      "required": [
+        "area_ha"
+      ]
+    }
+  ]
+}

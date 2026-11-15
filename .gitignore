@@ -3,3 +3,12 @@ dist/
 *.local
 .vite/
 *.tsbuildinfo
+
+# Pipeline: bronce / plata / oro no se versionan
+pipeline/data/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

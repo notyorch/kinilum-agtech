@@ -51,7 +51,7 @@ NASA, ESA and ISRIC sources  →  pipeline/ingest (provenance, caching)
 
 Each value carries its source, native resolution, support level (plot, surroundings, zone or region), method (measured, interpolated, modeled or assumed), p10–p90 range and provenance, as defined in [`shared/schema/`](shared/schema/README.md). Zone and regional data are shown as context ("in your area"), never as detail inside the plot.
 
-The first real run and what it found are written up in [`docs/EDA-hallazgos.md`](docs/EDA-hallazgos.md).
+The first real run and what it found are written up in [`pipeline/EDA-hallazgos.md`](pipeline/EDA-hallazgos.md).
 
 ## Run it
 

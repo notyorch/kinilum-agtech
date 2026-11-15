@@ -117,4 +117,4 @@ El notebook de exploración, con el error E8 corregido, está en `pipeline/noteb
 
 Corren sin red (`pytest` desde `pipeline/`): `tests/test_ingest.py` y `tests/test_eda.py` usan las respuestas grabadas de `tests/fixtures/` (con la forma real de cada servicio), un transporte falso y datos sintéticos solo como entrada. Incluyen **una fuente que falla a propósito**: se reintenta, se registra «sin dato» y el sistema sigue.
 
-Los hallazgos de la primera corrida real están en [`docs/EDA-hallazgos.md`](../../docs/EDA-hallazgos.md).
+Los hallazgos de la primera corrida real están en [`EDA-hallazgos.md`](../EDA-hallazgos.md).

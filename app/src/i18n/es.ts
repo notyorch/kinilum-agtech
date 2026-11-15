@@ -172,6 +172,8 @@ export const es = {
     needsSignalText: 'Conéctese para guardar los datos de su parcela. Después podrá usar kinilum sin señal.',
     shellMissing: 'Este navegador no guarda la aplicación',
     shellMissingText: 'Sus datos están guardados, pero sin señal quizá no abra kinilum.',
+    memory: 'Este navegador no guarda los datos',
+    memoryText: 'Los datos se ven ahora, pero al cerrar la página o quedarse sin señal se pierden.',
     unsupported: 'Estos datos son de una versión más nueva',
     unsupportedText: 'Actualice kinilum cuando tenga señal.',
     failed: 'No pudimos guardar los datos',

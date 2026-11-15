@@ -58,6 +58,7 @@ const copy = (): Record<OfflineReadiness, { title: string; text: string; tone: '
   ready: { title: t.offline.ready, text: t.offline.readyText, tone: 'positive' },
   saving: { title: t.offline.saving, text: t.offline.savingText, tone: 'info' },
   'needs-signal': { title: t.offline.needsSignal, text: t.offline.needsSignalText, tone: 'info' },
+  memory: { title: t.offline.memory, text: t.offline.memoryText, tone: 'unknown' },
   'shell-missing': { title: t.offline.shellMissing, text: t.offline.shellMissingText, tone: 'unknown' },
   unsupported: { title: t.offline.unsupported, text: t.offline.unsupportedText, tone: 'risk' },
   failed: { title: t.offline.failed, text: t.offline.failedText, tone: 'risk' },

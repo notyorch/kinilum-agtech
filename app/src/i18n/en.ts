@@ -173,6 +173,8 @@ export const en: Strings = {
     needsSignalText: 'Connect to save your plot data. After that you can use kinilum without signal.',
     shellMissing: 'This browser does not save the app',
     shellMissingText: 'Your data is saved, but without signal kinilum may not open.',
+    memory: 'This browser does not save the data',
+    memoryText: 'The data shows now, but it is lost when you close the page or lose signal.',
     unsupported: 'This data is from a newer version',
     unsupportedText: 'Update kinilum when you have signal.',
     failed: 'We could not save the data',

@@ -43,7 +43,7 @@ SoilGrids sí trae valores en este punto (arcilla de 0 a 5 cm: 36 %, rango 4–6
 | Umbral de NDVI de 0.35 para «sin plantas verdes» | Técnico local | En este punto el verde de invierno es claro, pero el umbral es una propuesta. |
 | Umbral de «temporada difícil» (p75 de la falta de agua: 253 mm) | Equipo con técnico | Es una propuesta; marca qué años se consideran difíciles. |
 | Qué viento usar en la ET0 (el de POWER o 2 m/s de FAO-56) | Equipo con técnico | La ET0 cambia hasta 7 %; las conclusiones cualitativas, no. |
-| Datos locales de cultivo (ciclo, fechas, rendimiento, precio, profundidad de raíz) | Técnico local | Hoy todos están «sin dato»: el criterio de agua de los cuatro cultivos de rotación no se puede calcular. |
+| Datos locales de cultivo: ciclo, fechas de siembra y profundidad de raíz | Técnico local | Hoy están «sin dato»: el criterio de agua y el de clima de los cuatro cultivos de rotación no se pueden calcular. El rendimiento y el precio ya salen del SIAP (municipio de Guasave, `pipeline/rules/sources/`). |
 
 ## Cómo repetirlo
 

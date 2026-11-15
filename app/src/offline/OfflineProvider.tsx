@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { watchConnectivity } from './connectivity';
 import type { ParcelPackage } from '../data/schema.gen.ts';
-import { applyUpdate, readPackageData, start, type Deps, type PackageStatus } from './packageStore.ts';
+import { applyUpdate, memoryCaches, readPackageData, start, type Deps, type PackageStatus } from './packageStore.ts';
 import { readinessOf, type OfflineReadiness } from './readiness.ts';
 import { applyShellUpdate, registerShell, shellSnapshot, subscribeShell } from './shell';
 
@@ -23,9 +23,13 @@ interface OfflineState {
 
 const Ctx = createContext<OfflineState | null>(null);
 
+/** Sin Cache API (página `http` fuera de localhost) los datos viven en memoria: se ven, pero no se guardan. */
+const PERSISTENT = typeof window.caches !== 'undefined';
+const MEMORY = memoryCaches();
+
 const realDeps = (): Deps => ({
   fetch: window.fetch.bind(window),
-  caches: window.caches,
+  caches: PERSISTENT ? window.caches : MEMORY,
   storage: window.localStorage,
   base: new URL('packages/', document.baseURI).href,
 });
@@ -71,7 +75,7 @@ export function OfflineProvider({ children }: { children: ReactNode }) {
   const value = useMemo<OfflineState>(
     () => ({
       online,
-      readiness: readinessOf(pkg, shell.state),
+      readiness: readinessOf(pkg, shell.state, PERSISTENT),
       dataDate: pkg.kind === 'ready' ? pkg.current.generatedAt : null,
       data,
       newData: pkg.kind === 'ready' && !!pkg.update,

@@ -10,6 +10,13 @@
 - **`estado_evidencia: a_validar`** en todo lo que no tenga fuente. La app lo muestra como «A validar con el técnico».
 - **Solo las leguminosas suman nitrógeno:** frijol y garbanzo sí; sorgo y trigo no.
 
+## Datos locales con fuente (`sources/`)
+
+`sources/siap_guasave_oi_riego.yaml` guarda, año por año (2015–2024), la superficie sembrada, el rendimiento y el precio medio rural de maíz, frijol, garbanzo, sorgo y trigo en **Guasave, otoño-invierno y riego**. Salen del Cierre de la producción agrícola del SIAP (consulta por municipio, leída el 15 de noviembre de 2026). El catálogo solo resume esa tabla (mediana y p10–p90; el precio, de 2020 a 2024 y en pesos corrientes) y una prueba comprueba que coincidan.
+
+- Son datos **del municipio**, no de la parcela, y «frijol» agrupa todos los tipos.
+- Con rendimiento y precio, el criterio de **ingreso** ya se puede calcular. **Agua y clima siguen sin dato**: faltan el ciclo, las fechas de siembra, la profundidad de raíz y el Kc inicial.
+
 ## Variantes del frijol regional (E2)
 
 Cada variante es un perfil completo, con los mismos campos que un cultivo. Hoy solo hay `negro` (por defecto); los tipos de frijol que más se siembran en Guasave se agregan con el técnico. La elige el técnico en `pipeline/parcels/<id>.yaml`, campo `frijol_variante`. El paquete lleva solo la variante elegida (`rotation.E2.variant`), cambiarla cambia el nombre del archivo y la app la nombra en «Evidencia».

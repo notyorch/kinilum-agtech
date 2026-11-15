@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { PACKAGE_CACHE, PACKAGE_FORMAT, applyUpdate, readSaved, start } from '../src/offline/packageStore.ts';
+import { PACKAGE_CACHE, PACKAGE_FORMAT, applyUpdate, memoryCaches, readPackageData, readSaved, start } from '../src/offline/packageStore.ts';
 import { readinessOf } from '../src/offline/readiness.ts';
 
 const BASE = 'https://kinilum.test/packages/';
@@ -168,4 +168,28 @@ test('«listo para usar sin señal» exige paquete Y aplicación guardados', () 
   assert.equal(readinessOf(ready, 'dev'), 'dev');
   assert.equal(readinessOf({ kind: 'checking' }, 'ready'), 'saving');
   assert.equal(readinessOf({ kind: 'downloading' }, 'ready'), 'saving');
+});
+
+test('sin Cache API (página http fuera de localhost) los datos se bajan, se releen y se ven, pero no se dicen guardados', async () => {
+  const w = world({ files: { [OLD]: pkg('2026-11-14', { values: { rain: { value: 1 } } }) }, index: { file: OLD, date: '2026-11-14' } });
+  const deps = { ...w.deps, caches: memoryCaches() };
+  const s = await start(deps, ID);
+  assert.equal(s.kind, 'ready');
+  assert.equal((await readPackageData(deps, ID)).values.rain.value, 1); // la pantalla recibe el contenido
+  assert.equal(readinessOf(s, 'unsupported', false), 'memory'); // y no dice «listo para usar sin señal»
+  assert.equal(readinessOf(s, 'ready', false), 'memory');
+  assert.equal(readinessOf(s, 'ready', true), 'ready');
+  assert.equal(readinessOf(s, 'dev', false), 'dev');
+});
+
+test('la caché en memoria suelta el paquete viejo al aceptar el nuevo', async () => {
+  const w = world({ files: { [OLD]: pkg('2026-11-14'), [NEW]: pkg('2026-11-15') }, index: { file: OLD, date: '2026-11-14' } });
+  const deps = { ...w.deps, caches: memoryCaches() };
+  await start(deps, ID);
+  w.index = { file: NEW, date: '2026-11-15' };
+  const s = await start(deps, ID);
+  assert.equal(s.update?.file, NEW);
+  const after = await applyUpdate(deps, ID, s.update);
+  assert.equal(after.current.file, NEW);
+  assert.equal((await readPackageData(deps, ID)).generated_at, '2026-11-15');
 });

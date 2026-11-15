@@ -32,6 +32,28 @@ export interface Deps {
   base: string;
 }
 
+/**
+ * Una «Cache API» en memoria, para los navegadores que no la tienen (una página `http` que no es localhost, por ejemplo
+ * por Tailscale, no es un contexto seguro). Los datos se bajan, se releen y se ven, pero **no sobreviven a recargar la
+ * página**: por eso la app no dice «Listo para usar sin señal» con este respaldo.
+ */
+export function memoryCaches(): Deps['caches'] {
+  const files = new Map<string, string>();
+  const cache = {
+    async match(url: string) {
+      const text = files.get(url);
+      return text === undefined ? undefined : new Response(text);
+    },
+    async put(url: string, res: Response) {
+      files.set(url, await res.text());
+    },
+    async delete(url: string) {
+      return files.delete(url);
+    },
+  };
+  return { open: async () => cache as unknown as Cache };
+}
+
 class Unsupported extends Error {}
 class Network extends Error {}
 class Unverified extends Error {}

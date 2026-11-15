@@ -7,8 +7,11 @@
 # Qué viene de una fuente y qué no:
 #   - Los coeficientes de cultivo (kc_por_etapa) son los de FAO-56 (Allen et al., 1998, Tabla 12) que se pudieron leer
 #     con certeza. Lo que no se pudo leer queda `null`: se completa del documento, no de memoria.
-#   - Todo lo local (ciclo, fechas de siembra, profundidad de raíz, rendimiento, precio) está `null`: falta una fuente
-#     local (por ejemplo, la Agenda Técnica de Sinaloa de INIFAP o el Campo Experimental Valle del Fuerte).
+#   - Rendimiento y precio salen del SIAP, del municipio de Guasave, otoño-invierno y riego (rules/sources/
+#     siap_guasave_oi_riego.yaml): mediana y p10–p90 de 2015–2024 (rendimiento) y de 2020–2024 (precio, en pesos
+#     corrientes). Son del MUNICIPIO, no de la parcela, y «frijol» agrupa todos los tipos.
+#   - Lo demás local (ciclo, fechas de siembra, profundidad de raíz) está `null`: falta una fuente local (por
+#     ejemplo, la Agenda Técnica de Sinaloa de INIFAP o el Campo Experimental Valle del Fuerte).
 #   - NADA está validado por un técnico. `null` significa «por definir»: si falta un parámetro, el criterio que lo
 #     necesita se declara «sin dato»; nunca se rellena con un valor inventado.
 # No se simulan más cultivos de rotación que estos cuatro.
@@ -26,6 +29,8 @@ method: assumed         # supuestos del equipo mientras no haya fuente local
 maiz_base:
   kc_por_etapa: { inicial: null, media: 1.20, final: 0.35 }   # FAO-56 T12: media 1.20; final 0.60 (cosecha con grano húmedo) a 0.35 (grano seco): se toma 0.35. Inicial no legible: por definir.
   ciclo_dias: 140                                              # FAO-56 T11, maíz en clima árido sembrado en dic/ene (25+40+45+30): referencia, no dato de Guasave
+  rendimiento_t_ha: { mediana: 12.43, p10: 11.14, p90: 12.75, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
+  precio_mxn_t: { mediana: 5653.1, p10: 3963.28, p90: 6492.91, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
   estado_evidencia: a_validar
 
 cultivos:
@@ -53,8 +58,8 @@ cultivos:
         ventana_siembra: null
         ciclo_dias: null
         umbral_calor_c: null
-        rendimiento_t_ha: null
-        precio_mxn_t: null
+        rendimiento_t_ha: { mediana: 1.94, p10: 1.52, p90: 2.05, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
+        precio_mxn_t: { mediana: 22317.82, p10: 20725.0, p90: 25707.11, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
         estado_evidencia: a_validar
 
   garbanzo:
@@ -68,8 +73,8 @@ cultivos:
     profundidad_raiz_m: null
     ventana_siembra: null
     umbral_calor_c: null
-    rendimiento_t_ha: null
-    precio_mxn_t: null
+    rendimiento_t_ha: { mediana: 2.22, p10: 2.02, p90: 2.52, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
+    precio_mxn_t: { mediana: 17076.01, p10: 16509.44, p90: 21689.98, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
     estado_evidencia: a_validar
 
   sorgo:
@@ -83,8 +88,8 @@ cultivos:
     profundidad_raiz_m: null
     ventana_siembra: null
     umbral_calor_c: null
-    rendimiento_t_ha: null
-    precio_mxn_t: null
+    rendimiento_t_ha: { mediana: 6.39, p10: 5.3, p90: 7.09, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
+    precio_mxn_t: { mediana: 5225.61, p10: 3746.97, p90: 5798.9, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
     estado_evidencia: a_validar
 
   trigo:
@@ -98,8 +103,8 @@ cultivos:
     profundidad_raiz_m: null
     ventana_siembra: null
     umbral_calor_c: null
-    rendimiento_t_ha: null
-    precio_mxn_t: null
+    rendimiento_t_ha: { mediana: 6.13, p10: 4.31, p90: 6.58, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
+    precio_mxn_t: { mediana: 5827.85, p10: 4970.19, p90: 8586.09, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
     estado_evidencia: a_validar
 
 # Reglas de restricción. Son filtros (WHERE), no pesos: una estrategia que no

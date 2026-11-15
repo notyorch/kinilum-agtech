@@ -208,13 +208,14 @@ test('strategies.es.json y strategies.en.json tienen las mismas claves', () => {
   assert.deepEqual(sorted(Object.keys(es.strategies)), sorted(STRATEGIES));
 });
 
-test('E4 y E5 no dicen que el cultivo es poco común (en Sinaloa se siembran) y sí que faltan sus datos locales', () => {
+test('E4 y E5 no dicen que el cultivo es poco común (en Sinaloa se siembran) y sí que faltan sus fechas y ciclo locales', () => {
   for (const id of ['E4', 'E5']) {
     for (const lang of [es, en]) {
       assert.doesNotMatch(lang.strategies[id].missing.join(' '), /poco común|uncommon/i);
     }
-    assert.match(es.strategies[id].missing[0], /fechas, rendimiento y precio locales/);
-    assert.match(en.strategies[id].missing[0], /local dates, yield and price/);
+    assert.match(es.strategies[id].missing[0], /fechas de siembra y su ciclo/);
+    assert.match(es.strategies[id].missing[0], /del municipio, no de su parcela/);
+    assert.match(en.strategies[id].missing[0], /sowing dates and cycle/);
   }
 });
 

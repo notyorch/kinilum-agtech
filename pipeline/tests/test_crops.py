@@ -32,13 +32,35 @@ def test_sorghum_and_wheat_get_no_nitrogen_bonus():
     assert [s for s in STRATEGIES if fixes_nitrogen(s)] == ["E1", "E2", "E4"]
 
 
-def test_a_crop_without_parameters_is_declared_no_data_and_does_not_fail():
-    # Hoy todo el catálogo está «por definir»: agua, clima e ingreso salen sin dato, sin error.
-    for crop in ("garbanzo", "trigo"):
-        assert criteria_without_data(crop_profile(crop)) == ["water", "climate", "income"]
+def test_what_the_catalog_still_lacks_is_declared_no_data_and_does_not_fail():
+    # El ingreso ya tiene rendimiento y precio del SIAP; agua y clima siguen «por definir» (ciclo, fechas, raíz, calor).
+    for crop in ("frijol", "garbanzo", "sorgo", "trigo"):
+        assert criteria_without_data(crop_profile(crop)) == ["water", "climate"], crop
     # Suelo y erosión no dependen del perfil del cultivo: nunca faltan por él.
     assert "soil" not in PARAMS_BY_CRITERION and "erosion" not in PARAMS_BY_CRITERION
     assert criteria_without_data({}) == ["water", "climate", "income"]
+
+
+def test_yield_and_price_in_the_catalog_are_the_stats_of_the_siap_table_they_cite():
+    """Una sola fuente de verdad: rules/sources/siap_guasave_oi_riego.yaml. El catálogo solo resume esa tabla."""
+    import numpy as np
+    import yaml
+
+    from simulate.crops import RULES_DIR
+
+    table = yaml.safe_load((RULES_DIR / "sources" / "siap_guasave_oi_riego.yaml").read_text(encoding="utf-8"))
+    assert table["anios"] == list(range(2015, 2025)) and table["consulta"]["municipio"] == "Guasave"
+    for crop, rows in table["cultivos"].items():
+        assert len(rows["rendimiento_t_ha"]) == len(rows["pmr_mxn_t"]) == len(rows["sembrada_ha"]) == 10, crop
+        profile = load_catalog()["maiz_base"] if crop == "maiz" else crop_profile(crop, "negro" if crop == "frijol" else None)
+        for field, values in (("rendimiento_t_ha", rows["rendimiento_t_ha"]), ("precio_mxn_t", rows["pmr_mxn_t"][5:])):
+            got = profile[field]
+            want = {"mediana": float(np.median(values)), "p10": float(np.percentile(values, 10)), "p90": float(np.percentile(values, 90))}
+            for k, v in want.items():
+                assert got[k] == pytest.approx(v, abs=0.006), (crop, field, k)
+            assert got["nivel"] == "municipio"
+    # Maíz de 2024: 897,178 t en 70,408 ha = 12.74 t/ha, el dato que cita el documento.
+    assert table["cultivos"]["maiz"]["rendimiento_t_ha"][-1] == 12.74 and table["cultivos"]["maiz"]["sembrada_ha"][-1] == 70408.0
 
 
 def test_a_complete_profile_has_every_criterion():

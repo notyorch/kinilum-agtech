@@ -1,6 +1,6 @@
 # kinilum
 
-*Resumen en español: kinilum compara rotaciones de cultivo para una parcela antes de sembrar, con datos satelitales de la NASA, y muestra el rango de resultados en vez de una sola cifra. Apoya la decisión; no la toma. La guía para el equipo y para agentes está en [AGENTS.md](AGENTS.md).*
+*Resumen en español: kinilum compara rotaciones de cultivo para una parcela antes de sembrar, con datos satelitales de la NASA, y muestra el rango de resultados en vez de una sola cifra. Apoya la decisión; no la toma. 
 
 **kinilum** is a decision-support tool for NASA Space Apps 2026, challenge *Field Shift: Adapting Farms with NASA Data*. It compares crop rotations for a plot before planting, using NASA Earth observations, local data and the farmer's priorities, and it shows a range of outcomes instead of a single number.
 

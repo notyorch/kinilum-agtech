@@ -76,5 +76,7 @@ echo "EARTHDATA_TOKEN=<your token>" > ../.env          # never commit it
 The exact outline of a plot is never published. A package carries only a point rounded to two decimals and the area in hectares. The app uses no analytics, no external fonts or map tiles, and keeps everything the user chooses on their own phone.
 
 ## Team and license
-
-Built by Jorge, Isis and Isabella. The license is still to be decided (Apache-2.0 or MIT). Project guidance for contributors and AI agents is in [AGENTS.md](AGENTS.md).
+* Jorge Enrique Vargas Pech
+* Angel Isabella Morales Barrera
+* David Eduardo Martín Dzul
+* Isabella Cuevas Hernández

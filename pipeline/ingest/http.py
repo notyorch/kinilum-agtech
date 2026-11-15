@@ -65,6 +65,7 @@ class Client:
         self.used: list[str] = []  # archivos de caché que sirvieron a las últimas llamadas
         self.once: "Once | None" = None  # transporte de las descargas autenticadas (las pruebas lo reemplazan)
         self._lock = threading.Lock()  # los conectores con muchas peticiones usan varios hilos
+        self._resolved: dict[str, str] = {}  # archivo → su URL firmada de la sesión (solo en memoria: es un secreto)
 
     def get_json(
         self,
@@ -126,6 +127,47 @@ class Client:
     def _note(self, name: str) -> None:
         with self._lock:
             self.used.append(name)
+
+    def get_range(self, url: str, start: int, length: int, *, token: str | None = None, timeout: float = 90) -> bytes:
+        """`length` bytes de un archivo desde `start`, con caché. Los COG se leen por rangos: solo lo que se necesita.
+
+        La primera lectura de un archivo resuelve su redirección (la URL firmada); las siguientes la reutilizan sin
+        volver a pasar por Earthdata. La URL firmada NO se guarda en disco ni se imprime. Sin token, es un archivo público.
+        """
+        key = hashlib.sha256(json.dumps(["RANGE", url, start, length]).encode()).hexdigest()
+        cached = self._cache_file(key, "bin")
+        if cached and cached.exists():
+            self._note(cached.name)
+            return cached.read_bytes()
+        where = f"{urlparse(url).hostname}{urlparse(url).path}"
+        for attempt in (0, 1):
+            with self._lock:
+                target = self._resolved.get(url, url)
+            self._count()
+            probe = fetch_prefix(target, token=token, nbytes=length, start=start, timeout=timeout, once=self.once, sleep=self.sleep)
+            if probe.status in (401, 403) and target != url and attempt == 0:  # la firma venció: se resuelve de nuevo
+                with self._lock:
+                    self._resolved.pop(url, None)
+                continue
+            break
+        if probe.error:
+            raise SourceError(f"{where}: {probe.error}")
+        if probe.status in (401, 403):
+            raise SourceError(f"{where}: sin acceso (HTTP {probe.status})")
+        if probe.status == 200 and start > 0:
+            raise SourceError(f"{where}: el servidor ignoró el rango pedido")
+        if probe.status not in (200, 206):
+            raise SourceError(f"{where}: HTTP {probe.status}")
+        expected = length if probe.total_bytes is None else min(length, max(probe.total_bytes - start, 0))
+        if len(probe.data) != expected:
+            raise SourceError(f"{where}: llegaron {len(probe.data)} bytes y se esperaban {expected}")
+        with self._lock:
+            self._resolved[url] = probe.signed_url
+        if cached:
+            cached.parent.mkdir(parents=True, exist_ok=True)
+            cached.write_bytes(probe.data)
+            self._note(cached.name)
+        return probe.data
 
     def get_authenticated(self, url: str, *, token: str, max_bytes: int = 2_000_000, timeout: float = 90, binary: bool = False) -> Response:
         """Descarga con `Authorization: Bearer` (OPeNDAP, archivos de datos). Texto, o bytes si `binary`.
@@ -219,6 +261,7 @@ class Probe:
     final: str  # host y ruta del último salto, sin consulta (la URL firmada es un secreto)
     error: str | None = None
     token_hops: list[bool] = field(default_factory=list)  # en qué saltos viajó el token
+    signed_url: str = field(default="", repr=False)  # la URL del último salto, con su firma: un SECRETO, solo en memoria
 
 
 def fetch_prefix(
@@ -231,15 +274,16 @@ def fetch_prefix(
     sleep: Callable[[float], None] = time.sleep,
     max_hops: int = 10,
     tries: int = 3,
+    start: int = 0,
 ) -> Probe:
-    """Pide los primeros `nbytes` de un archivo siguiendo las redirecciones a mano."""
+    """Pide `nbytes` de un archivo desde el byte `start` (por omisión, el principio) siguiendo las redirecciones a mano."""
     once = once or make_urllib_once(nbytes)
     current, hops, token_hops = url, [], []
     where = ""
     for _ in range(max_hops):
         parsed = urlparse(current)
         where = f"{parsed.hostname}{parsed.path}"
-        headers = {"User-Agent": USER_AGENT, "Range": f"bytes=0-{nbytes - 1}"}
+        headers = {"User-Agent": USER_AGENT, "Range": f"bytes={start}-{start + nbytes - 1}"}
         with_token = bool(token) and sends_token(current)
         if with_token:
             headers["Authorization"] = f"Bearer {token}"
@@ -275,5 +319,5 @@ def fetch_prefix(
             total = int(tail) if tail.isdigit() else None
         elif status == 200 and lower.get("content-length", "").isdigit():
             total = int(lower["content-length"])
-        return Probe(status, body, hops, total, where, None, token_hops)
+        return Probe(status, body, hops, total, where, None, token_hops, signed_url=current)
     return Probe(None, b"", hops, None, where, f"más de {max_hops} redirecciones", token_hops)

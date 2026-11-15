@@ -312,7 +312,7 @@ def test_each_source_ends_in_one_of_three_states_and_none_stops_the_rest(monkeyp
     assert states["power"] == states["openmeteo"] == states["hls_stac"] == states["s2_earthsearch"] == "ok"
     assert states["soilgrids"] == "no_data"
     assert states["imerg"] == states["nasadem"] == states["modis"] == states["era5land"] == "pending"
-    assert len(results) == 12
+    assert len(results) == 13
 
 
 def test_bronze_gets_a_manifest_per_source_with_the_files_that_fed_it(monkeypatch, tmp_path):

@@ -20,6 +20,7 @@ import numpy as np
 import yaml
 
 from common.schema import REPO
+from harmonize.cover import bare_value
 from ingest.contract import Fetch, Provenance, contract_value
 from ingest.imerg import NATIVE_RES_M as IMERG_RES_M
 from ingest.smap import NATIVE_RES_M as SMAP_RES_M
@@ -29,6 +30,7 @@ RAIN_MONTHS = tuple(range(5, 11))  # mayo a octubre
 MIN_YEARS = 3  # con menos años completos no hay rango que valga
 HEAT_MONTH = 5  # «temperatura máxima de mayo»
 POWER_RES_M = 55_000
+SOILGRIDS_RES_M = 250
 MIN_COVERAGE = 0.8  # fracción mínima de días con dato para que SMAP sostenga un valor
 SOIL_RULES_PATH = REPO / "pipeline" / "rules" / "soil.v1.yaml"
 
@@ -157,6 +159,41 @@ def soil_value(config: dict[str, Any], generated_at: str) -> dict[str, Any]:
     )
 
 
+def missing_value(variable: str, unit: str, source: str, native_resolution: str, native_res_m: float, reason: str) -> dict[str, Any]:
+    """Un valor SIN DATO del contrato (sin valor ni rango) para una fuente que no llegó, con la razón en la procedencia."""
+    prov = Provenance(source, "sin respuesta", "", {})
+    return contract_value(variable, None, None, None, unit, prov, native_resolution, native_res_m, "modeled", "2025", assumptions=["contextOnly"], provenance=[f"{source}: sin dato", reason])
+
+
+def clay_value(fetch: Fetch) -> dict[str, Any]:
+    """`clay_0_5cm`: arcilla de 0 a 5 cm (SoilGrids, entorno). Es CONTEXTO: el paquete no la usa.
+
+    Nunca convierte un nulo a número: sin valor en la capa, sale sin dato. El rango son los cuantiles 5 y 95 (SoilGrids no
+    da el 10 y el 90). Si el punto no tenía valores y se usó la celda válida más cercana, el método es `interpolated` y la
+    procedencia dice a cuántos metros y hacia dónde.
+    """
+    row = next((r for r in fetch.data if r["property"] == "clay" and r["depth"] == "0-5cm"), None)
+    fallback = fetch.prov.params.get("fallback")
+    method = "interpolated" if fallback else "modeled"
+    steps = ["clay, 0-5 cm", "rango = cuantiles 5 y 95, no 10 y 90"]
+    if fallback:
+        steps.append(f"el punto no tenía valores: celda válida más cercana, a {fallback['distance_m']} m al {fallback['direction']}")
+    common = dict(unit="%", prov=fetch.prov, native_resolution="250 m", native_res_m=SOILGRIDS_RES_M, method=method, assumptions=["contextOnly"], timestamp="2025")
+    if row is None or row["mean"] is None or row["q05"] is None or row["q95"] is None:
+        return contract_value("clay_0_5cm", None, None, None, extra_steps=[*steps, "sin dato: la capa no trae valor o le faltan los cuantiles"], **common)
+    return contract_value("clay_0_5cm", row["mean"], row["q05"], row["q95"], extra_steps=steps, **common)
+
+
+def context_values(results: dict[str, Result]) -> dict[str, dict[str, Any]]:
+    """Valores de CONTEXTO (complementos que el paquete no usa). Una fuente que no llegó sale sin dato, nunca ausente."""
+    r = results.get("soilgrids")
+    if r is None:
+        return {}
+    if r.fetch:
+        return {"clay_0_5cm": clay_value(r.fetch)}
+    return {"clay_0_5cm": missing_value("clay_0_5cm", "%", "SoilGrids (ISRIC)", "250 m", SOILGRIDS_RES_M, r.detail or "la fuente no llegó")}
+
+
 def partial_values(results: dict[str, Result], config: dict[str, Any] | None = None, generated_at: str = "") -> dict[str, dict[str, Any]]:
     """Los valores del contrato que ya se pueden construir con lo que llegó. Los demás no aparecen: no hay fuente.
 
@@ -173,4 +210,6 @@ def partial_values(results: dict[str, Result], config: dict[str, Any] | None = N
         out["heat"] = heat_value(results["power"].fetch)
     if "smap" in results and results["smap"].fetch:
         out["moisture"] = moisture_value(results["smap"].fetch)
+    if "hls_ndvi" in results and results["hls_ndvi"].fetch:
+        out["bare"] = bare_value(results["hls_ndvi"].fetch)
     return out

@@ -210,7 +210,9 @@ def degradation_plan(results: dict[str, Result]) -> tuple[list[dict[str, str]], 
         plan.append(("ecostress", "calor desde POWER", "Evidencia de parcela no disponible"))
     if not ok("modis"):
         plan.append(("modis", "usar VIIRS si está en el catálogo; si no, marcar por integrar", "según el caso"))
-    if not ok("hls_stac"):
+    # `hls_stac` solo lista escenas; con `hls_ndvi` HLS cuenta como disponible solo si sus PÍXELES llegaron.
+    hls_ok = ok("hls_stac") if "hls_ndvi" not in results else ok("hls_ndvi")
+    if not hls_ok:
         if ok("modis") or ok("s2_earthsearch"):
             plan.append(("hls_stac", "bajar el soporte a entorno con MODIS o Sentinel-2", "Entorno"))
         else:

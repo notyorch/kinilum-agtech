@@ -23,7 +23,7 @@ Todos usan **mediana, p10 y p90 entre años (o días)**, y exigen un mínimo: co
 | `moisture` → `soil_moisture_rootzone` | SMAP L4 (zona) | Humedad de la zona de raíz (0–100 cm), un granulo por día (16:30 UTC); mediana y rango entre días de los últimos 365. | 80 % de los días |
 | `slope` | NASADEM (parcela) | Pendiente de Horn de los píxeles completos dentro de la parcela tras descartar 30 m de borde; mediana y rango entre píxeles. | 1 píxel limpio con dato |
 | `soil` → `root_depth` | Lo declara el técnico | Mitad del rango del tipo de suelo (`rules/soil.v1.yaml`), con el rango como p10–p90; una medición de campo lo reemplaza. | — |
-| `bare` | HLS | Pendiente de construir: necesita los píxeles de HLS. | — |
+| `bare` → `days_without_green_cover` | HLS (parcela); Sentinel-2 de respaldo | NDVI de los píxeles completos dentro de la parcela tras descartar 30 m de borde, solo con Fmask limpio (SCL en Sentinel-2); la mediana por mes se compara con **0.35** (propuesta, a calibrar). Días de los meses por debajo del umbral, por año; mediana y rango entre años. Los meses sin escena despejada **no cuentan** como «sin plantas verdes», así que es un **mínimo**. No se calcula BSI: afirmaría «suelo desnudo». | 9 meses con dato por año y 3 años |
 
 ## Ventana de floración (`phenology.py`)
 

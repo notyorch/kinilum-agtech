@@ -10,16 +10,18 @@ Pide cada fuente, guarda la respuesta cruda y dice en qué estado quedó. **No i
 | `http.py` | Única salida a la red: reintentos, caché por respuesta, secretos a salvo. | Hecho |
 | `power.py` | NASA POWER, clima diario (región). | Hecho, probado en vivo |
 | `openmeteo.py` | Open-Meteo / ERA5, contraste de lluvia y ET0. Externa a la NASA. | Hecho, probado en vivo |
-| `soilgrids.py` | SoilGrids, suelo a 250 m. Externa a la NASA. | Hecho; **sin valores en el punto de ejemplo** |
+| `soilgrids.py` | SoilGrids, suelo a 250 m. Externa a la NASA. Si el punto no trae valores, busca la celda válida más cercana (250, 500 y 1,000 m) y lo dice. | Hecho, probado en vivo |
 | `stac.py` | Escenas HLS (CMR-STAC) y Sentinel-2 (Earth Search), solo metadatos. | Hecho, probado en vivo |
 | `cmr.py` | Descubre productos de la NASA y sus versiones. | Hecho |
 | `imerg.py` | GPM IMERG Final diario: la celda del punto, día por día, por OPeNDAP. | Hecho, probado en vivo |
 | `nasadem.py` | NASADEM: elevación y pendiente de los píxeles limpios de la parcela. | Hecho, probado en vivo |
 | `smap.py` | SMAP L4: humedad del suelo de la celda de 9 km, un granulo por día, por OPeNDAP. | Hecho, probado en vivo |
+| `cog.py`, `geo.py` | Lector mínimo de GeoTIFF en la nube por rangos (teselas, deflate, UTM propia con serie de Krüger) y las celdas completas dentro de la parcela. | Hecho; validado contra rasterio y PROJ |
+| `vegetation.py`, `cover.py` | NDVI de la parcela escena por escena (HLS con Fmask; Sentinel-2 de respaldo con SCL) para todo el periodo. Fuente derivada `hls_ndvi`. | Hecho, probado en vivo |
 | `credentialed.py` | MODIS, ECOSTRESS, GRACE y ERA5-Land. | **Esqueletos**: sin token dicen «falta …»; con token, «por integrar». |
 | `earthdata.py`, `access.py` | Comprueba el acceso con token a IMERG, NASADEM, MODIS y HLS (ver «Acceso con token»). | Hecho; acceso confirmado |
 | `env.py` | Lee las credenciales de la variable de entorno o del `.env`. | Hecho |
-| `catalog.py` | Catálogo de las 12 fuentes (es un dato). | Hecho |
+| `catalog.py` | Catálogo de las 13 fuentes (es un dato). | Hecho |
 | `load.py` | Corre cada conector, fija su estado y deja el manifiesto en bronce. | Hecho |
 | `eda.py` | El análisis exploratorio: cobertura, calidad, estacionalidad, consistencia, soporte, balance de agua y plan de degradación. | Hecho |
 | `run.py` | La línea de comandos. | Hecho |
@@ -57,7 +59,7 @@ Por cada producto busca en CMR (abierto) un granulo que cruce el punto, pide **s
 - El token viaja **solo a dominios de la NASA y por HTTPS** (`*.earthdata.nasa.gov`, `*.earthdatacloud.nasa.gov`). Los servidores redirigen a CloudFront o S3 con una URL firmada, que rechaza la petición si además lleva `Authorization`: el encabezado se quita en ese salto.
 - Nunca se imprime, ni se guarda en la caché, el informe, los mensajes de error ni git. Se comprueba con pruebas.
 - Si un producto responde 401 o 403 con un token válido, suele faltar autorizar la aplicación en el perfil de Earthdata (Applications → Authorized Apps), por ejemplo «NASA GESDISC DATA ARCHIVE» para IMERG.
-- Esto confirma el acceso. IMERG y NASADEM ya leen valores (sección siguiente); los píxeles de MODIS y HLS siguen pendientes y necesitarán leer HDF4 y GeoTIFF.
+- Esto confirma el acceso. IMERG, NASADEM, SMAP y los píxeles de HLS ya leen valores (secciones siguientes); los píxeles de MODIS siguen pendientes y necesitarán leer HDF4.
 
 ## IMERG y NASADEM: cómo se leen
 
@@ -71,7 +73,9 @@ Por cada producto busca en CMR (abierto) un granulo que cruce el punto, pide **s
 
 **SMAP L4.** Cada granulo (cada 3 horas) pesa ~143 MB: se pide solo la celda del punto y **un granulo por día** (el de las 16:30 UTC), un año completo son ~365 peticiones. La malla (EASE-Grid 2.0 de 9 km) no es lat/lon: el índice de la celda se **estima con la fórmula de la proyección y se comprueba leyendo `cell_lat` y `cell_lon` del propio archivo**; si la celda más cercana queda a más de 7 km, se rechaza (una fórmula equivocada no puede dar una celda equivocada en silencio). Misma regla de OPeNDAP que IMERG: ventana de al menos 2 × 2 celdas.
 
-**Del dato al contrato.** `harmonize/values.py` construye los valores del contrato (criterios en `harmonize/README.md`): `rain_season` (IMERG), `slope` (NASADEM), `tmax_may` (POWER), `soil_moisture_rootzone` (SMAP) y `root_depth` (lo declara el técnico). `run.py` los deja en `data/gold/<parcela>/values.partial.json`, que **no** es el `values.json` del paquete: falta `bare`. Con muy pocos años o días, el valor sale sin dato.
+**Del dato al contrato.** `harmonize/values.py` construye los valores del contrato (criterios en `harmonize/README.md`): `rain_season` (IMERG), `slope` (NASADEM), `tmax_may` (POWER), `soil_moisture_rootzone` (SMAP) y `root_depth` (lo declara el técnico) y `days_without_green_cover` (HLS). `run.py` escribe `data/gold/<parcela>/values.json` cuando están los seis, y `green_cover.json` con la clase de cada mes; si falta alguno, deja `values.partial.json`, que **no** es el del paquete. Con muy pocos años o días, el valor sale sin dato.
+
+**Plantas verdes (HLS).** `cog.py` lee GeoTIFF en la nube por rangos HTTP (solo las teselas que cubren la parcela, tras descartar 30 m de borde) y `vegetation.py` calcula el NDVI por escena con la máscara Fmask; `cover.py` lo hace para todas las escenas del mosaico del punto y completa con Sentinel-2 (SCL) los meses sin escena limpia. El lector se validó contra rasterio y PROJ en una escena nueva y una vieja (proyección «definida por el usuario»); esas herramientas no son dependencias del proyecto.
 
 ## Manifiesto de bronce
 
@@ -99,6 +103,8 @@ Por cada producto busca en CMR (abierto) un granulo que cruce el punto, pide **s
 - **Sin evadir límites:** nada de rotar IP ni disfrazar el cliente. POWER advierte que pedir muchas veces lo mismo puede bloquear: se pide un año por vez y se guarda.
 - **El token** va en la variable de entorno; nunca en el repositorio, en la caché, en el informe ni en los mensajes de error.
 - **Solicitudes asíncronas** (IMERG, ERA5-Land): pendientes. Se enviará una vez, se guardará el identificador de la tarea y se consultará a intervalos crecientes.
+
+El notebook de exploración, con el error E8 corregido, está en `pipeline/notebooks/kinilum_eda_00.ipynb` (sin salidas; corre en Colab o en local).
 
 ## Cuidados con CMR-STAC (HLS)
 

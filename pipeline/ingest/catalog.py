@@ -1,6 +1,7 @@
 """Catálogo de fuentes: es un dato. Añadir una fuente es añadir una fila aquí y su conector en `load.py`.
 
-`role`:  core (núcleo) · fifth (quinta fuente del mínimo) · trimmable (recortable) · contrast · complement · backup.
+`role`:  core (núcleo) · fifth (quinta fuente del mínimo) · trimmable (recortable) · contrast · complement · backup ·
+         derived (lee los píxeles de una fuente que ya está en el catálogo, como `hls_ndvi` de `hls_stac`).
 `access`: open (sin llave) · search-open (buscar abierto, descargar con token) · earthdata (token Earthdata) ·
           cds (llave de Copernicus CDS).
 `support` sale de la resolución nativa (`contract.support_level`), no se escribe a mano.
@@ -26,6 +27,7 @@ SOURCES: list[dict[str, Any]] = [
     {"id": "openmeteo", "name": "Open-Meteo archivo (ERA5)", "origin": "external", "role": "contrast", "access": "open", "native_res_m": 25_000, "cadence": "daily", "priority": "proposal", "token_env": None, "license": "CC BY 4.0 (Open-Meteo)", "citation": "Open-Meteo.com; datos ERA5 de Copernicus/ECMWF"},
     {"id": "soilgrids", "name": "SoilGrids", "origin": "external", "role": "complement", "access": "open", "native_res_m": 250, "cadence": "estático", "priority": "proposal", "token_env": None, "license": "CC BY 4.0 (ISRIC)", "citation": "Poggio et al. 2021, SoilGrids 2.0, SOIL 7"},
     {"id": "s2_earthsearch", "name": "Sentinel-2 L2A (Earth Search)", "origin": "external", "role": "backup", "access": "open", "native_res_m": 10, "cadence": "5 días", "priority": "proposal", "token_env": None, "license": "Copernicus Sentinel data (libre)", "citation": "Contains modified Copernicus Sentinel data; Element 84 Earth Search"},
+    {"id": "hls_ndvi", "name": "HLS NDVI de la parcela (píxeles)", "origin": "nasa", "role": "derived", "access": "earthdata", "native_res_m": 30, "cadence": "2 a 3 días", "priority": "P0", "token_env": "EARTHDATA_TOKEN", "license": _NASA, "citation": "NASA LP DAAC, HLS v2.0"},
     {"id": "era5land", "name": "ERA5-Land (CDS)", "origin": "external", "role": "contrast", "access": "cds", "native_res_m": 9_000, "cadence": "horaria", "priority": "proposal", "token_env": "CDS_API_KEY", "license": "Términos de Copernicus CDS (revisar antes de usar)", "citation": "Copernicus Climate Change Service, ERA5-Land"},
 ]
 

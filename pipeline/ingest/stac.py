@@ -24,6 +24,9 @@ CMR_STAC = "https://cmr.earthdata.nasa.gov/stac/LPCLOUD"
 EARTH_SEARCH = "https://earth-search.aws.element84.com/v1"
 _HLS_REFLECTANCE = re.compile(r"^HLS[LS]30([_.]|$)")
 HLS_PAGE_LIMIT = 50
+# Los archivos que hacen falta para el NDVI: HLS (rojo B04, infrarrojo B05 en Landsat o B8A en Sentinel-2, y la máscara
+# Fmask) y Sentinel-2 de Earth Search (red, nir y la clasificación de escena scl).
+KEEP_ASSETS = frozenset({"B04", "B05", "B8A", "Fmask", "red", "nir", "scl"})
 S2_PAGE_LIMIT = 200
 MAX_PAGES = 100  # 50 por página → 5,000 escenas: diez años de dos productos caben con holgura
 
@@ -70,8 +73,14 @@ def search(
             props = f.get("properties", {})
             if not props.get("datetime"):
                 continue
+            assets = {}
+            for name, a in (f.get("assets") or {}).items():
+                if name in KEEP_ASSETS and a.get("href"):
+                    band = (a.get("raster:bands") or [{}])[0]  # Sentinel-2 trae su escala y su desplazamiento
+                    assets[name] = {"href": a["href"], "scale": band.get("scale"), "offset": band.get("offset"), "nodata": band.get("nodata")}
             scenes.append(
-                {"id": f["id"], "collection": f.get("collection"), "datetime": parse_datetime(props["datetime"]), "cloud": props.get("eo:cloud_cover")}
+                {"id": f["id"], "collection": f.get("collection"), "datetime": parse_datetime(props["datetime"]), "cloud": props.get("eo:cloud_cover"),
+                 "assets": assets, "epsg": props.get("proj:epsg")}
             )
         nxt = next((link for link in r.body.get("links", []) if link.get("rel") == "next"), None)
         if nxt:

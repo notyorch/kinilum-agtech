@@ -13,7 +13,7 @@ from typing import Callable
 
 import numpy as np
 
-from . import credentialed, imerg, nasadem, openmeteo, power, smap, soilgrids, stac
+from . import cover, credentialed, imerg, nasadem, openmeteo, power, smap, soilgrids, stac
 from .catalog import BY_ID, SOURCES
 from .contract import STATUS_NO_DATA, STATUS_OK, STATUS_PENDING, Fetch, SourceError, SourcePending, now_utc
 from .env import secret
@@ -29,6 +29,7 @@ class Params:
     plot_side_m: float = 200
     workers: int = 4  # peticiones simultáneas a IMERG y SMAP: pocas, por cortesía con el servidor
     smap_days: int = 365  # SMAP: solo los últimos N días del periodo (un granulo por día)
+    soil_fallback_m: int = 1000  # SoilGrids: radio máximo para buscar la celda válida más cercana; 0 lo apaga
 
 
 @dataclass
@@ -52,10 +53,17 @@ def smap_window(p: Params) -> tuple[str, str]:
     return str(first), p.end
 
 
+def soil_connector(c: Client, p: Params) -> Fetch:
+    radii = tuple(r for r in soilgrids.RADII_M if r <= p.soil_fallback_m)
+    if not radii:
+        return soilgrids.fetch_soilgrids(c, p.lon, p.lat)
+    return soilgrids.fetch_soilgrids_nearest(c, p.lon, p.lat, radii=radii, sleep=c.sleep)  # la pausa del cliente: las pruebas no esperan
+
+
 CONNECTORS: dict[str, Callable[[Client, Params], Fetch]] = {
     "power": lambda c, p: power.fetch_power(c, p.lon, p.lat, p.start, p.end),
     "openmeteo": lambda c, p: openmeteo.fetch_openmeteo(c, p.lon, p.lat, p.start, p.end),
-    "soilgrids": lambda c, p: soilgrids.fetch_soilgrids(c, p.lon, p.lat),
+    "soilgrids": lambda c, p: soil_connector(c, p),
     "hls_stac": lambda c, p: stac.fetch_hls_scenes(c, p.lon, p.lat, p.start, p.end, p.plot_side_m),
     "s2_earthsearch": lambda c, p: stac.fetch_s2_scenes(c, p.lon, p.lat, p.start, p.end, p.plot_side_m),
     "imerg": lambda c, p: imerg.fetch_imerg(c, p.lon, p.lat, p.start, p.end, token=_token(), workers=p.workers),
@@ -64,13 +72,23 @@ CONNECTORS: dict[str, Callable[[Client, Params], Fetch]] = {
     "smap": lambda c, p: smap.fetch_smap(c, p.lon, p.lat, smap_window(p)[0], smap_window(p)[1], token=_token(), workers=p.workers),
     "ecostress": lambda c, p: credentialed.fetch_ecostress(c, p),
     "grace": lambda c, p: credentialed.fetch_grace(c, p),
+    "hls_ndvi": lambda c, p: cover_connector(c, p, {}),  # se reemplaza en run_one: necesita lo que ya llegó
     "era5land": lambda c, p: credentialed.fetch_era5land(c, p),
 }
 
 
-def run_one(client: Client, source_id: str, params: Params) -> Result:
+def cover_connector(c: Client, p: Params, done: dict[str, "Result"]) -> Fetch:
+    """El NDVI de HLS depende de las escenas que ya trajeron `hls_stac` y `s2_earthsearch`."""
+    hls = done.get("hls_stac")
+    if hls is None or hls.fetch is None:
+        raise SourcePending("faltan las escenas de HLS: pida también hls_stac")
+    s2 = done.get("s2_earthsearch")
+    return cover.fetch_cover(c, hls.fetch.data, s2.fetch.data if s2 and s2.fetch else None, p.lon, p.lat, p.start, p.end, token=_token(), side_m=p.plot_side_m, workers=p.workers)
+
+
+def run_one(client: Client, source_id: str, params: Params, done: dict[str, "Result"] | None = None) -> Result:
     try:
-        fetch = CONNECTORS[source_id](client, params)
+        fetch = cover_connector(client, params, done or {}) if source_id == "hls_ndvi" else CONNECTORS[source_id](client, params)
         return Result(source_id, STATUS_OK, "; ".join(fetch.notes), fetch)
     except SourcePending as e:
         return Result(source_id, STATUS_PENDING, str(e))
@@ -115,7 +133,7 @@ def load_sources(
             continue
         folder = bronze_dir / parcel_id / src["id"] if bronze_dir else None
         client.cache_dir, client.used = folder, []
-        result = run_one(client, src["id"], params)
+        result = run_one(client, src["id"], params, results)
         if folder:
             write_manifest(folder, parcel_id, params, result, client.used)
         results[src["id"]] = result

@@ -234,7 +234,7 @@
           "required": ["rotation_crop", "variant", "variant_chosen_by"],
           "properties": {
             "rotation_crop": { "const": "frijol" },
-            "variant": { "description": "Variante del frijol regional que se simula.", "enum": ["negro"] },
+            "variant": { "description": "Variante del frijol regional que se simula.", "enum": ["azufrado", "negro"] },
             "variant_chosen_by": { "description": "Quién la eligió: el técnico o, en el caso ilustrativo, el equipo.", "enum": ["technician", "team"] }
           }
         },
@@ -321,6 +321,12 @@
         "rain": { "description": "Cambio de lluvia, en %.", "enum": [-30, -20, -10, 0, 10, 20, 30] },
         "temp": { "description": "Cambio de temperatura, en °C.", "enum": [-2, -1, 0, 1, 2, 3, 4] },
         "runs": { "description": "Corridas (años simulados) de esta celda: 500 con nombre, 100 en las demás.", "enum": [100, 500] },
+        "water_mm": {
+          "description": "Opcional. Por estrategia, la necesidad de riego de un ciclo en esta celda, en mm: [p10, mediana, p90] entre las corridas. Es agua que pide el cultivo (ETc − lluvia), no agua aplicada ni rendimiento. Solo las estrategias con dato; E1 no aparece.",
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": { "^E[0-5]$": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number", "minimum": 0 } } }
+        },
         "scores": {
           "description": "Bytes sin signo en base64. Disposición [estrategia][criterio][corrida], con el orden de strategies y criteria: longitud = 6 × 5 × runs bytes. Cada byte es un puntaje entero 0–100, o 255 si el criterio está declarado en no_data. La corrida i es el MISMO año simulado para las seis estrategias y los cinco criterios.",
           "type": "string",

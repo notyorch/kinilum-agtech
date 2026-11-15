@@ -62,9 +62,9 @@ def test_changing_who_chose_the_bean_variant_changes_the_package_and_its_file_na
     config = build.load_config("sin-demo-001")
     names = {}
     for chosen_by in ("team", "technician"):
-        pkg = build.assemble({**config, "frijol_variante": "negro", "frijol_variante_elegida_por": chosen_by}, gold_from(example_package), "2026-11-14")
+        pkg = build.assemble({**config, "frijol_variante": "azufrado", "frijol_variante_elegida_por": chosen_by}, gold_from(example_package), "2026-11-14")
         assert package_problems(pkg) == []
-        assert pkg["rotation"]["E2"] == {"rotation_crop": "frijol", "variant": "negro", "variant_chosen_by": chosen_by}
+        assert pkg["rotation"]["E2"] == {"rotation_crop": "frijol", "variant": "azufrado", "variant_chosen_by": chosen_by}
         names[chosen_by] = build.publish(tmp_path, pkg, build.dumps(pkg))
     assert names["team"] == "sin-demo-001.2026-11-14.json"
     assert names["technician"] == "sin-demo-001.2026-11-14.r2.json"  # contenido distinto el mismo día: otro nombre
@@ -73,7 +73,7 @@ def test_changing_who_chose_the_bean_variant_changes_the_package_and_its_file_na
 def test_bean_variant_defaults_to_the_catalog_one(example_package):
     config = {k: v for k, v in build.load_config("sin-demo-001").items() if not k.startswith("frijol_variante")}
     pkg = build.assemble(config, gold_from(example_package), "2026-11-14")
-    assert pkg["rotation"]["E2"] == {"rotation_crop": "frijol", "variant": "negro", "variant_chosen_by": "technician"}
+    assert pkg["rotation"]["E2"] == {"rotation_crop": "frijol", "variant": "azufrado", "variant_chosen_by": "technician"}
 
 
 def test_extreme_heat_is_derived_and_omitted_without_data(example_package):

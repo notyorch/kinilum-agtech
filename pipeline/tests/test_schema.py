@@ -76,7 +76,7 @@ def test_crop_outside_the_catalog_is_rejected(example_package):
 
 
 def test_example_package_names_the_bean_variant(example_package):
-    assert example_package["rotation"]["E2"] == {"rotation_crop": "frijol", "variant": "negro", "variant_chosen_by": "team"}
+    assert example_package["rotation"]["E2"] == {"rotation_crop": "frijol", "variant": "azufrado", "variant_chosen_by": "team"}
     assert NO_DATA == 255
 
 

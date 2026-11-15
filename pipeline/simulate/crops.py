@@ -23,7 +23,8 @@ RULES_VERSION = "crops.v2"
 # Qué parámetros del perfil necesita cada criterio. Erosión y suelo no dependen del perfil del
 # cultivo de rotación (salen de la cubierta, la pendiente y la lluvia), así que nunca faltan por él.
 PARAMS_BY_CRITERION: dict[str, tuple[str, ...]] = {
-    "water": ("kc_por_etapa", "profundidad_raiz_m", "ciclo_dias"),
+    # El modelo de agua v1 es ETc − lluvia por ciclo (sin reserva de agua en el suelo): no usa la profundidad de raíz.
+    "water": ("kc_por_etapa", "ciclo_dias", "ventana_siembra"),
     "climate": ("umbral_calor_c", "ventana_siembra"),
     "income": ("rendimiento_t_ha", "precio_mxn_t"),
 }

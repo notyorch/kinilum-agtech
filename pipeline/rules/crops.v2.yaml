@@ -5,13 +5,16 @@
 # dejan de decir lo mismo.
 #
 # Qué viene de una fuente y qué no:
-#   - Los coeficientes de cultivo (kc_por_etapa) son los de FAO-56 (Allen et al., 1998, Tabla 12) que se pudieron leer
-#     con certeza. Lo que no se pudo leer queda `null`: se completa del documento, no de memoria.
+#   - Los coeficientes de cultivo (kc_por_etapa) son los de FAO-56 (Allen et al., 1998, Tabla 12). Donde la tabla da el
+#     valor inicial solo en la fila del grupo (cereales 0.3, leguminosas 0.4), se toma ese. Las proporciones de las
+#     etapas (etapas_dias_fao56) son de la Tabla 11 y se escalan al ciclo local.
 #   - Rendimiento y precio salen del SIAP, del municipio de Guasave, otoño-invierno y riego (rules/sources/
 #     siap_guasave_oi_riego.yaml): mediana y p10–p90 de 2015–2024 (rendimiento) y de 2020–2024 (precio, en pesos
 #     corrientes). Son del MUNICIPIO, no de la parcela, y «frijol» agrupa todos los tipos.
-#   - Lo demás local (ciclo, fechas de siembra, profundidad de raíz) está `null`: falta una fuente local (por
-#     ejemplo, la Agenda Técnica de Sinaloa de INIFAP o el Campo Experimental Valle del Fuerte).
+#   - Fechas de siembra, ciclo, días a floración, riegos, lámina de riego y profundidad de raíz salen de la Agenda
+#     Técnica Agrícola de Sinaloa 2017 (INIFAP); cada dato está en rules/sources/inifap_agenda_sinaloa_2017.csv con
+#     su página y su tabla. Lo que el documento no dice (lámina del frijol, garbanzo y sorgo; profundidad de raíz de
+#     los cultivos de rotación; calor que daña) queda `null`.
 #   - NADA está validado por un técnico. `null` significa «por definir»: si falta un parámetro, el criterio que lo
 #     necesita se declara «sin dato»; nunca se rellena con un valor inventado.
 # No se simulan más cultivos de rotación que estos cuatro.
@@ -21,13 +24,18 @@
 # se marcan «poco comunes en la zona».
 
 rules_version: crops.v2
-fuente: "FAO-56 (Allen et al., 1998), Tabla 12, solo los coeficientes marcados; el resto, por definir"
+fuente: "FAO-56 (Allen et al., 1998), Tabla 12, solo los coeficientes marcados; INIFAP (Agenda Técnica de Sinaloa 2017); SIAP"
 validado_por: null      # nombre del técnico que lo revisó
 method: assumed         # supuestos del equipo mientras no haya fuente local
 
 # El cultivo que se rota: maíz de riego en otoño-invierno. Mismos criterios que el resto; no es una estrategia.
 maiz_base:
-  kc_por_etapa: { inicial: null, media: 1.20, final: 0.35 }   # FAO-56 T12: media 1.20; final 0.60 (cosecha con grano húmedo) a 0.35 (grano seco): se toma 0.35. Inicial no legible: por definir.
+  kc_por_etapa: { inicial: 0.3, media: 1.20, final: 0.35 }   # FAO-56 T12: media 1.20; final 0.60 (cosecha con grano húmedo) a 0.35 (grano seco): se toma 0.35; inicial 0.3 = valor del grupo «Cereals» (la tabla no lo repite en cada fila)
+  etapas_dias_fao56: [25, 40, 45, 30]                         # FAO-56 T11, maíz en clima árido sembrado en dic/ene (inicial, desarrollo, media, final): solo sus proporciones, que se escalan al ciclo
+  dias_a_floracion: { min: 84, max: 106, tipo: "floración femenina de los híbridos evaluados", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 15 (CEVAF 2015 y 2016), pp. 71-72; no aclara si cuenta desde siembra o emergencia" }
+  ventana_siembra: { inicio: "25-oct", fin: "30-nov", nota: "óptima para grano en el norte de Sinaloa (Valle del Fuerte)", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, p. 72" }
+  profundidad_raiz_m: 1.0                                       # INIFAP Tabla 20, p. 80: 100 cm de la etapa R1 a la cosecha
+  lamina_riego_mm: { riegos_normal: 5, neta_normal: 446, bruta_normal: 875, riegos_escasez: 4, neta_escasez: 420, bruta_escasez: 715, fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 21, pp. 81-82: presiembra + auxilios; «escasez» = un auxilio menos" }
   ciclo_dias: 140                                              # FAO-56 T11, maíz en clima árido sembrado en dic/ene (25+40+45+30): referencia, no dato de Guasave
   rendimiento_t_ha: { mediana: 12.43, p10: 11.14, p90: 12.75, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
   precio_mxn_t: { mediana: 5653.1, p10: 3963.28, p90: 6492.91, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
@@ -42,21 +50,40 @@ cultivos:
     requiere_venta: true      # regla de ejemplo ya existente
     ciclo_dias: null
     estado_evidencia: a_validar
-    variante_por_defecto: negro
-    # Cada variante es un perfil completo, no una etiqueta. La elige el técnico
-    # en pipeline/parcels/<id>.yaml (campo frijol_variante). El paquete lleva
-    # solo la variante elegida. Hoy solo está «negro», el único con un perfil de FAO-56; los
-    # tipos de frijol que más se siembran en Guasave se agregan con el técnico (y al enum
-    # `frijol_variante` de shared/schema/).
+    variante_por_defecto: azufrado
+    # Cada variante es un perfil completo, no una etiqueta. La elige el técnico en pipeline/parcels/<id>.yaml
+    # (campo frijol_variante). El paquete lleva solo la variante elegida. El azufrado es el tipo que más se siembra
+    # en Sinaloa (INIFAP, p. 29) y el negro, el segundo grupo que el documento recomienda. Ambos son Phaseolus
+    # vulgaris: el Kc de FAO-56 «Beans, dry» sirve para los dos.
     variantes:
-      negro:
-        nombre: Frijol negro
-        que_es: frijol negro
+      azufrado:
+        nombre: Frijol azufrado
+        que_es: frijol azufrado, el tipo que más se siembra en Sinaloa
         nombre_cientifico: Phaseolus vulgaris  # a revisar con el técnico antes de publicarlo
         kc_por_etapa: { inicial: 0.4, media: 1.15, final: 0.35 }   # FAO-56 T12, «Beans, dry»
+        etapas_dias_fao56: [20, 30, 40, 20]                        # FAO-56 T11, frijol seco (110 días, climas continentales): solo proporciones
+        profundidad_raiz_m: null    # el documento no la dice
+        ventana_siembra: { inicio: "01-oct", fin: "31-oct", nota: "norte de Sinaloa", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, p. 33" }
+        ciclo_dias: { min: 95, max: 105, tipo: "ciclo vegetativo de las variedades azufradas de mata", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 5, p. 32; no aclara si es a madurez o a cosecha" }
+        dias_a_floracion: { min: 38, max: 40, fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 5, p. 32" }
+        riegos_auxilio: { min: 1, max: 2, nota: "1 con nivel freático alto, 2 con nivel bajo; el primero hacia los 40 días", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Riegos, p. 34" }
+        lamina_riego_mm: null       # el documento no da lámina para el frijol
+        umbral_calor_c: null        # el documento no da una temperatura de daño
+        rendimiento_t_ha: { mediana: 1.94, p10: 1.52, p90: 2.05, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
+        precio_mxn_t: { mediana: 22317.82, p10: 20725.0, p90: 25707.11, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
+        estado_evidencia: a_validar
+      negro:
+        nombre: Frijol negro
+        que_es: frijol negro semiguía (Negro Pacífico, Tacaná y Jamapa)
+        nombre_cientifico: Phaseolus vulgaris  # a revisar con el técnico antes de publicarlo
+        kc_por_etapa: { inicial: 0.4, media: 1.15, final: 0.35 }   # FAO-56 T12, «Beans, dry»
+        etapas_dias_fao56: [20, 30, 40, 20]
         profundidad_raiz_m: null
-        ventana_siembra: null
-        ciclo_dias: null
+        ventana_siembra: { inicio: "01-oct", fin: "31-oct", nota: "norte de Sinaloa", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, p. 33" }
+        ciclo_dias: { min: 115, max: 125, tipo: "ciclo vegetativo de los negros semiguía", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 5, p. 32; no aclara si es a madurez o a cosecha" }
+        dias_a_floracion: { min: 46, max: 53, fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 5, p. 32" }
+        riegos_auxilio: { min: 2, max: 3, nota: "tres por lo general en las variedades tardías (el negro)", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Riegos, p. 35" }
+        lamina_riego_mm: null
         umbral_calor_c: null
         rendimiento_t_ha: { mediana: 1.94, p10: 1.52, p90: 2.05, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
         precio_mxn_t: { mediana: 22317.82, p10: 20725.0, p90: 25707.11, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
@@ -68,10 +95,13 @@ cultivos:
     fija_nitrogeno: true
     exige_maquinaria: null
     requiere_venta: null
-    ciclo_dias: null
-    kc_por_etapa: { inicial: null, media: 1.00, final: 0.35 }   # FAO-56 T12, «Chick pea»; el inicial no se pudo leer: por definir
+    ciclo_dias: { min: 130, max: 140, tipo: "días a madurez", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 8, p. 52 (Blanoro 130, Jumbo 2010 135, Blanco Sinaloa-92 140)" }
+    riegos_auxilio: { min: 1, max: 2, nota: "1 o 2 en aluvión y 2 en barrial (a los 40 y 65 días)", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Riegos, p. 53" }
+    lamina_riego_mm: null     # el documento solo habla de «riegos ligeros»
+    kc_por_etapa: { inicial: 0.4, media: 1.00, final: 0.35 }   # FAO-56 T12, «Chick pea»; inicial 0.4 = valor del grupo «Legumes» (la tabla no lo repite en cada fila)
+    etapas_dias_fao56: [20, 30, 40, 20]                        # el garbanzo no está en la Tabla 11: se usan las proporciones del frijol seco (20/30/40/20, 110 días), escaladas al ciclo
     profundidad_raiz_m: null
-    ventana_siembra: null
+    ventana_siembra: { inicio: "15-nov", fin: "15-dic", nota: "fecha óptima para Sinaloa; el documento no distingue el norte", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, p. 52" }
     umbral_calor_c: null
     rendimiento_t_ha: { mediana: 2.22, p10: 2.02, p90: 2.52, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
     precio_mxn_t: { mediana: 17076.01, p10: 16509.44, p90: 21689.98, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
@@ -83,11 +113,15 @@ cultivos:
     fija_nitrogeno: false
     exige_maquinaria: true    # regla de ejemplo ya existente
     requiere_venta: true      # regla de ejemplo ya existente
-    ciclo_dias: null
-    kc_por_etapa: { inicial: null, media: 1.00, final: 0.55 }   # FAO-56 T12, «Sorghum, grain»: media 1.00–1.10, se toma 1.00 (el extremo bajo); inicial no legible
+    ciclo_dias: { min: 130, max: 140, tipo: "días del ciclo; referencia de FAO-56, NO de Guasave", fuente: "FAO-56 Tabla 11, sorgo (130 días en EUA, Pakistán y Mediterráneo; 140 en región árida); el INIFAP solo clasifica precoz, intermedio y tardío" }
+    dias_a_floracion: { min: 70, max: 85, tipo: "días después de emergencia; dato indirecto (el tercer riego «en floración»)", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Riegos, p. 102" }
+    riegos_auxilio: { min: 3, max: 4, fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Riegos, p. 102" }
+    lamina_riego_mm: null
+    kc_por_etapa: { inicial: 0.3, media: 1.00, final: 0.55 }   # FAO-56 T12, «Sorghum, grain»: media 1.00–1.10, se toma 1.00 (el extremo bajo); inicial 0.3 = valor del grupo «Cereals»
+    etapas_dias_fao56: [20, 35, 40, 30]                        # FAO-56 T11, sorgo (130 días, EUA, Pakistán, Mediterráneo): solo proporciones
     profundidad_raiz_m: null
-    ventana_siembra: null
-    umbral_calor_c: null
+    ventana_siembra: { inicio: "15-ene", fin: "10-mar", nota: "suelos de aluvión; el documento ubica el sorgo de riego en primavera-verano, con siembra óptima en la segunda quincena de enero", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, p. 101" }
+    umbral_calor_c: 40        # INIFAP p. 111: hacia 40 °C el polen del sorgo se esteriliza (y con unos 12 °C, por frío)
     rendimiento_t_ha: { mediana: 6.39, p10: 5.3, p90: 7.09, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
     precio_mxn_t: { mediana: 5225.61, p10: 3746.97, p90: 5798.9, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }
     estado_evidencia: a_validar
@@ -98,10 +132,13 @@ cultivos:
     fija_nitrogeno: false
     exige_maquinaria: null
     requiere_venta: null
-    ciclo_dias: null
+    ciclo_dias: { min: 105, max: 120, tipo: "días a madurez", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 32, pp. 141-142 (harineros 105-116; duros 115-120); a cosecha, 130-140 días desde la siembra (p. 153)" }
+    riegos_auxilio: { min: 3, max: 3, nota: "más de 3 en suelos delgados o salinos", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 34, p. 146" }
+    lamina_riego_mm: { acumulada: 450, riegos: 4, nota: "45 cm acumulados: 15 de presiembra y 3 auxilios de 10; el documento no aclara si es neta o bruta", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, Tabla 34, p. 146 (Valles del Carrizo, del Fuerte y Guasave)" }
+    etapas_dias_fao56: [20, 60, 70, 30]                        # FAO-56 T11, trigo de invierno de California sembrado en diciembre (180 días): solo proporciones
     kc_por_etapa: { inicial: 0.7, media: 1.15, final: 0.25 }   # FAO-56 T12, trigo de invierno sin heladas: inicial 0.7; final 0.25–0.41 (el más alto es para cosecha a mano): se toma 0.25, cosecha con máquina
     profundidad_raiz_m: null
-    ventana_siembra: null
+    ventana_siembra: { inicio: "15-nov", fin: "31-dic", nota: "época óptima", fuente: "INIFAP, Agenda Técnica Agrícola de Sinaloa 2017, p. 142" }
     umbral_calor_c: null
     rendimiento_t_ha: { mediana: 6.13, p10: 4.31, p90: 6.58, periodo: "2015–2024", nivel: municipio, fuente: "SIAP, Guasave, otoño-invierno, riego" }
     precio_mxn_t: { mediana: 5827.85, p10: 4970.19, p90: 8586.09, periodo: "2020–2024", nivel: municipio, fuente: "SIAP, precio medio rural, pesos corrientes de cada año" }

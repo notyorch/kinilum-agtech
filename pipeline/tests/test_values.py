@@ -114,9 +114,9 @@ def test_with_fewer_than_three_complete_mays_the_heat_is_declared_without_data()
 def test_the_flowering_window_follows_the_sowing_month_and_the_stated_assumption():
     from harmonize import phenology as ph
 
-    assert [str(d) for d in ph.flowering_window("june", 2024)] == ["2024-07-26", "2024-09-13"]
-    assert [str(d) for d in ph.flowering_window("may", 2024)] == ["2024-06-25", "2024-08-14"]
-    assert [str(d) for d in ph.flowering_window("july", 2024)] == ["2024-08-25", "2024-10-14"]
+    assert [str(d) for d in ph.flowering_window("june", 2024)] == ["2024-08-24", "2024-10-14"]
+    assert [str(d) for d in ph.flowering_window("may", 2024)] == ["2024-07-24", "2024-09-14"]
+    assert [str(d) for d in ph.flowering_window("july", 2024)] == ["2024-09-23", "2024-11-14"]
     with pytest.raises(ValueError, match="mes de siembra desconocido"):
         ph.flowering_window("agosto", 2024)
 
@@ -126,15 +126,16 @@ def test_the_flowering_assumptions_are_declared_as_assumptions_to_validate():
 
     r = ph.maize_rules()
     assert (r["estado_evidencia"], r["method"], r["fuente"], r["validado_por"]) == ("a_validar", "assumed", None, None)
-    assert r["dias_a_floracion"] == [55, 75] and r["umbral_calor_c"] == 35
+    # Los días a floración son de INIFAP (Tabla 15); el umbral de calor sigue siendo un supuesto del equipo.
+    assert r["dias_a_floracion"] == [84, 106] and r["umbral_calor_c"] == 35
 
 
 def test_heat_days_are_counted_only_inside_the_window_and_only_for_complete_years():
     from harmonize import phenology as ph
 
-    f = power_fetch(2022, 2023, lambda y, m, d: 36.0 if (m, d) in {(8, 1), (8, 2), (8, 3)} or (m == 5 and d == 10) else 30.0)  # mayo queda fuera de la ventana
+    f = power_fetch(2022, 2023, lambda y, m, d: 36.0 if (m, d) in {(9, 1), (9, 2), (9, 3)} or (m == 5 and d == 10) else 30.0)  # mayo queda fuera de la ventana
     assert ph.heat_days_in_window(f.data.dates, f.data.col("T2M_MAX"), "june") == {2022: 3, 2023: 3}
-    cut = days("2022-01-01", "2023-08-31")  # 2023 se corta en agosto: su ventana (hasta el 13 de septiembre) no está completa
+    cut = days("2022-01-01", "2023-09-30")  # 2023 se corta en agosto: su ventana (hasta el 14 de octubre) no está completa
     assert sorted(ph.heat_days_in_window(cut, np.full(len(cut), 30.0), "june")) == [2022]
 
 
@@ -158,7 +159,7 @@ def test_an_alluvial_soil_has_no_defined_range_so_the_root_depth_is_no_data_unti
 
 def test_the_flowering_window_for_a_winter_sowing_crosses_into_the_next_year_of_the_season():
     # 1 de diciembre + 55 días y 31 de diciembre + 75 días: la ventana cae en el año siguiente al de la siembra
-    assert phenology.flowering_window("december", 2024) == (date(2025, 1, 25), date(2025, 3, 16))
+    assert phenology.flowering_window("december", 2024) == (date(2025, 2, 23), date(2025, 4, 16))
 
 
 def test_a_field_measurement_replaces_the_range_and_is_measured():

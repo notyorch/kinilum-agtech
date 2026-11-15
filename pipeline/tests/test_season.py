@@ -5,7 +5,7 @@ from datetime import date
 import numpy as np
 import pytest
 
-from harmonize import season
+from harmonize import phenology, season
 from ingest.contract import Series
 
 
@@ -15,19 +15,21 @@ def daily(start: str, end: str, value: float, name: str = "v") -> Series:
 
 
 def test_the_flowering_deficit_is_kc_times_et0_minus_rain_with_the_spread_between_sources():
-    # siembra en diciembre de 2024 → ventana del 25 de enero al 16 de marzo de 2025: 51 días
+    # siembra en diciembre de 2024 → ventana de floración de 2025, con los días que digan las reglas (INIFAP: 84 a 106)
+    start, end = phenology.flowering_window("december", 2024)
+    n = (end - start).days + 1
     rain_a, rain_b = daily("2024-01-01", "2025-12-31", 0.1, "r"), daily("2024-01-01", "2025-12-31", 0.2, "p")
     et_a, et_b = daily("2024-01-01", "2025-12-31", 4.0, "e"), daily("2024-01-01", "2025-12-31", 5.0, "e2")
     out = season.flowering_deficits("december", 1.2, [(rain_a, "r"), (rain_b, "p")], [(et_a, "e"), (et_b, "e2")])
-    assert list(out) == [2025] and 51 == (date(2025, 3, 16) - date(2025, 1, 25)).days + 1
-    combos = sorted(1.2 * et * 51 - r * 51 for et in (4.0, 5.0) for r in (0.1, 0.2))
+    assert list(out) == [2025] and (start, end) == (date(2025, 2, 23), date(2025, 4, 16)) and n == 53
+    combos = sorted(1.2 * et * n - r * n for et in (4.0, 5.0) for r in (0.1, 0.2))
     d = out[2025]
     assert d["p10"] == pytest.approx(combos[0]) and d["p90"] == pytest.approx(combos[-1]) and d["p50"] == pytest.approx(float(np.median(combos)))
 
 
 def test_a_season_with_a_missing_day_in_any_source_is_left_out_not_filled():
     rain, et0 = daily("2024-01-01", "2025-12-31", 0.0, "r"), daily("2024-01-01", "2025-12-31", 4.0, "e")
-    rain.columns["r"][np.where(rain.dates == np.datetime64("2025-02-10"))[0][0]] = np.nan
+    rain.columns["r"][np.where(rain.dates == np.datetime64("2025-03-10"))[0][0]] = np.nan
     assert season.flowering_deficits("december", 1.2, [(rain, "r")], [(et0, "e")]) == {}
 
 
@@ -38,11 +40,11 @@ def test_the_deficit_never_goes_below_zero_when_it_rains_more_than_the_crop_need
 
 def test_the_seasons_carry_heat_days_for_the_same_flowering_year():
     power = daily("2024-01-01", "2025-12-31", 30.0, "T2M_MAX")
-    hot = (power.dates >= np.datetime64("2025-02-01")) & (power.dates <= np.datetime64("2025-02-03"))
+    hot = (power.dates >= np.datetime64("2025-03-01")) & (power.dates <= np.datetime64("2025-03-03"))
     power.columns["T2M_MAX"][hot] = 36.0
     rain, et0 = daily("2024-01-01", "2025-12-31", 0.0, "r"), daily("2024-01-01", "2025-12-31", 4.0, "e")
     rows = season.seasons_part("december", 1.2, [(rain, "r")], [(et0, "e")], power)
-    assert rows == [{"year": 2025, "deficit": {"p10": 244.8, "p50": 244.8, "p90": 244.8}, "heat_days": 3}]
+    assert rows == [{"year": 2025, "deficit": {"p10": 254.4, "p50": 254.4, "p90": 254.4}, "heat_days": 3}]
 
 
 def test_rain_this_season_accumulates_by_month_and_projects_with_the_other_years():

@@ -37,7 +37,8 @@ export function robustnessOf(firstShare: number, marginMedian: number): Robustne
 
 /** "9 de cada 10": redondeo a décimos, como pide el PRD. */
 export function outOfTen(count: number, runs: number): number {
-  return Math.round((count / runs) * 10);
+  // Nunca «10 de cada 10»: la simulación repite pocos años reales y decir 10 sonaría a certeza.
+  return Math.min(9, Math.round((count / runs) * 10));
 }
 
 /** Certeza de lo que dice cada tarjeta (componente Confidence), no robustez. Ejemplo. */

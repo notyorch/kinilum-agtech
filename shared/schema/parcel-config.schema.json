@@ -113,10 +113,8 @@
       ]
     },
     "frijol_variante": {
-      "description": "Opcional. Variante del frijol que se simula en la estrategia E2. La elige el técnico; si falta, vale la variante por defecto del catálogo (negro). Cada variante es un perfil completo del catálogo, no una etiqueta.",
-      "enum": [
-        "negro"
-      ]
+      "description": "Opcional. Variante del frijol que se simula en la estrategia E2. La elige el técnico; si falta, vale la variante por defecto del catálogo (azufrado). Cada variante es un perfil completo del catálogo, no una etiqueta.",
+      "enum": ["azufrado", "negro"]
     },
     "frijol_variante_elegida_por": {
       "description": "Opcional. Quién eligió la variante: el técnico de la parcela o, en el caso ilustrativo, el equipo. Si falta, vale technician.",

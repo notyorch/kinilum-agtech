@@ -16,11 +16,11 @@ area_ha: 4
 soil: alluvial        # valle aluvial de riego; sin profundidad de raíz definida (queda «sin dato» hasta medirla)
 water: irrigation     # el NDVI muestra un ciclo de invierno con pico en marzo, propio de un cultivo de riego
 machinery: hired      # manual | hired (maquila)
-sowing: december      # el NDVI sube de enero a marzo: siembra hacia diciembre (supuesto, a validar)
+sowing: november      # siembra óptima del maíz en el norte de Sinaloa: 25 de octubre a 30 de noviembre (INIFAP, p. 72); el NDVI sube de enero a marzo, coherente con eso
 
 # Sin cambios respecto a la parcela de ejemplo anterior: no hay información nueva para decidirlos.
 cultivos_aceptados: [frijol, garbanzo, sorgo, trigo]
 market: [frijol, sorgo]
 
-frijol_variante: negro
+frijol_variante: azufrado
 frijol_variante_elegida_por: team

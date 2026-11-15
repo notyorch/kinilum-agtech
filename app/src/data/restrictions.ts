@@ -39,7 +39,7 @@ export const PARCEL: Declaration = {
   machinery: 'hired',
   accepted: ['frijol', 'garbanzo', 'sorgo', 'trigo'],
   market: ['frijol', 'sorgo'],
-  beanVariant: 'negro',
+  beanVariant: 'azufrado',
   beanVariantChosenBy: 'team',
 };
 

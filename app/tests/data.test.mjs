@@ -45,7 +45,7 @@ test('crops.ts es el espejo de pipeline/rules/crops.v2.yaml', () => {
         fijaNitrogeno: c.fija_nitrogeno,
         exigeMaquinaria: c.exige_maquinaria,
         requiereVenta: c.requiere_venta,
-        cicloDias: c.ciclo_dias,
+        cicloDias: c.ciclo_dias ? { min: c.ciclo_dias.min, max: c.ciclo_dias.max } : null,
         estadoEvidencia: c.estado_evidencia,
       },
       id,
@@ -90,11 +90,11 @@ test('las estrategias de la app traen el cultivo que dice el paquete', () => {
 
 /* ---- Variantes del frijol regional -------------------------------------- */
 
-test('la variante de frijol es un perfil completo y el frijol negro es la variante por defecto de Sinaloa', () => {
+test('la variante de frijol es un perfil completo y el frijol azufrado es la variante por defecto de Sinaloa', () => {
   const { variantes, variante_por_defecto } = catalog.cultivos.frijol;
   assert.deepEqual(sorted(Object.keys(variantes)), sorted(BEAN_VARIANTS));
   assert.equal(variante_por_defecto, DEFAULT_BEAN_VARIANT);
-  assert.equal(DEFAULT_BEAN_VARIANT, 'negro');
+  assert.equal(DEFAULT_BEAN_VARIANT, 'azufrado');
   const params = ['kc_por_etapa', 'profundidad_raiz_m', 'ventana_siembra', 'ciclo_dias', 'umbral_calor_c', 'rendimiento_t_ha', 'precio_mxn_t'];
   for (const v of BEAN_VARIANTS) {
     for (const p of params) assert.ok(p in variantes[v], `${v}.${p}`);
@@ -105,6 +105,7 @@ test('la variante de frijol es un perfil completo y el frijol negro es la varian
 test('el nombre de E2 sale de la variante de frijol elegida', () => {
   const names = BEAN_VARIANTS.map((v) => es.variants[v].E2.name);
   assert.equal(new Set(names).size, BEAN_VARIANTS.length);
+  assert.match(es.variants.azufrado.E2.name, /frijol azufrado/);
   assert.match(es.variants.negro.E2.name, /frijol negro/);
 });
 

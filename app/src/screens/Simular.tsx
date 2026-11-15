@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Badge } from '../ds/components';
 import { Slider } from '../ds/primitives';
-import { robustnessOf, type StrategyId } from '../data/comparison';
+import { STRATEGIES, robustnessOf, type StrategyId } from '../data/comparison';
+import { coverageAt, SUPPLY_STEPS } from '../data/irrigation';
 import { RAIN_STEPS, TEMP_STEPS, firstShare, type ScenarioResult } from '../data/scenarios';
 import { t } from '../i18n/es';
 import { strategyText } from '../i18n/strategies';
@@ -17,12 +19,18 @@ const NOTICEABLE = 3;
 
 export function Simular() {
   const x = t.simular;
-  const { selected, setSelected, rain, setRain, temp, setTemp, declaration, resultAt } = useAppState();
+  const { selected, setSelected, rain, setRain, temp, setTemp, declaration, resultAt, simulation } = useAppState();
+  const [supply, setSupply] = useState<number>(SUPPLY_STEPS[0]);
+  const cover = simulation ? coverageAt(simulation, rain, temp, supply) : null;
   const normal = resultAt(0, 0);
   const r = resultAt(rain, temp);
 
   const name = (id: StrategyId) => strategyText(id, declaration.beanVariant).short;
   const ids = [...r.order, ...r.unranked, ...r.excluded];
+  // Con menos agua: primero las que más cubren; las compatibles sin dato y las excluidas siguen visibles, al final.
+  const waterRows = cover
+    ? [...STRATEGIES].sort((a, b) => Number(r.excluded.includes(a)) - Number(r.excluded.includes(b)) || (cover[b]?.mid ?? -1) - (cover[a]?.mid ?? -1))
+    : [];
   const register = useFlip(ids.join());
 
   const topChanged = r.order[0] !== normal.order[0];
@@ -125,6 +133,45 @@ export function Simular() {
         </ol>
         <p className="kn-hint">{x.orderHint}</p>
       </section>
+
+      {cover && (
+        <section className="kn-rank" aria-label={x.waterTitle}>
+          <h2 className="kn-rank__title">{x.waterTitle}</h2>
+          <p className="kn-card__text">{x.waterIntro}</p>
+          <Card label={x.waterLabel} aside={<span className="kn-reading">{supply} %</span>}>
+            <Slider label={x.waterLabel} value={supply} onChange={setSupply} min={40} max={100} step={10} valueText={x.waterText(supply)} />
+            <div className="kn-ticks">
+              <span>{x.waterMin}</span>
+              <span>{x.waterMax}</span>
+            </div>
+          </Card>
+          <ol className="kn-rank__list">
+            {waterRows.map((id) => {
+              const c = cover[id];
+              const out = r.excluded.includes(id);
+              const pct = (v: number) => Math.round(v * 100);
+              return (
+                <li key={id}>
+                  <div className="kn-rank__row" data-muted={out || !c || undefined}>
+                    <span className="kn-rank__name">{name(id)}</span>
+                    {out || !c ? (
+                      <span className="kn-rank__tag">{out ? t.comparar.excluded : t.comparar.unranked}</span>
+                    ) : (
+                      <>
+                        <span className="kn-rank__meter" aria-hidden="true">
+                          <span className={c.mid >= 0.999 ? 'kn-bar__fill--brand' : 'kn-bar__fill--ink'} style={{ width: `${pct(c.mid)}%` }} />
+                        </span>
+                        <span className="kn-rank__tag">{pct(c.low) >= 100 ? x.coversAll : x.covers(pct(c.low), pct(c.high))}</span>
+                      </>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="kn-hint">{x.waterNote}</p>
+        </section>
+      )}
 
       <DashedNote title={x.note} />
     </div>

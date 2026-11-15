@@ -15,11 +15,17 @@
 `sources/siap_guasave_oi_riego.yaml` guarda, año por año (2015–2024), la superficie sembrada, el rendimiento y el precio medio rural de maíz, frijol, garbanzo, sorgo y trigo en **Guasave, otoño-invierno y riego**. Salen del Cierre de la producción agrícola del SIAP (consulta por municipio, leída el 15 de noviembre de 2026). El catálogo solo resume esa tabla (mediana y p10–p90; el precio, de 2020 a 2024 y en pesos corrientes) y una prueba comprueba que coincidan.
 
 - Son datos **del municipio**, no de la parcela, y «frijol» agrupa todos los tipos.
-- Con rendimiento y precio, el criterio de **ingreso** ya se puede calcular. **Agua y clima siguen sin dato**: faltan el ciclo, las fechas de siembra, la profundidad de raíz y el Kc inicial.
+- Con rendimiento y precio, el criterio de **ingreso** ya se puede calcular.
+
+`sources/inifap_agenda_sinaloa_2017.csv` es la extracción (248 filas, una por dato, con página del PDF, página impresa, tabla o sección y notas) de la **Agenda Técnica Agrícola de Sinaloa 2017 del INIFAP**. De ahí salen: fechas de siembra (norte de Sinaloa para maíz y frijol; garbanzo y trigo sin distinguir región), ciclo, días a floración, número de riegos, lámina de riego (maíz: 446 mm netos y 875 mm brutos en cinco riegos, 420 y 715 con un auxilio menos por escasez; trigo: 450 mm acumulados), profundidad de raíz del maíz (1 m) y el calor que esteriliza el polen del sorgo (40 °C). `tests/test_inifap.py` comprueba que el catálogo coincide con la extracción.
+
+- **Lo que el documento no dice queda `null`:** lámina de frijol, garbanzo y sorgo; profundidad de raíz de los cuatro cultivos de rotación; calor que daña a maíz, frijol, garbanzo y trigo; días a madurez del sorgo (solo precoz, intermedio o tardío) y del maíz (solo grados día).
+- **Agua y clima siguen sin cerrarse:** al agua le falta la profundidad de raíz y, en garbanzo y sorgo, el Kc inicial; al clima, la temperatura que daña (solo el sorgo la tiene).
+- **Cuidado al comparar láminas:** la del trigo (Tabla 34) no aclara si es neta o bruta; la del maíz es de la Tabla 21 con ambas.
 
 ## Variantes del frijol regional (E2)
 
-Cada variante es un perfil completo, con los mismos campos que un cultivo. Hoy solo hay `negro` (por defecto); los tipos de frijol que más se siembran en Guasave se agregan con el técnico. La elige el técnico en `pipeline/parcels/<id>.yaml`, campo `frijol_variante`. El paquete lleva solo la variante elegida (`rotation.E2.variant`), cambiarla cambia el nombre del archivo y la app la nombra en «Evidencia».
+Cada variante es un perfil completo, con los mismos campos que un cultivo. Hay dos: `azufrado` (por defecto; el tipo que más se siembra en Sinaloa según el INIFAP) y `negro`. Otros tipos se agregan con el técnico y al enum `frijol_variante` del esquema. La elige el técnico en `pipeline/parcels/<id>.yaml`, campo `frijol_variante`. El paquete lleva solo la variante elegida (`rotation.E2.variant`), cambiarla cambia el nombre del archivo y la app la nombra en «Evidencia».
 
 Los nombres científicos se revisan con el técnico antes de publicarlos.
 

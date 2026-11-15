@@ -239,6 +239,25 @@
     }
   },
   "variants": {
+    "azufrado": {
+      "label": "Azufrado bean",
+      "what": "the bean type most planted in Sinaloa",
+      "E2": {
+        "name": "Maize → azufrado bean → maize",
+        "short": "Maize with azufrado bean",
+        "summary": "One cycle of azufrado bean between two cycles of maize.",
+        "missing": [
+          "The local price when you harvest.",
+          "The yield of the azufrado bean in your soil."
+        ],
+        "risks": [
+          "Sowing date and days to harvest of the azufrado bean.",
+          "Whitefly and virus.",
+          "Whether seed is available.",
+          "Grain moisture at harvest."
+        ]
+      }
+    },
     "negro": {
       "label": "Black bean",
       "what": "black-seeded common bean",

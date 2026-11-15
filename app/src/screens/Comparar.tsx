@@ -20,7 +20,7 @@ import { Bar, DashedNote, ScreenHead } from './parts';
 
 export function Comparar() {
   const c = t.comparar;
-  const { objective, setObjective, selected, setSelected, declaration, resultAt, go } = useAppState();
+  const { objective, setObjective, selected, setSelected, declaration, resultAt, simulated, go } = useAppState();
   const r = resultAt(0, 0);
 
   const tie = r.order.length > 1 && robustnessOf(firstShare(r), r.marginMedian) === 'indistinguishable';
@@ -45,7 +45,7 @@ export function Comparar() {
   return (
     <div className="kn-screen">
       <ScreenHead title={c.title} intro={c.intro} />
-      <DashedNote title={c.exampleTitle}>{c.exampleNote}</DashedNote>
+      {simulated ? <DashedNote title={c.realTitle}>{c.realNote}</DashedNote> : <DashedNote title={c.exampleTitle}>{c.exampleNote}</DashedNote>}
 
       <div className="kn-field">
         <p className="kn-field__label">{c.objective}</p>

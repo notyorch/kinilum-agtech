@@ -1,7 +1,8 @@
 # Maíz de riego en otoño-invierno: lo que hace falta de su calendario para medir calor y agua en la floración — versión maize.v1
 #
-# NADA aquí está validado. Son supuestos del equipo, sin fuente: el técnico local los corrige. Un valor aquí
-# cambia el resultado de `heat_days` y de la ventana de floración, no los datos de las fuentes.
+# Los días a floración vienen de la Agenda Técnica de Sinaloa 2017 (INIFAP). El umbral de calor (35 °C) sigue siendo
+# un supuesto del equipo, sin fuente: el técnico local lo corrige. Un valor aquí cambia el resultado de `heat_days` y
+# de la ventana de floración, no los datos de las fuentes.
 
 rules_version: maize.v1
 fuente: null
@@ -12,7 +13,7 @@ estado_evidencia: a_validar
 # Días entre la siembra y la floración. La parcela se siembra a lo largo de todo el mes declarado
 # (`sowing` en pipeline/parcels/<id>.yaml): la ventana empieza con el mínimo de días contados desde el
 # primer día del mes y termina con el máximo contado desde el último.
-dias_a_floracion: [55, 75]
+dias_a_floracion: [84, 106]   # INIFAP, Agenda Técnica de Sinaloa 2017, Tabla 15 (floración femenina de los híbridos evaluados por el CEVAF en 2015 y 2016); no aclara si cuenta desde siembra o emergencia
 
 # Temperatura máxima diaria (°C) desde la que el calor daña al cultivo en la floración. El valor viene del
 # paquete de ejemplo (`thresholds.heat_c`), que ya lo marcaba «a validar con el técnico».

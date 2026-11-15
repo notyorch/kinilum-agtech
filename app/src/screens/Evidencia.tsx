@@ -31,7 +31,7 @@ function RunsGrid({ yes, runs }: { yes: number; runs: number }) {
 
 export function Evidencia() {
   const e = t.evidencia;
-  const { objective, selected, declaration, resultAt } = useAppState();
+  const { objective, selected, declaration, resultAt, simulated } = useAppState();
   const r = resultAt(0, 0);
 
   const name = (id: StrategyId) => strategyText(id, declaration.beanVariant).short;
@@ -107,7 +107,8 @@ export function Evidencia() {
       </Card>
 
       <Card title={e.methodTitle}>
-        <p className="kn-card__text">{e.method}</p>
+        <p className="kn-card__text">{simulated ? e.methodReal : e.method}</p>
+        {simulated && <p className="kn-card__text">{e.methodRealCaveat}</p>}
         <div className="kn-tags">
           <SourceTag source="NASA POWER" resolution="~50 km" estimated estimatedLabel={t.estimated} />
           <SourceTag source="GPM IMERG" resolution="11 km" />

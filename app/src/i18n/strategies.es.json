@@ -239,6 +239,25 @@
     }
   },
   "variants": {
+    "azufrado": {
+      "label": "Frijol azufrado",
+      "what": "el tipo de frijol que más se siembra en Sinaloa",
+      "E2": {
+        "name": "Maíz → frijol azufrado → maíz",
+        "short": "Maíz con frijol azufrado",
+        "summary": "Un ciclo de frijol azufrado entre dos ciclos de maíz.",
+        "missing": [
+          "El precio local cuando usted coseche.",
+          "El rendimiento del frijol azufrado en su suelo."
+        ],
+        "risks": [
+          "Fecha de siembra y días a cosecha del frijol azufrado.",
+          "Mosca blanca y virus.",
+          "Si hay semilla disponible.",
+          "Humedad del grano en la cosecha."
+        ]
+      }
+    },
     "negro": {
       "label": "Frijol negro",
       "what": "frijol de grano negro",

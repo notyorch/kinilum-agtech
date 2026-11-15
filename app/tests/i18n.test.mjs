@@ -12,7 +12,7 @@ const esFlat = new Map(flat(es));
 const enFlat = new Map(flat(en));
 
 // Lo que se escribe igual en los dos idiomas (marca, unidades, símbolos).
-const SAME = new Set(['.app.name', '.simular.rainMin', '.simular.rainMid', '.simular.rainMax', '.simular.heatMin', '.simular.heatMid', '.simular.heatMax', '.parcela.rain.unit']);
+const SAME = new Set(['.app.name', '.simular.rainMin', '.simular.rainMid', '.simular.rainMax', '.simular.heatMin', '.simular.heatMid', '.simular.heatMax', '.parcela.rain.unit', '.simular.waterMin', '.simular.waterMax']);
 
 test('en.ts trae exactamente las mismas claves que es.ts', () => {
   assert.deepEqual([...enFlat.keys()].sort(), [...esFlat.keys()].sort());

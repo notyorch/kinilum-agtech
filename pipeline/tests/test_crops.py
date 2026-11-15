@@ -33,9 +33,11 @@ def test_sorghum_and_wheat_get_no_nitrogen_bonus():
 
 
 def test_what_the_catalog_still_lacks_is_declared_no_data_and_does_not_fail():
-    # El ingreso ya tiene rendimiento y precio del SIAP; agua y clima siguen «por definir» (ciclo, fechas, raíz, calor).
-    for crop in ("frijol", "garbanzo", "sorgo", "trigo"):
-        assert criteria_without_data(crop_profile(crop)) == ["water", "climate"], crop
+    # Ingreso (SIAP), fechas y ciclo (INIFAP) y Kc (FAO-56) ya tienen dato, así que el agua se puede calcular en los cuatro.
+    # Al clima le falta la temperatura que daña: solo el sorgo la tiene (INIFAP, p. 111).
+    expected = {"frijol": ["climate"], "garbanzo": ["climate"], "sorgo": [], "trigo": ["climate"]}
+    for crop, lacking in expected.items():
+        assert criteria_without_data(crop_profile(crop)) == lacking, crop
     # Suelo y erosión no dependen del perfil del cultivo: nunca faltan por él.
     assert "soil" not in PARAMS_BY_CRITERION and "erosion" not in PARAMS_BY_CRITERION
     assert criteria_without_data({}) == ["water", "climate", "income"]
@@ -52,7 +54,7 @@ def test_yield_and_price_in_the_catalog_are_the_stats_of_the_siap_table_they_cit
     assert table["anios"] == list(range(2015, 2025)) and table["consulta"]["municipio"] == "Guasave"
     for crop, rows in table["cultivos"].items():
         assert len(rows["rendimiento_t_ha"]) == len(rows["pmr_mxn_t"]) == len(rows["sembrada_ha"]) == 10, crop
-        profile = load_catalog()["maiz_base"] if crop == "maiz" else crop_profile(crop, "negro" if crop == "frijol" else None)
+        profile = load_catalog()["maiz_base"] if crop == "maiz" else crop_profile(crop, "azufrado" if crop == "frijol" else None)
         for field, values in (("rendimiento_t_ha", rows["rendimiento_t_ha"]), ("precio_mxn_t", rows["pmr_mxn_t"][5:])):
             got = profile[field]
             want = {"mediana": float(np.median(values)), "p10": float(np.percentile(values, 10)), "p90": float(np.percentile(values, 90))}
@@ -80,11 +82,12 @@ def test_a_complete_profile_has_every_criterion():
     assert criteria_without_data(profile) == ["income"]
 
 
-def test_bean_variants_are_complete_profiles_and_negro_is_the_default_for_sinaloa():
+def test_bean_variants_are_complete_profiles_and_azufrado_is_the_default_for_sinaloa():
     frijol = load_catalog()["cultivos"]["frijol"]
-    assert set(frijol["variantes"]) == {"negro"}
-    assert frijol["variante_por_defecto"] == "negro"
-    assert crop_profile("frijol")["nombre"] == crop_profile("frijol", "negro")["nombre"] == "Frijol negro"
+    assert set(frijol["variantes"]) == {"azufrado", "negro"}
+    assert frijol["variante_por_defecto"] == "azufrado"
+    assert crop_profile("frijol")["nombre"] == crop_profile("frijol", "azufrado")["nombre"] == "Frijol azufrado"
+    assert crop_profile("frijol", "negro")["nombre"] == "Frijol negro"
     for variant in frijol["variantes"]:
         profile = crop_profile("frijol", variant)
         for params in PARAMS_BY_CRITERION.values():
@@ -106,10 +109,10 @@ def test_every_rule_without_a_source_is_to_validate():
 
 
 def test_rotation_block_carries_only_the_chosen_variant():
-    block = rotation_block("negro", "technician")
+    block = rotation_block("azufrado", "technician")
     assert block == {
         "rules_version": "crops.v2",
-        "E2": {"rotation_crop": "frijol", "variant": "negro", "variant_chosen_by": "technician"},
+        "E2": {"rotation_crop": "frijol", "variant": "azufrado", "variant_chosen_by": "technician"},
         "E3": {"rotation_crop": "sorgo"},
         "E4": {"rotation_crop": "garbanzo"},
         "E5": {"rotation_crop": "trigo"},

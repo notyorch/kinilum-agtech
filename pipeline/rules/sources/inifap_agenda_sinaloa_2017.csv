@@ -1,0 +1,249 @@
+cultivo,variable,valor,unidad,detalle,tabla_o_seccion,pagina_pdf,pagina_impresa,nota
+frijol,siembra_inicio,1 octubre,fecha,norte de Sinaloa,Época de siembra,33,31,
+frijol,siembra_fin,31 octubre,fecha,norte de Sinaloa,Época de siembra,33,31,Centro y sur: 15 oct-20 nov
+frijol,siembra_optima_mosca_blanca,tercera decena de octubre,periodo,más apropiada para reducir mosca blanca,Plagas,38,36,Siembras de septiembre o diciembre son las más afectadas
+frijol,dias_a_floracion,39,días,Janasa (Mata),Tabla 5,32,30,
+frijol,ciclo_vegetativo,104,días,Janasa (Mata),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,40,días,Azufrasin (Mata),Tabla 5,32,30,
+frijol,ciclo_vegetativo,104,días,Azufrasin (Mata),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,38,días,Azufrado Higuera (Mata),Tabla 5,32,30,
+frijol,ciclo_vegetativo,105,días,Azufrado Higuera (Mata),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,40,días,Azufrado Noroeste (Mata),Tabla 5,32,30,
+frijol,ciclo_vegetativo,105,días,Azufrado Noroeste (Mata),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,40,días,Azufrado Peruano 87 (Mata),Tabla 5,32,30,
+frijol,ciclo_vegetativo,105,días,Azufrado Peruano 87 (Mata),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,38,días,Azufrado Regional 87 (Mata),Tabla 5,32,30,
+frijol,ciclo_vegetativo,95,días,Azufrado Regional 87 (Mata),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,50,días,Negro Pacífico (Semiguía),Tabla 5,32,30,
+frijol,ciclo_vegetativo,125,días,Negro Pacífico (Semiguía),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,53,días,Negro Tacaná (Semiguía),Tabla 5,32,30,
+frijol,ciclo_vegetativo,125,días,Negro Tacaná (Semiguía),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,46,días,Negro Jamapa (Semiguía),Tabla 5,32,30,
+frijol,ciclo_vegetativo,115,días,Negro Jamapa (Semiguía),Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,dias_a_floracion,38,días,"Aluyori (alubia, grano blanco) (Mata)",Tabla 5,32,30,
+frijol,ciclo_vegetativo,103,días,"Aluyori (alubia, grano blanco) (Mata)",Tabla 5,32,30,"La tabla dice ""Ciclo vegetativo""; no aclara si es a madurez o a cosecha"
+frijol,tipos_sembrados,"azufrado (Janasa, Azufrasin, Az. Noroeste, Az. Higuera, Az. Regional 87, Az. Peruano 87); negro (Negro Pacífico, Negro Tacaná, Jamapa); blanco/alubia (Aluyori)",texto,variedades sugeridas para Sinaloa,Variedades,32,30,No menciona mayocoba. La superficie es mayormente Azufrado Higuera (p.29 pdf)
+frijol,tipo_dominante,azufrado; mayoría de superficie con Azufrado Higuera,texto,Sinaloa,Introducción,29,27,
+frijol,num_riegos_auxilio_aluvion_nivel_freatico_alto,1,riegos,"al inicio de floración, ~40 días después de siembra",Riegos,34,32,
+frijol,num_riegos_auxilio_aluvion_nivel_freatico_bajo,2,riegos,"2º en formación/llenado de grano, 60-70 días después de siembra",Riegos,34,32,
+frijol,riego_auxilio_1_dds,40,días después de siembra,"aluvión, inicio de floración (aprox.)",Riegos,34,32,
+frijol,riego_auxilio_2_dds,60-70,días después de siembra,"aluvión con nivel freático bajo, llenado de grano",Riegos,34,32,
+frijol,num_riegos_auxilio_barrial_precoces_intermedias,2,riegos,"1º inicio floración, 2º formación o llenado de vainas",Riegos,35,33,
+frijol,num_riegos_auxilio_barrial_tardias_negro,3,riegos,tercer riego en llenado de grano,Riegos,35,33,"""por lo general"""
+frijol,largo_tirada_maximo,150,m,riegos ligeros,Riegos,35,33,
+frijol,lamina_riego,NO DICE,,el documento no da lámina en cm ni mm para frijol,Riegos,34,32,
+frijol,profundidad_raiz,NO DICE,,,,34,32,
+frijol,temperatura_dano_floracion,NO DICE,,sólo menciona moho blanco con temperatura media <21 °C y roya con invierno benigno 16-25 °C,Enfermedades,47,45,No es temperatura de daño a floración/llenado
+frijol,rendimiento_estatal_riego_2015,1.55,t/ha,"Sinaloa, año agrícola 2015, riego",Introducción,29,27,
+frijol,rendimiento_medio_azufrado_demanda,1622,kg/ha,rendimiento medio usado en cálculo de demanda,Introducción,29,27,
+frijol,suelo_textura,franca o media (aluviones) ideales; también barrial con arcilla ≤60%,texto,,Selección y preparación del terreno,30,28,
+frijol,suelo_salinidad_maxima,2,dS (CE),evitar mayor,Selección y preparación del terreno,30,28,
+frijol,profundidad_siembra_barrial,6-8,cm,,Método de siembra,33,31,
+frijol,profundidad_siembra_aluvion,4-6,cm,,Método de siembra,33,31,
+frijol,cosecha_humedad_grano_trilla,14-16,%,,Cosecha,48,46,
+garbanzo,siembra_inicio,15 noviembre,fecha,"fecha óptima (doc: Sinaloa, no distingue norte)",Época de siembra,52,50,
+garbanzo,siembra_fin,15 diciembre,fecha,fecha óptima,Época de siembra,52,50,Máximo rendimiento sembrando en noviembre
+garbanzo,dias_a_madurez,140,días,Blanco Sinaloa-92,Tabla 8,52,50,Calibre de exportación 46-48
+garbanzo,dias_a_madurez,130,días,Blanoro,Tabla 8,52,50,Calibre de exportación 44-46
+garbanzo,dias_a_madurez,135,días,Jumbo 2010,Tabla 8,52,50,Calibre de exportación 34-36
+garbanzo,num_riegos_auxilio_barrial,2,riegos,1º previo a floración a los 40 días; 2º inicio llenado de cápsulas a los 65 días,Riegos,53,51,
+garbanzo,riego_auxilio_1_dds,40,días después de siembra,"barrial, previo a floración",Riegos,53,51,
+garbanzo,riego_auxilio_2_dds,65,días después de siembra,"barrial, inicio llenado de cápsulas",Riegos,53,51,
+garbanzo,num_riegos_auxilio_aluvion,1-2,riegos,el 2º depende de humedad disponible o lluvias,Riegos,53,51,
+garbanzo,largo_surco_maximo,120,m,,Riegos,53,51,
+garbanzo,lamina_riego,NO DICE,,"sólo ""riegos ligeros"", de preferencia surcos alternos",Riegos,53,51,
+garbanzo,dias_a_floracion,NO DICE,,,,53,51,Sólo indica el riego previo a floración a los 40 días
+garbanzo,profundidad_raiz,NO DICE,,,,53,51,
+garbanzo,temperatura_dano_floracion,NO DICE,,"24-27 °C favorece Fusarium (enfermedad), no daño a floración",Enfermedades,59,57,
+garbanzo,rendimiento_riego,1.8,t/ha,"promedio en riego, Sinaloa","Garbanzo de temporal, Introducción",62,60,"Cifra dada en el capítulo de temporal, no en el de riego"
+garbanzo,superficie_y_produccion_promedio_2013-2016,"46,532 ha; 77,891 t",,promedio estatal 3 ciclos,Introducción,50,48,
+garbanzo,suelo_textura,profundos y de textura media; barrial y aluvión; problemas en arenosos y poco profundos,texto,,Selección y preparación del terreno,51,49,
+garbanzo,profundidad_siembra_barrial,10,cm,surcos a 80 cm,Método de siembra,52,50,
+maiz,siembra_inicio,25 octubre,fecha,"norte de Sinaloa (Valle del Fuerte), óptima para grano",Fecha de siembra,72,70,
+maiz,siembra_fin,30 noviembre,fecha,"norte de Sinaloa (Valle del Fuerte), óptima para grano",Fecha de siembra,72,70,Centro del estado: noviembre-diciembre
+maiz,siembra_enero_efecto,reduce 10-20 % el rendimiento,,"reduce daño por heladas en el norte, en especial Valle del Carrizo",Fecha de siembra,72,70,
+maiz,dias_a_floracion_masculina,91,días,DK3000,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,91,días,DK3000,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,104,días,GARAÑON,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,103,días,GARAÑON,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,90,días,XR-47,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,90,días,XR-47,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,103,días,XR-49,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,102,días,XR-49,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,85,días,XR-56,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,85,días,XR-56,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,91,días,MAX1360,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,91,días,MAX1360,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,92,días,MAX312,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,90,días,MAX312,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,93,días,MAX1363,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,92,días,MAX1363,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,107,días,XS-4614,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,106,días,XS-4614,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,105,días,XS-4517,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,101,días,XS-4517,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,92,días,SULTAN,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,92,días,SULTAN,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,90,días,ARTILLERO,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,91,días,ARTILLERO,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,92,días,N1R03,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,92,días,N1R03,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,89,días,N1R01,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,89,días,N1R01,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,101,días,P-3090,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,100,días,P-3090,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,91,días,P3289 W,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,90,días,P3289 W,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,89,días,P3254 W,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,88,días,P3254 W,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,91,días,P-3258,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,89,días,P-3258,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,90,días,SX9104,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,90,días,SX9104,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,91,días,SX9004,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,91,días,SX9004,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,105,días,SYN-914,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,104,días,SYN-914,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,104,días,SYN-904,Tabla 15,71,69,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,103,días,SYN-904,Tabla 15,71,69,
+maiz,dias_a_floracion_masculina,86,días,SZ6008,Tabla 15,72,70,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,84,días,SZ6008,Tabla 15,72,70,
+maiz,dias_a_floracion_masculina,90,días,P-32-01-Y,Tabla 15,72,70,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,90,días,P-32-01-Y,Tabla 15,72,70,
+maiz,dias_a_floracion_masculina,89,días,XR20AF21,Tabla 15,72,70,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,91,días,XR20AF21,Tabla 15,72,70,
+maiz,dias_a_floracion_masculina,103,días,NA-35,Tabla 15,72,70,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,102,días,NA-35,Tabla 15,72,70,
+maiz,dias_a_floracion_masculina,105,días,SATÉLITE,Tabla 15,72,70,Evaluación CEVAF 2015 y 2016; la tabla no dice si es desde siembra o emergencia
+maiz,dias_a_floracion_femenina,104,días,SATÉLITE,Tabla 15,72,70,
+maiz,ciclo_a_madurez_R6,1451.1,grados día acumulados,híbrido típico de ciclo intermedio,Tabla 20,80,78,"El documento no da días a madurez, sólo grados día"
+maiz,ciclo_a_cosecha,1640.7,grados día acumulados,híbrido típico de ciclo intermedio,Tabla 20,80,78,
+maiz,jiloteo_R1,823.4,grados día acumulados,floración femenina,Tabla 20,80,78,
+maiz,lamina_requerimiento_total,445,"mm (4,450 m3/ha)",ciclo intermedio,Manejo y programación del riego,79,77,Tabla 20 acumulado = 444.9 mm; Tabla 21 suma 446 mm
+maiz,requerimiento_agua_ciclo,500-800,mm,"Doorembos y Kassam 1986, general",Manejo y programación del riego,79,77,
+maiz,periodo_critico_agua,floración (-15 días) y llenado de grano (+30 días),texto,,Manejo y programación del riego,79,77,
+maiz,merma_estres_hidrico_floracion,6-13,% del rendimiento por día,,Tabla 20 (texto posterior),80,78,
+maiz,riego_normal_1_lamina_neta,141,mm,etapa Presiembra; GDA -80,Tabla 21,81,79,Suelos con HA >130 mm/m
+maiz,riego_normal_1_lamina_bruta,235,mm,etapa Presiembra; GDA -80,Tabla 21,81,79,
+maiz,riego_normal_2_lamina_neta,54,mm,etapa V6; GDA 436,Tabla 21,81,79,Suelos con HA >130 mm/m
+maiz,riego_normal_2_lamina_bruta,160,mm,etapa V6; GDA 436,Tabla 21,81,79,
+maiz,riego_normal_3_lamina_neta,74,mm,etapa VT; GDA 616,Tabla 21,81,79,Suelos con HA >130 mm/m
+maiz,riego_normal_3_lamina_bruta,160,mm,etapa VT; GDA 616,Tabla 21,81,79,
+maiz,riego_normal_4_lamina_neta,86,mm,etapa R1; GDA 819,Tabla 21,82,80,Suelos con HA >130 mm/m
+maiz,riego_normal_4_lamina_bruta,160,mm,etapa R1; GDA 819,Tabla 21,82,80,
+maiz,riego_normal_5_lamina_neta,91,mm,etapa R3; GDA 1006,Tabla 21,82,80,Suelos con HA >130 mm/m
+maiz,riego_normal_5_lamina_bruta,160,mm,etapa R3; GDA 1006,Tabla 21,82,80,
+maiz,riego_escasez_1_lamina_neta,141,mm,etapa Presiembra; GDA -80,Tabla 21,81,79,
+maiz,riego_escasez_1_lamina_bruta,235,mm,etapa Presiembra; GDA -80,Tabla 21,81,79,
+maiz,riego_escasez_2_lamina_neta,72,mm,etapa V8-V10; GDA 500,Tabla 21,81,79,
+maiz,riego_escasez_2_lamina_bruta,160,mm,etapa V8-V10; GDA 500,Tabla 21,81,79,
+maiz,riego_escasez_3_lamina_neta,98,mm,etapa R1; GDA 747,Tabla 21,81,79,
+maiz,riego_escasez_3_lamina_bruta,160,mm,etapa R1; GDA 747,Tabla 21,81,79,
+maiz,riego_escasez_4_lamina_neta,109,mm,etapa R3; GDA 996,Tabla 21,82,80,
+maiz,riego_escasez_4_lamina_bruta,160,mm,etapa R3; GDA 996,Tabla 21,82,80,
+maiz,riegos_normal_total,5 (presiembra + 4 auxilios); Ln 446 mm; Lb 875 mm,,,Tabla 21,82,80,
+maiz,riegos_escasez_total,4 (presiembra + 3 auxilios); Ln 420 mm; Lb 715 mm,,,Tabla 21,82,80,
+maiz,ahorro_un_riego_auxilio,1300,m3/ha,sin afectar significativamente el rendimiento,Tabla 21 (texto posterior),82,80,
+maiz,riegos_auxilio_2_dias_al_riego,"66, 94",días (desde siembra),V10-11 hojas; antesis,Tabla 22,82,80,"Siembra 30/12/2002, CEVAF, norte de Sinaloa; precipitación 30 mm"
+maiz,riegos_auxilio_2_rendimiento,6.79,t/ha,reducción 36.05 %,Tabla 22,82,80,
+maiz,riegos_auxilio_3_dias_al_riego,"66, 94, 113",días (desde siembra),V10-V11; antesis; grano lechoso,Tabla 22,82,80,"Siembra 30/12/2002, CEVAF, norte de Sinaloa; precipitación 30 mm"
+maiz,riegos_auxilio_3_rendimiento,9.73,t/ha,reducción 8.42 %,Tabla 22,82,80,
+maiz,riegos_auxilio_4_dias_al_riego,"59, 78, 94, 113",días (desde siembra),V8-V9; V13; antesis; grano acuoso-lechoso,Tabla 22,82,80,"Siembra 30/12/2002, CEVAF, norte de Sinaloa; precipitación 30 mm"
+maiz,riegos_auxilio_4_rendimiento,9.8,t/ha,reducción 7.7 %,Tabla 22,82,80,
+maiz,riegos_auxilio_5_dias_al_riego,"44, 66, 87, 113, 131",días (desde siembra),V6; V10-V11; inicio espigamiento; grano acuoso; grano masoso,Tabla 22,83,81,"Siembra 30/12/2002, CEVAF, norte de Sinaloa; precipitación 30 mm"
+maiz,riegos_auxilio_5_rendimiento,10.62,t/ha,reducción 0 %,Tabla 22,83,81,
+maiz,profundidad_raiz,7,cm,etapa Ve,Tabla 20,80,78,
+maiz,profundidad_raiz,30,cm,etapa V4,Tabla 20,80,78,
+maiz,profundidad_raiz,70,cm,etapa V8,Tabla 20,80,78,
+maiz,profundidad_raiz,80,cm,etapa V12,Tabla 20,80,78,
+maiz,profundidad_raiz,90,cm,etapa VT,Tabla 20,80,78,
+maiz,profundidad_raiz,100,cm,etapa R1 a cosecha,Tabla 20,80,78,
+maiz,temperatura_dano_floracion,NO DICE,,menciona heladas en siembras de otoño del norte pero sin valor,Fecha de siembra,72,70,
+maiz,rendimiento_oi_2014-15_riego,10.53,t/ha,"Sinaloa, 481,612 ha, 5,071,718 t",Introducción,67,65,
+maiz,suelo_profundidad,>50 cm y hasta 1 m; pendiente <1 %,texto,,Necesidades de suelo,68,66,
+maiz,suelo_textura,"franca, franca-limosa, franca-arcillo-limosa, franca-arcillo-arenosa, franca-arcillosa; también arcillosas",texto,,Necesidades de suelo,68,66,
+maiz,suelo_salinidad_maxima,2.7,dS (CE),para evitar baja >10 %,Necesidades de suelo,68,66,
+maiz,profundidad_siembra,3-4 (seco); 6-8 (húmedo),cm,,Método de siembra tradicional,73,71,
+sorgo,siembra_optima,segunda quincena de enero,periodo,sorgo de riego,Época de siembra,101,99,
+sorgo,siembra_inicio_aluvion,15 enero,fecha,suelos de aluvión,Época de siembra,101,99,
+sorgo,siembra_fin_aluvion,10 marzo,fecha,suelos de aluvión,Época de siembra,101,99,"El capítulo ubica el sorgo en primavera-verano (p.99), no en otoño-invierno"
+sorgo,siembra_inicio_barrial,15 enero,fecha,suelos de barrial,Época de siembra,101,99,
+sorgo,siembra_fin_barrial,finales de febrero,fecha,suelos de barrial,Época de siembra,101,99,
+sorgo,cosecha_almacenable,junio y primera quincena de julio,periodo,"grano a 14-16 % humedad, según fecha de siembra",Cosecha,112,110,
+sorgo,ciclo,NO DICE en días,,sólo clasifica precoz/intermedio/tardío,Tabla 25,100,98,Ver filas siguientes
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,Asgrow Dorado-M,Tabla 25,100,98,
+sorgo,ciclo_vegetativo_categoria,Precoz,categoría,Dekalb DK-38,Tabla 25,100,98,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,Pioneer-8172,Tabla 25,100,98,
+sorgo,ciclo_vegetativo_categoria,Intermedio,categoría,Asgrow Diamante,Tabla 25,100,98,
+sorgo,ciclo_vegetativo_categoria,Intermedio,categoría,Asgrow Esmeralda,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Intermedio,categoría,Pioneer-8113,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Precoz,categoría,Asgrow Dorado-E,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Precoz,categoría,NK-180,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Precoz,categoría,Pioneer-8310,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,Dekalb DK-50,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,WAC 692-1,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,Pioneer-8132,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,Pioneer-8171,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,Pioneer-813,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,"Pioneer-8172 (segunda fila, color café)",Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Intermedio,categoría,Asgrow Turqueza,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,INIA RB-3006,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,INIA RB-3030,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Tardío,categoría,Costeño 201,Tabla 25,101,99,
+sorgo,ciclo_vegetativo_categoria,Intermedio,categoría,Perla 101,Tabla 25,101,99,
+sorgo,num_riegos_auxilio,3-4,riegos,,Riegos,102,100,
+sorgo,riego_auxilio_1_dias_de_emergida,20-30,días después de emergencia,final del amacollo,Riegos,102,100,
+sorgo,riego_auxilio_2_dias_de_emergida,50-60,días después de emergencia,antes del embuche,Riegos,102,100,
+sorgo,riego_auxilio_3_dias_de_emergida,70-85,días después de emergencia,floración,Riegos,102,100,
+sorgo,riego_auxilio_4_dias_de_emergida,85-100,días después de emergencia,estado lechoso a masoso,Riegos,102,100,
+sorgo,dias_a_floracion,70-85,días después de emergencia,"inferido del 3er riego ""en floración""; el doc no da otra cifra",Riegos,102,100,Es dato indirecto
+sorgo,merma_riego_inoportuno,20-30,% del rendimiento,,Riegos,102,100,
+sorgo,lamina_riego,NO DICE,,,Riegos,102,100,
+sorgo,profundidad_raiz,NO DICE,,,,102,100,
+sorgo,temperatura_dano_floracion,12 y 40,°C,"esterilidad de polen: bajas (~12 °C), altas (~40 °C) y sequía 2-3 semanas antes de floración",Control de enfermedades (ergot),111,109,
+sorgo,rendimiento_riego_grano,6.15,t/ha,"Sinaloa, bajo riego (30 % de la superficie)",Introducción,99,97,
+sorgo,rendimiento_riego_forraje_verde,7,t/ha,"Sinaloa, riego",Introducción,99,97,Cifra tal como aparece; parece baja para forraje verde
+sorgo,suelo_textura,barrial = arcillosa; aluvión = limosa o franca,texto,,Preparación del terreno,100,98,
+sorgo,profundidad_siembra,3-5 (seco); 5 (húmedo aluvión),cm,,Método de siembra,102,100,
+trigo,siembra_inicio,15 noviembre,fecha,época óptima,Fecha de siembra,142,140,
+trigo,siembra_fin,31 diciembre,fecha,época óptima,Fecha de siembra,142,140,
+trigo,siembra_variedades_susceptibles_roya,15 nov - 10 dic,fecha,"Navojoa, Roelfs, Villa Juárez, Onavas",Variedades,142,140,
+trigo,dias_a_espiga,73,días,Conatrigo F-2015 (trigo harinero),Tabla 32,141,139,
+trigo,dias_a_madurez,116,días,Conatrigo F-2015 (trigo harinero),Tabla 32,141,139,
+trigo,dias_a_espiga,72,días,Bacorehuis F-2015 (trigo harinero),Tabla 32,141,139,
+trigo,dias_a_madurez,114,días,Bacorehuis F-2015 (trigo harinero),Tabla 32,141,139,
+trigo,dias_a_espiga,75,días,Borloug 100 F-2014 (trigo harinero),Tabla 32,141,139,
+trigo,dias_a_madurez,116,días,Borloug 100 F-2014 (trigo harinero),Tabla 32,141,139,
+trigo,dias_a_espiga,71,días,Navojoa M-2007 (trigo harinero),Tabla 32,142,140,
+trigo,dias_a_madurez,112,días,Navojoa M-2007 (trigo harinero),Tabla 32,142,140,
+trigo,dias_a_espiga,71,días,Roelfs F-2007 (trigo harinero),Tabla 32,142,140,
+trigo,dias_a_madurez,112,días,Roelfs F-2007 (trigo harinero),Tabla 32,142,140,
+trigo,dias_a_espiga,66,días,Villa Juárez F-2009 (trigo harinero),Tabla 32,142,140,
+trigo,dias_a_madurez,105,días,Villa Juárez F-2009 (trigo harinero),Tabla 32,142,140,
+trigo,dias_a_espiga,73,días,Onavas F-2009 (trigo harinero),Tabla 32,142,140,
+trigo,dias_a_madurez,114,días,Onavas F-2009 (trigo harinero),Tabla 32,142,140,
+trigo,dias_a_espiga,71,días,CIRNO C-2008 (trigo duro),Tabla 32,142,140,
+trigo,dias_a_madurez,115,días,CIRNO C-2008 (trigo duro),Tabla 32,142,140,
+trigo,dias_a_espiga,72,días,Patronato Oro C-2008 (trigo duro),Tabla 32,142,140,
+trigo,dias_a_madurez,116,días,Patronato Oro C-2008 (trigo duro),Tabla 32,142,140,
+trigo,dias_a_espiga,73,días,Conasist C-2015 (trigo duro),Tabla 32,142,140,
+trigo,dias_a_madurez,119,días,Conasist C-2015 (trigo duro),Tabla 32,142,140,
+trigo,dias_a_espiga,74,días,Quetchehueca C-2013 (trigo duro),Tabla 32,142,140,
+trigo,dias_a_madurez,120,días,Quetchehueca C-2013 (trigo duro),Tabla 32,142,140,
+trigo,dias_a_cosecha,130-140,días después de siembra,norte de Sinaloa,Cosecha,153,151,
+trigo,riego_presiembra_lamina_parcial,15,cm,etapa -; intervalo entre riegos - días,Tabla 34,146,144,"Valles del Carrizo, del Fuerte y Guasave"
+trigo,riego_presiembra_lamina_acumulada,15,cm,,Tabla 34,146,144,
+trigo,riego_1er_auxilio_lamina_parcial,10,cm,etapa final de amacollo; intervalo entre riegos 40-45 días,Tabla 34,146,144,"Valles del Carrizo, del Fuerte y Guasave"
+trigo,riego_1er_auxilio_lamina_acumulada,25,cm,,Tabla 34,146,144,
+trigo,riego_2do_auxilio_lamina_parcial,10,cm,etapa embuche; intervalo entre riegos 25-30 días,Tabla 34,146,144,"Valles del Carrizo, del Fuerte y Guasave"
+trigo,riego_2do_auxilio_lamina_acumulada,35,cm,,Tabla 34,146,144,
+trigo,riego_3er_auxilio_lamina_parcial,10,cm,etapa grano acuoso; intervalo entre riegos 20-25 días,Tabla 34,146,144,"Valles del Carrizo, del Fuerte y Guasave"
+trigo,riego_3er_auxilio_lamina_acumulada,45,cm,,Tabla 34,146,144,
+trigo,riegos_total,4 (presiembra + 3 auxilios); 45 cm acumulados,,más de 3 auxilios en suelos delgados o salinos,Tabla 34 y Riegos,146,144,
+trigo,siembra_en_surcos_ahorro_lamina,~15,% menos que melgas,,Tabla 34 (texto posterior),146,144,
+trigo,profundidad_raiz,NO DICE,,sólo dice que el 1er auxilio estimula crecimiento de raíz,Tabla 34 (texto posterior),146,144,
+trigo,temperatura_dano_floracion,NO DICE,,"menciona bajas temperaturas 2011-2013 y falta de horas frío fuera de época, sin valores",Introducción / Fecha de siembra,141,139,
+trigo,rendimiento_oi_2015-16,4.8,t/ha,"Sinaloa, 74,366 ha",Introducción,140,138,
+trigo,rendimiento_oi_2012-13,4.24,t/ha,"Sinaloa, 17,300 ha",Introducción,140,138,
+trigo,suelo_textura,arcillosa o franco arcillosa (riegos); aluvión y barrial mencionados para fertilización,texto,,Riegos / Fertilización,145,143,
+todos,capitulo_suelos_norte_sinaloa,NO EXISTE,,"Generalidades (pp. 11-14) trata ubicación, hidrografía y clima; el anexo de mapas (pp. 183-209) son imágenes",Generalidades,11,9,Los datos de suelo están dentro de cada cultivo

@@ -254,7 +254,7 @@ export interface Rotation {
     /**
      * Variante del frijol regional que se simula.
      */
-    variant: 'negro';
+    variant: 'azufrado' | 'negro';
     /**
      * Quién la eligió: el técnico o, en el caso ilustrativo, el equipo.
      */
@@ -331,6 +331,19 @@ export interface SimulationCell {
    * Corridas (años simulados) de esta celda: 500 con nombre, 100 en las demás.
    */
   runs: 100 | 500;
+  /**
+   * Opcional. Por estrategia, la necesidad de riego de un ciclo en esta celda, en mm: [p10, mediana, p90] entre las corridas. Es agua que pide el cultivo (ETc − lluvia), no agua aplicada ni rendimiento. Solo las estrategias con dato; E1 no aparece.
+   */
+  water_mm?: {
+    /**
+     * @minItems 3
+     * @maxItems 3
+     *
+     * This interface was referenced by `undefined`'s JSON-Schema definition
+     * via the `patternProperty` "^E[0-5]$".
+     */
+    [k: string]: number[];
+  };
   /**
    * Bytes sin signo en base64. Disposición [estrategia][criterio][corrida], con el orden de strategies y criteria: longitud = 6 × 5 × runs bytes. Cada byte es un puntaje entero 0–100, o 255 si el criterio está declarado en no_data. La corrida i es el MISMO año simulado para las seis estrategias y los cinco criterios.
    */

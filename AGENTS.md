@@ -162,7 +162,7 @@ No hagas commit ni push sin que el usuario lo pida.
 
 ### Equipo
 
-Tres personas: Jorge, Isis e Isabella. Sin módulos asignados: cualquiera toma cualquier parte (contrato, ingesta, simulador, motor, app, despliegue). Los cambios en `shared/schema/` requieren la aprobación de Jorge. Código abierto (licencia por decidir: Apache-2.0 o MIT). Los asesores externos firman una carta de consentimiento; no publiques su nombre.
+Tres personas: Jorge, Isis e Isabella. Sin módulos asignados: cualquiera toma cualquier parte (contrato, ingesta, simulador, motor, app, despliegue). Los cambios en `shared/schema/` requieren la aprobación de Jorge. Código abierto con licencia Apache-2.0 (archivo `LICENSE`). Los asesores externos firman una carta de consentimiento; no publiques su nombre.
 
 ---
 

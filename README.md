@@ -1,6 +1,35 @@
-# kinilum
+<p align="center">
+  <img src="assets/header.svg" alt="NASA International Space Apps Challenge and kinilum" width="720">
+</p>
 
-*Resumen en español: kinilum compara rotaciones de cultivo para una parcela antes de sembrar, con datos satelitales de la NASA, y muestra el rango de resultados en vez de una sola cifra. Apoya la decisión; no la toma. 
+<h1 align="center">kinilum</h1>
+
+<p align="center"><em>Compare crop rotations before planting, with NASA data.</em></p>
+
+<p align="center">
+  <a href="https://notyorch.github.io/kinilum-agtech/"><img alt="Live demo" src="https://img.shields.io/badge/demo-live-0E8E65?style=flat-square"></a>
+  <a href="https://github.com/notyorch/kinilum-agtech/actions/workflows/pages.yml"><img alt="Deploy to GitHub Pages" src="https://github.com/notyorch/kinilum-agtech/actions/workflows/pages.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square"></a>
+  <img alt="NASA Space Apps 2026" src="https://img.shields.io/badge/NASA%20Space%20Apps-2026-0B3D91?style=flat-square">
+  <img alt="Challenge: Field Shift" src="https://img.shields.io/badge/challenge-Field%20Shift-DB240B?style=flat-square">
+</p>
+
+<p align="center">
+  <img alt="NASA data: HLS, GPM IMERG, SMAP, NASADEM, POWER" src="https://img.shields.io/badge/NASA%20data-HLS%20%C2%B7%20IMERG%20%C2%B7%20SMAP%20%C2%B7%20NASADEM%20%C2%B7%20POWER-0B3D91?style=flat-square">
+  <img alt="PWA, offline-first" src="https://img.shields.io/badge/PWA-offline--first-5A0FC8?style=flat-square">
+  <img alt="Languages: Spanish and English" src="https://img.shields.io/badge/lang-ES%20%7C%20EN-555555?style=flat-square">
+  <img alt="Case: illustrative" src="https://img.shields.io/badge/case-illustrative-orange?style=flat-square">
+</p>
+
+<p align="center">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="React" src="https://img.shields.io/badge/React-18-149ECA?style=flat-square&logo=react&logoColor=white">
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.14-3776AB?style=flat-square&logo=python&logoColor=white">
+  <img alt="NumPy" src="https://img.shields.io/badge/NumPy-013243?style=flat-square&logo=numpy&logoColor=white">
+</p>
+
+*Resumen en español: kinilum compara rotaciones de cultivo para una parcela antes de sembrar, con datos satelitales de la NASA, y muestra el rango de resultados en vez de una sola cifra. Apoya la decisión; no la toma.*
 
 **kinilum** is a decision-support tool for NASA Space Apps 2026, challenge *Field Shift: Adapting Farms with NASA Data*. It compares crop rotations for a plot before planting, using NASA Earth observations, local data and the farmer's priorities, and it shows a range of outcomes instead of a single number.
 
@@ -80,3 +109,5 @@ The exact outline of a plot is never published. A package carries only a point r
 * Angel Isabella Morales Barrera
 * David Eduardo Martín Dzul
 * Isabella Cuevas Hernández
+
+Licensed under the [Apache License, Version 2.0](LICENSE).

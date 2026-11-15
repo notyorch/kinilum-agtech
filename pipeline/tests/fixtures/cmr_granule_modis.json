@@ -1,0 +1,96 @@
+{
+ "feed": {
+  "entry": [
+   {
+    "title": "MOD13Q1.A2024353.h09v06.061.2025003234701",
+    "granule_size": "72.7549819946289",
+    "links": [
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2024353.h09v06.061.2025003234701/MOD13Q1.A2024353.h09v06.061.2025003234701.hdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/s3#",
+      "href": "s3://lp-prod-protected/MOD13Q1.061/MOD13Q1.A2024353.h09v06.061.2025003234701/MOD13Q1.A2024353.h09v06.061.2025003234701.hdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://doi.org/10.5067/MODIS/MOD13Q1.061"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/service#",
+      "href": "https://opendap.earthdata.nasa.gov/collections/C1748066515-LPCLOUD/granules/MOD13Q1.A2024353.h09v06.061.2025003234701"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2024353.h09v06.061.2025003234701/MOD13Q1.A2024353.h09v06.061.2025003234701.cmr.xml"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "s3://lp-prod-protected/MOD13Q1.061/MOD13Q1.A2024353.h09v06.061.2025003234701/MOD13Q1.A2024353.h09v06.061.2025003234701.cmr.xml"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/s3credentials"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/browse#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-public/MOD13Q1.061/MOD13Q1.A2024353.h09v06.061.2025003234701/BROWSE.MOD13Q1.A2024353.h09v06.061.2025003234701.1.jpg"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/browse#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-public/MOD13Q1.061/MOD13Q1.A2024353.h09v06.061.2025003234701/BROWSE.MOD13Q1.A2024353.h09v06.061.2025003234701.2.jpg"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/browse#",
+      "href": "s3://lp-prod-public/MOD13Q1.061/MOD13Q1.A2024353.h09v06.061.2025003234701/BROWSE.MOD13Q1.A2024353.h09v06.061.2025003234701.1.jpg"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/browse#",
+      "href": "s3://lp-prod-public/MOD13Q1.061/MOD13Q1.A2024353.h09v06.061.2025003234701/BROWSE.MOD13Q1.A2024353.h09v06.061.2025003234701.2.jpg"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://doi.org/10.5067/MODIS/MOD13Q1.061"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://www.earthdata.nasa.gov/centers/lp-daac"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://search.earthdata.nasa.gov/search/granules?p=C1748066515-LPCLOUD"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://appeears.earthdatacloud.nasa.gov/"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://lpdaac.usgs.gov/documents/104/MOD13_ATBD.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://lpdaac.usgs.gov/documents/621/MOD13_User_Guide_V61.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://ladsweb.modaps.eosdis.nasa.gov/filespec/MODIS/61/MOD13Q1"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://modis-land.gsfc.nasa.gov/ValStatus.php?ProductID=MOD13Q1"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://modis-land.gsfc.nasa.gov/MODLAND_val.html"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://landweb.modaps.eosdis.nasa.gov"
+     }
+    ]
+   }
+  ]
+ }
+}

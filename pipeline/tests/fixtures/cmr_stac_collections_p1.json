@@ -1,0 +1,35 @@
+{
+ "collections": [
+  {
+   "id": "MOD11A1_061",
+   "title": "MODIS/Terra Land Surface Temperature/Emissivity Daily L3 Global 1km SIN Grid V061"
+  },
+  {
+   "id": "HLSL30_2.0",
+   "title": "HLS Landsat Operational Land Imager Surface Reflectance and TOA Brightness Daily Global 30m v2.0"
+  },
+  {
+   "id": "HLSS30_2.0",
+   "title": "HLS Sentinel-2 Multi-spectral Instrument Surface Reflectance Daily Global 30m v2.0"
+  },
+  {
+   "id": "HLSL30_VI_2.0",
+   "title": "HLS Operational Land Imager Vegetation Indices Daily Global 30 m V2.0"
+  },
+  {
+   "id": "HLSS30_VI_2.0",
+   "title": "HLS Sentinel-2 Multi-spectral Instrument Vegetation Indices Daily Global 30 m V2.0"
+  }
+ ],
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://cmr.earthdata.nasa.gov/stac/LPCLOUD/collections"
+  },
+  {
+   "rel": "next",
+   "href": "https://cmr.earthdata.nasa.gov/stac/LPCLOUD/collections?cursor=PAGINA2",
+   "type": "application/json"
+  }
+ ]
+}

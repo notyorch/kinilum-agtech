@@ -1,0 +1,228 @@
+"""Única puerta de salida a la red: reintentos con espera creciente, caché por respuesta y secretos a salvo.
+
+Reglas (ARQUITECTURA-DEV §4.1, ingest/README.md):
+  - Reintenta ante 429, 502, 503 y 504 y ante fallos de red, con espera de 2, 4, 8, 16 s más algo de azar.
+  - NO reintenta 400, 401, 403 ni 404: son errores de la petición, no de la red.
+  - Una petición `sensitive` (lleva un secreto en la ruta) no se guarda en caché ni se imprime.
+  - Nunca se registran encabezados.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import http.cookiejar
+import json
+import random
+import time
+import urllib.error
+import urllib.request
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Callable
+from urllib.parse import urlencode, urljoin, urlparse
+
+from .contract import SourceError, now_utc
+
+USER_AGENT = "kinilum-pipeline/0.1 (+https://github.com/notyorch/kinilum-agtech)"
+RETRY_STATUS = frozenset({429, 502, 503, 504})
+
+# (método, url, encabezados, cuerpo, tiempo máximo) → (código, bytes, url final)
+Transport = Callable[[str, str, dict[str, str], "bytes | None", float], "tuple[int, bytes, str]"]
+
+
+def urllib_transport(method: str, url: str, headers: dict[str, str], body: bytes | None, timeout: float) -> tuple[int, bytes, str]:
+    req = urllib.request.Request(url, data=body, headers=headers, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.status, r.read(), r.geturl()
+    except urllib.error.HTTPError as e:
+        return e.code, e.read(), url
+
+
+@dataclass
+class Response:
+    body: Any
+    sha256: str
+    url: str
+    from_cache: bool = False
+
+
+class Client:
+    def __init__(
+        self,
+        cache_dir: Path | str | None = None,
+        *,
+        transport: Transport = urllib_transport,
+        sleep: Callable[[float], None] = time.sleep,
+        jitter: Callable[[], float] = lambda: random.uniform(0, 1),
+    ) -> None:
+        self.cache_dir = Path(cache_dir) if cache_dir else None
+        self.transport = transport
+        self.sleep = sleep
+        self.jitter = jitter
+        self.calls = 0  # peticiones reales a la red (la caché no cuenta)
+        self.used: list[str] = []  # archivos de caché que sirvieron a las últimas llamadas
+
+    def get_json(
+        self,
+        url: str,
+        params: dict[str, Any] | None = None,
+        *,
+        method: str = "GET",
+        body: Any = None,
+        headers: dict[str, str] | None = None,
+        sensitive: bool = False,
+        tries: int = 5,
+        timeout: float = 90,
+    ) -> Response:
+        shown = urlparse(url).netloc if sensitive else url
+        full = f"{url}?{urlencode(params, doseq=True)}" if params else url
+        key = hashlib.sha256(json.dumps([method, url, params, body], sort_keys=True, default=str).encode()).hexdigest()
+        cached = self._cache_file(key) if not sensitive else None
+        if cached and cached.exists():
+            c = json.loads(cached.read_text(encoding="utf-8"))
+            self.used.append(cached.name)
+            return Response(c["body"], c["sha256"], c["url"], from_cache=True)
+
+        payload = None if body is None else json.dumps(body).encode()
+        head = {"User-Agent": USER_AGENT, "Accept": "application/json", **({"Content-Type": "application/json"} if payload else {}), **(headers or {})}
+        last = "sin respuesta"
+        for attempt in range(tries):
+            if attempt:
+                self.sleep(2**attempt + self.jitter())
+            self.calls += 1
+            try:
+                status, raw, final = self.transport(method, full, head, payload, timeout)
+            except OSError as e:  # fallo de red o tiempo agotado: se reintenta
+                last = type(e).__name__
+                continue
+            if status in RETRY_STATUS:
+                last = f"HTTP {status}"
+                continue
+            if status >= 400:
+                raise SourceError(f"{shown}: HTTP {status}")
+            try:
+                data = json.loads(raw)
+            except ValueError as e:
+                raise SourceError(f"{shown}: la respuesta no es JSON") from e
+            sha = hashlib.sha256(raw).hexdigest()
+            if cached:
+                cached.parent.mkdir(parents=True, exist_ok=True)
+                cached.write_text(json.dumps({"body": data, "sha256": sha, "url": final, "at": now_utc()}, ensure_ascii=False), encoding="utf-8")
+                self.used.append(cached.name)
+            return Response(data, sha, final)
+        raise SourceError(f"{shown}: sin respuesta tras {tries} intentos ({last})")
+
+    def _cache_file(self, key: str) -> Path | None:
+        return self.cache_dir / f"{key}.json" if self.cache_dir else None
+
+
+# ---- Descargas autenticadas con Earthdata -------------------------------------------------------------------------
+#
+# Los datos de la NASA se piden con `Authorization: Bearer <token>`. Dos reglas que importan:
+#   - El token viaja SOLO a dominios de la NASA. Los servidores suelen redirigir a una URL firmada de S3, que rechaza
+#     la petición si además lleva `Authorization`: en cada salto el encabezado se pone o se quita según el destino.
+#   - Nada del token ni de la URL firmada (su consulta) se guarda ni se imprime: solo host y ruta.
+
+AUTH_HOST_SUFFIXES = (".earthdata.nasa.gov", ".earthdatacloud.nasa.gov")
+REDIRECTS = frozenset({301, 302, 303, 307, 308})
+
+# (url, encabezados, tiempo máximo) → (código, encabezados de respuesta, primeros bytes del cuerpo)
+Once = Callable[[str, dict[str, str], float], "tuple[int, dict[str, str], bytes]"]
+
+
+def sends_token(url: str) -> bool:
+    """¿Este destino es de la NASA y por tanto puede recibir el token?"""
+    parsed = urlparse(url)
+    host = parsed.hostname or ""
+    return parsed.scheme == "https" and (host == "earthdata.nasa.gov" or host.endswith(AUTH_HOST_SUFFIXES))
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args: Any, **kwargs: Any) -> None:
+        return None  # las redirecciones las sigue `fetch_prefix`, salto por salto
+
+
+def make_urllib_once(nbytes: int) -> Once:
+    """Una petición sin seguir redirecciones, con las cookies de sesión de Earthdata Login entre saltos."""
+    opener = urllib.request.build_opener(_NoRedirect, urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+
+    def once(url: str, headers: dict[str, str], timeout: float) -> tuple[int, dict[str, str], bytes]:
+        try:
+            with opener.open(urllib.request.Request(url, headers=headers), timeout=timeout) as r:
+                return r.status, dict(r.headers), r.read(nbytes)  # solo el principio: se cierra sin bajar el resto
+        except urllib.error.HTTPError as e:  # con _NoRedirect, también las 3xx llegan aquí
+            return e.code, dict(e.headers), e.read(1024)
+
+    return once
+
+
+@dataclass
+class Probe:
+    """Resultado de pedir el principio de un archivo. `data` vive solo en memoria."""
+
+    status: int | None
+    data: bytes
+    hops: list[str]  # «host código» de cada salto, sin rutas ni consultas
+    total_bytes: int | None
+    final: str  # host y ruta del último salto, sin consulta (la URL firmada es un secreto)
+    error: str | None = None
+    token_hops: list[bool] = field(default_factory=list)  # en qué saltos viajó el token
+
+
+def fetch_prefix(
+    url: str,
+    *,
+    token: str | None = None,
+    nbytes: int = 65_536,
+    timeout: float = 60,
+    once: Once | None = None,
+    sleep: Callable[[float], None] = time.sleep,
+    max_hops: int = 10,
+    tries: int = 3,
+) -> Probe:
+    """Pide los primeros `nbytes` de un archivo siguiendo las redirecciones a mano."""
+    once = once or make_urllib_once(nbytes)
+    current, hops, token_hops = url, [], []
+    where = ""
+    for _ in range(max_hops):
+        parsed = urlparse(current)
+        where = f"{parsed.hostname}{parsed.path}"
+        headers = {"User-Agent": USER_AGENT, "Range": f"bytes=0-{nbytes - 1}"}
+        with_token = bool(token) and sends_token(current)
+        if with_token:
+            headers["Authorization"] = f"Bearer {token}"
+        token_hops.append(with_token)
+
+        status: int | None = None
+        resp: dict[str, str] = {}
+        body = b""
+        error: str | None = None
+        for attempt in range(tries):
+            if attempt:
+                sleep(2**attempt)
+            try:
+                status, resp, body = once(current, headers, timeout)
+                error = None
+            except OSError as e:  # red o tiempo agotado: se reintenta
+                status, error = None, type(e).__name__
+                continue
+            if status not in RETRY_STATUS:
+                break
+        hops.append(f"{parsed.hostname} {status if status is not None else error}")
+        if status is None:
+            return Probe(None, b"", hops, None, where, error, token_hops)
+        lower = {k.lower(): v for k, v in resp.items()}
+        if status in REDIRECTS:
+            if not lower.get("location"):
+                return Probe(status, b"", hops, None, where, "redirección sin Location", token_hops)
+            current = urljoin(current, lower["location"])
+            continue
+        total = None
+        if "content-range" in lower and "/" in lower["content-range"]:
+            tail = lower["content-range"].rsplit("/", 1)[1]
+            total = int(tail) if tail.isdigit() else None
+        elif status == 200 and lower.get("content-length", "").isdigit():
+            total = int(lower["content-length"])
+        return Probe(status, body, hops, total, where, None, token_hops)
+    return Probe(None, b"", hops, None, where, f"más de {max_hops} redirecciones", token_hops)

@@ -1,0 +1,49 @@
+{
+ "feed": {
+  "entry": [
+   {
+    "title": "HLS.L30.T15QZC.2025067T162223.v2.0",
+    "granule_size": null,
+    "cloud_cover": "12",
+    "links": [
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "title": "Download HLS.L30.T15QZC.2025067T162223.v2.0.B04.tif",
+      "hreflang": "en-US",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30.020/HLS.L30.T15QZC.2025067T162223.v2.0/HLS.L30.T15QZC.2025067T162223.v2.0.B04.tif"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "title": "Download HLS.L30.T15QZC.2025067T162223.v2.0.Fmask.tif",
+      "hreflang": "en-US",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30.020/HLS.L30.T15QZC.2025067T162223.v2.0/HLS.L30.T15QZC.2025067T162223.v2.0.Fmask.tif"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "title": "Download HLS.L30.T15QZC.2025067T162223.v2.0.B03.tif",
+      "hreflang": "en-US",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30.020/HLS.L30.T15QZC.2025067T162223.v2.0/HLS.L30.T15QZC.2025067T162223.v2.0.B03.tif"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/s3#",
+      "title": "This link provides direct download access via S3 to the granule",
+      "hreflang": "en-US",
+      "href": "s3://lp-prod-protected/HLSL30.020/HLS.L30.T15QZC.2025067T162223.v2.0/HLS.L30.T15QZC.2025067T162223.v2.0.B04.tif"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/s3#",
+      "title": "This link provides direct download access via S3 to the granule",
+      "hreflang": "en-US",
+      "href": "s3://lp-prod-protected/HLSL30.020/HLS.L30.T15QZC.2025067T162223.v2.0/HLS.L30.T15QZC.2025067T162223.v2.0.Fmask.tif"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/s3#",
+      "title": "This link provides direct download access via S3 to the granule",
+      "hreflang": "en-US",
+      "href": "s3://lp-prod-protected/HLSL30.020/HLS.L30.T15QZC.2025067T162223.v2.0/HLS.L30.T15QZC.2025067T162223.v2.0.B03.tif"
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -11,7 +11,7 @@ Python **3.14** (`../.python-version`). Mientras no lleguen los datos de la NASA
 | `common/` | Jorge | **Hecho.** Carga y valida contra `shared/schema/`. |
 | `package/` | Jorge | **Hecho, con pruebas.** `build.py` arma, valida y publica; `validate.py` valida. |
 | `simulate/` | Jorge | **Esqueleto.** Definidos escenarios, grilla y codificación de puntajes para E0–E5, y la lectura del catálogo (`crops.py`: perfil por cultivo y variante, nitrógeno, criterios sin dato); `run.py` es **PENDIENTE** (no inventa resultados). |
-| `ingest/` | Isis | **Sin empezar.** Ver `ingest/README.md` para el contrato de salida y las reglas de fallos. |
+| `ingest/` | Isis | **Hecho para las fuentes abiertas, con pruebas:** POWER, Open-Meteo, SoilGrids, HLS y Sentinel-2 (escenas) y el EDA. IMERG, NASADEM, MODIS, SMAP, ECOSTRESS, GRACE y ERA5-Land son esqueletos «por integrar»; el acceso con token a IMERG, NASADEM, MODIS y HLS ya está confirmado (`python -m ingest.access`). Ver `ingest/README.md` y [`docs/EDA-hallazgos.md`](../docs/EDA-hallazgos.md). |
 | `harmonize/` | Isis / Jorge | **Sin empezar.** Ver `harmonize/README.md`. |
 | `rules/` | Jorge (con técnico) | **Catálogo `crops.v1.yaml`:** frijol (variantes xpelón, ib y negro), garbanzo, sorgo y trigo, con sus reglas de restricción. Todos los parámetros siguen «por definir» y todo está «a validar». |
 | `Dockerfile` | Isis | **Pendiente.** Imagen `python:3.14-slim` fijada por *digest*, usuario sin privilegios, token solo en tiempo de ejecución. |
@@ -60,6 +60,6 @@ python -m package.build --parcel yuc-demo-001    # arma, valida y publica (neces
 ## Honestidad
 
 - **No hay oro real todavía**, así que `package.build` hoy solo corre en las pruebas, con partes sacadas del paquete de ejemplo.
-- Las pruebas de Python corren con `python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python -m pytest` (43 pruebas, 14 de noviembre de 2026). Las mismas comprobaciones del esquema corren en Node (`cd ../app && npm run check:schema`).
+- Las pruebas de Python corren con `python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python -m pytest` (139 pruebas, 15 de noviembre de 2026). Las mismas comprobaciones del esquema corren en Node (`cd ../app && npm run check:schema`).
 - `requirements.txt` fija solo las dependencias directas. Falta generarlo con sumas de verificación (`pip-compile --generate-hashes`).
 - Ninguna parte genera puntajes de mentira: sin simulador, el paquete no lleva `simulation`.

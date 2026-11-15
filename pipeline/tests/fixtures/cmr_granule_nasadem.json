@@ -1,0 +1,76 @@
+{
+ "feed": {
+  "entry": [
+   {
+    "title": "NASADEM_HGT_n20w090",
+    "granule_size": "6.76753",
+    "links": [
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/NASADEM_HGT.001/NASADEM_HGT_n20w090/NASADEM_HGT_n20w090.zip"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/s3#",
+      "href": "s3://lp-prod-protected/NASADEM_HGT.001/NASADEM_HGT_n20w090/NASADEM_HGT_n20w090.zip"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "http://dx.doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/NASADEM_HGT.001/NASADEM_HGT_n20w090/NASADEM_HGT_n20w090.cmr.xml"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "s3://lp-prod-protected/NASADEM_HGT.001/NASADEM_HGT_n20w090/NASADEM_HGT_n20w090.cmr.xml"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/s3credentials"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/browse#",
+      "href": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-public/NASADEM_HGT.001/NASADEM_HGT_n20w090/NASADEM_HGT_n20w090.1.jpg"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/browse#",
+      "href": "s3://lp-prod-public/NASADEM_HGT.001/NASADEM_HGT_n20w090/NASADEM_HGT_n20w090.1.jpg"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://search.earthdata.nasa.gov/search/granules?p=C2763264762-LPCLOUD"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://doi.org/10.5067/MEASURES/NASADEM/NASADEM_HGT.001"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://www.earthdata.nasa.gov/centers/lp-daac"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://lpdaac.usgs.gov/documents/2237/NASADEM_User_Guide_V13.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://lpdaac.usgs.gov/documents/642/DEM_Comparison_Guide.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://appeears.earthdatacloud.nasa.gov/"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://search.earthdata.nasa.gov/search/granules?p=C2763264764-LPCLOUD"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://search.earthdata.nasa.gov/search/granules?p=C2763264768-LPCLOUD"
+     }
+    ]
+   }
+  ]
+ }
+}

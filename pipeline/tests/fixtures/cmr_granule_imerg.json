@@ -1,0 +1,88 @@
+{
+ "feed": {
+  "entry": [
+   {
+    "title": "GPM_3IMERGDF.07:3B-DAY.MS.MRG.3IMERG.20250101-S000000-E235959.V07B.nc4",
+    "granule_size": "26.7517862319946",
+    "links": [
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGDF.07/2025/01/3B-DAY.MS.MRG.3IMERG.20250101-S000000-E235959.V07B.nc4"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/s3#",
+      "href": "s3://gesdisc-cumulus-prod-protected/GPM_L3/GPM_3IMERGDF.07/2025/01/3B-DAY.MS.MRG.3IMERG.20250101-S000000-E235959.V07B.nc4"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://data.gesdisc.earthdata.nasa.gov/s3credentials"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/service#",
+      "href": "https://opendap.earthdata.nasa.gov/collections/C2723754864-GES_DISC/granules/GPM_3IMERGDF.07%3A3B-DAY.MS.MRG.3IMERG.20250101-S000000-E235959.V07B.nc4"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://www.earthdata.nasa.gov/data/catalog/ges-disc-m2iunpana-5.12.4"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://cmr.earthdata.nasa.gov/virtual-directory/collections/C2723754864-GES_DISC/temporal"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/service#",
+      "href": "https://cmr.earthdata.nasa.gov/virtual-directory/collections/C2723754864-GES_DISC/temporal"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/data#",
+      "href": "https://search.earthdata.nasa.gov/search/granules?p=C2723754864-GES_DISC"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://arthurhou.pps.eosdis.nasa.gov/Documents/IMERG_V07_ATBD_final.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://arthurhou.pps.eosdis.nasa.gov/Documents/IMERG_TechnicalDocumentation_final.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://docserver.gesdisc.eosdis.nasa.gov/public/project/GPM/IMERGV06_QI.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://docserver.gesdisc.eosdis.nasa.gov/public/project/GPM/IMERGV06_TRMMera-caveats.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3/doc/README.GPM.pdf"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://gpm.nasa.gov/resources/documents/imerg-v07-release-notes"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://gpmweb2https.pps.eosdis.nasa.gov/tsdis/AB/docs/gpm_anomalous.html"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/metadata#",
+      "href": "https://gpm.nasa.gov"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "https://journals.ametsoc.org/doi/full/10.1175/JAM2173.1"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "http://journals.ametsoc.org/doi/10.1175/JHM-D-11-022.1"
+     },
+     {
+      "rel": "http://esipfed.org/ns/fedsearch/1.1/documentation#",
+      "href": "ftp://gpmweb2.pps.eosdis.nasa.gov/pub/GPMfilespec/filespec.GPM.pdf"
+     }
+    ]
+   }
+  ]
+ }
+}

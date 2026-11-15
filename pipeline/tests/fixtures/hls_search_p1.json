@@ -1,0 +1,30 @@
+{
+ "features": [
+  {
+   "id": "HLS.L30.T15QZC.2025035T162236.v2.0",
+   "collection": "HLSL30_2.0",
+   "properties": {
+    "datetime": "2025-02-04T16:22:36.136Z",
+    "eo:cloud_cover": 71
+   }
+  },
+  {
+   "id": "HLS.L30.T16QBH.2025035T162236.v2.0",
+   "collection": "HLSL30_2.0",
+   "properties": {
+    "datetime": "2025-02-04T16:22:36.136Z",
+    "eo:cloud_cover": 71
+   }
+  }
+ ],
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://cmr.earthdata.nasa.gov/stac/LPCLOUD/search"
+  },
+  {
+   "rel": "next",
+   "href": "https://cmr.earthdata.nasa.gov/stac/LPCLOUD/search?cursor=PAGINA2&limit=2"
+  }
+ ]
+}

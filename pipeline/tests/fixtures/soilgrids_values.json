@@ -1,0 +1,90 @@
+{
+ "type": "Feature",
+ "geometry": {
+  "type": "Point",
+  "coordinates": [
+   -89.42,
+   20.3
+  ]
+ },
+ "properties": {
+  "layers": [
+   {
+    "name": "clay",
+    "unit_measure": {
+     "d_factor": 10,
+     "mapped_units": "g/kg",
+     "target_units": "%",
+     "uncertainty_unit": ""
+    },
+    "depths": [
+     {
+      "range": {
+       "top_depth": 0,
+       "bottom_depth": 5,
+       "unit_depth": "cm"
+      },
+      "label": "0-5cm",
+      "values": {
+       "Q0.05": 200,
+       "Q0.95": 310,
+       "mean": 250
+      }
+     },
+     {
+      "range": {
+       "top_depth": 15,
+       "bottom_depth": 30,
+       "unit_depth": "cm"
+      },
+      "label": "15-30cm",
+      "values": {
+       "Q0.05": 240,
+       "Q0.95": 360,
+       "mean": 300
+      }
+     }
+    ]
+   },
+   {
+    "name": "soc",
+    "unit_measure": {
+     "d_factor": 10,
+     "mapped_units": "dg/kg",
+     "target_units": "g/kg",
+     "uncertainty_unit": ""
+    },
+    "depths": [
+     {
+      "range": {
+       "top_depth": 0,
+       "bottom_depth": 5,
+       "unit_depth": "cm"
+      },
+      "label": "0-5cm",
+      "values": {
+       "Q0.05": 350,
+       "Q0.95": 520,
+       "mean": 420
+      }
+     },
+     {
+      "range": {
+       "top_depth": 15,
+       "bottom_depth": 30,
+       "unit_depth": "cm"
+      },
+      "label": "15-30cm",
+      "values": {
+       "Q0.05": 140,
+       "Q0.95": 240,
+       "mean": 180
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "query_time_s": 4.794999122619629,
+ "_nota": "Forma real del servicio, valores de PRUEBA."
+}

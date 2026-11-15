@@ -12,3 +12,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
+
+# Credenciales locales: nunca se versionan
+.env
+.env.*
+!.env.example

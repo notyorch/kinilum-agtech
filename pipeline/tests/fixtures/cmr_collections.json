@@ -1,0 +1,27 @@
+{
+ "feed": {
+  "entry": [
+   {
+    "short_name": "GPCPDAY",
+    "version_id": "3.2",
+    "title": "GPCP Precipitation Level 3 Daily 0.5-Degree V3.2 (GPCPDAY)",
+    "data_center": "GES_DISC",
+    "time_start": "2000-06-01T00:00:00.000Z"
+   },
+   {
+    "short_name": "GPCPDAY",
+    "version_id": "3.3",
+    "title": "GPCP Precipitation Level 3 Daily 0.5-Degree V3.3 (GPCPDAY)",
+    "data_center": "GES_DISC",
+    "time_start": "1998-01-01T00:00:00.000Z"
+   },
+   {
+    "short_name": "GPM_3IMERGDL",
+    "version_id": "07",
+    "title": "GPM IMERG Late Precipitation L3 1 day 0.1 degree x 0.1 degree V07 (GPM_3IMERGDL)",
+    "data_center": "GES_DISC",
+    "time_start": "1998-01-01T00:00:00.000Z"
+   }
+  ]
+ }
+}

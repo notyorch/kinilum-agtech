@@ -1,0 +1,14 @@
+{
+ "collections": [
+  {
+   "id": "GEDI02_A_003",
+   "title": "GEDI L2A Elevation and Height Metrics Data Global Footprint Level V003"
+  }
+ ],
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://cmr.earthdata.nasa.gov/stac/LPCLOUD/collections?cursor=PAGINA2"
+  }
+ ]
+}

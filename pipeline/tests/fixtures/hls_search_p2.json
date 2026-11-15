@@ -1,0 +1,18 @@
+{
+ "features": [
+  {
+   "id": "HLS.L30.T16QBH.2025043T162242.v2.0",
+   "collection": "HLSL30_2.0",
+   "properties": {
+    "datetime": "2025-02-12T16:22:42.416Z",
+    "eo:cloud_cover": 42
+   }
+  }
+ ],
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://cmr.earthdata.nasa.gov/stac/LPCLOUD/search?cursor=PAGINA2&limit=2"
+  }
+ ]
+}

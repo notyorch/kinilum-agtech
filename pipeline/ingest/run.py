@@ -13,9 +13,13 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 from common.schema import REPO
+from harmonize.values import partial_values
+
+from package.build import BuildError, load_config
 
 from . import catalog
 from .eda import build_report
@@ -41,12 +45,13 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--start", default="2016-01-01")
     ap.add_argument("--end", default="2025-12-31")
     ap.add_argument("--plot-side-m", type=float, default=200)
-    ap.add_argument("--elev-m", type=float, default=40.0, help="supuesto hasta integrar NASADEM")
+    ap.add_argument("--elev-m", type=float, default=40.0, help="elevación supuesta; solo se usa si NASADEM no llegó")
+    ap.add_argument("--workers", type=int, default=4, help="peticiones simultáneas a IMERG (pocas, por cortesía con el servidor)")
     ap.add_argument("--only", help="fuentes separadas por coma (por defecto, todas las del catálogo)")
     ap.add_argument("--data-dir", type=Path, default=REPO / "pipeline" / "data")
     args = ap.parse_args(argv)
 
-    params = Params(args.lon, args.lat, args.start, args.end, args.plot_side_m)
+    params = Params(args.lon, args.lat, args.start, args.end, args.plot_side_m, args.workers)
     only = args.only.split(",") if args.only else None
     client = Client()
     results = load_sources(client, params, enabled=only, bronze_dir=args.data_dir / "bronze", parcel_id=args.parcel)
@@ -57,6 +62,17 @@ def main(argv: list[str] | None = None) -> int:
     (out / "eda_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=1, default=str, allow_nan=False) + "\n", encoding="utf-8")
     (out / "eda_report.md").write_text(to_markdown(report, args.parcel, results), encoding="utf-8")
     (out / "sources.json").write_text(json.dumps(catalog.rows(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+    try:
+        config = load_config(args.parcel)  # lo que declara el técnico: de ahí sale `soil`
+    except BuildError:
+        config = None
+    values = partial_values(results, config, date.today().isoformat())
+    if values:
+        gold = args.data_dir / "gold" / args.parcel
+        gold.mkdir(parents=True, exist_ok=True)
+        note = "PARCIAL: solo los valores que ya tienen fuente. Faltan " + ", ".join(k for k in ("bare", "heat", "soil", "moisture") if k not in values) + ". No es el values.json del paquete."
+        (gold / "values.partial.json").write_text(json.dumps({"_nota": note, "values": values}, ensure_ascii=False, indent=1, allow_nan=False) + "\n", encoding="utf-8")
 
     print(to_markdown(report, args.parcel, results))
     print(f"Peticiones reales: {client.calls}. Archivos en {out}")

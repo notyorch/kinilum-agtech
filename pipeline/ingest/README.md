@@ -13,7 +13,10 @@ Pide cada fuente, guarda la respuesta cruda y dice en qué estado quedó. **No i
 | `soilgrids.py` | SoilGrids, suelo a 250 m. Externa a la NASA. | Hecho; **sin valores en el punto de ejemplo** |
 | `stac.py` | Escenas HLS (CMR-STAC) y Sentinel-2 (Earth Search), solo metadatos. | Hecho, probado en vivo |
 | `cmr.py` | Descubre productos de la NASA y sus versiones. | Hecho |
-| `credentialed.py` | IMERG, NASADEM, MODIS, SMAP, ECOSTRESS, GRACE y ERA5-Land. | **Esqueletos**: sin token dicen «falta …»; con token, «por integrar». |
+| `imerg.py` | GPM IMERG Final diario: la celda del punto, día por día, por OPeNDAP. | Hecho, probado en vivo |
+| `nasadem.py` | NASADEM: elevación y pendiente de los píxeles limpios de la parcela. | Hecho, probado en vivo |
+| `smap.py` | SMAP L4: humedad del suelo de la celda de 9 km, un granulo por día, por OPeNDAP. | Hecho, probado en vivo |
+| `credentialed.py` | MODIS, ECOSTRESS, GRACE y ERA5-Land. | **Esqueletos**: sin token dicen «falta …»; con token, «por integrar». |
 | `earthdata.py`, `access.py` | Comprueba el acceso con token a IMERG, NASADEM, MODIS y HLS (ver «Acceso con token»). | Hecho; acceso confirmado |
 | `env.py` | Lee las credenciales de la variable de entorno o del `.env`. | Hecho |
 | `catalog.py` | Catálogo de las 12 fuentes (es un dato). | Hecho |
@@ -54,7 +57,21 @@ Por cada producto busca en CMR (abierto) un granulo que cruce el punto, pide **s
 - El token viaja **solo a dominios de la NASA y por HTTPS** (`*.earthdata.nasa.gov`, `*.earthdatacloud.nasa.gov`). Los servidores redirigen a CloudFront o S3 con una URL firmada, que rechaza la petición si además lleva `Authorization`: el encabezado se quita en ese salto.
 - Nunca se imprime, ni se guarda en la caché, el informe, los mensajes de error ni git. Se comprueba con pruebas.
 - Si un producto responde 401 o 403 con un token válido, suele faltar autorizar la aplicación en el perfil de Earthdata (Applications → Authorized Apps), por ejemplo «NASA GESDISC DATA ARCHIVE» para IMERG.
-- Esto confirma el acceso; **no es todavía el conector**. Leer el valor del punto (celda de IMERG, píxel de MODIS y HLS, elevación de NASADEM) es el siguiente paso y necesitará leer HDF5, HDF4 y GeoTIFF.
+- Esto confirma el acceso. IMERG y NASADEM ya leen valores (sección siguiente); los píxeles de MODIS y HLS siguen pendientes y necesitarán leer HDF4 y GeoTIFF.
+
+## IMERG y NASADEM: cómo se leen
+
+**IMERG.** El archivo diario global pesa ~28 MB y diez años serían más de 100 GB, así que no se descarga: se le pide al servidor OPeNDAP **solo la celda del punto** de cada día (3,653 peticiones pequeñas para 2016–2025, de 20 a 40 minutos con 4 simultáneas; `--workers` lo cambia). Es reanudable: cada respuesta queda en la caché y una segunda corrida no vuelve a pedir nada.
+
+- Los corchetes de la selección van **codificados** (con corchetes crudos el servidor responde 400); las variables se separan con `;`; y una selección de **una sola celda devuelve el CSV vacío** (no es «cero»): se piden dos.
+- La celda es la que **contiene** el punto (borde inferior incluido) y la otra es la vecina en latitud del lado del borde más cercano. El punto de ejemplo (20.30° N) cae **exactamente en el borde** entre dos celdas; el informe incluye el contraste con la vecina y un aviso si el punto está a menos de 0.02° del borde.
+- La corrida Final tarda hasta ~4 meses en publicarse: los días recientes no existen y quedan sin dato; el informe lo dice.
+
+**NASADEM.** Se descarga el tile de 1° × 1° (~7 MB, `.hgt` en un ZIP) con el token y se lee con la biblioteca estándar y NumPy: sin dependencias nuevas. La elevación y la pendiente (método de Horn) salen de los píxeles **completos** dentro de la parcela una vez descartado el borde de 30 m. Con una parcela de 200 m son entre 9 y 16 píxeles según cómo caiga la cuadrícula, no siempre los 16 de la fórmula. En terreno casi plano, un escalón de un metro entre píxeles de 30 m ya son ~3 % de pendiente: la pendiente tiene un piso de ruido y conviene leerla por clases, no por décimas.
+
+**SMAP L4.** Cada granulo (cada 3 horas) pesa ~143 MB: se pide solo la celda del punto y **un granulo por día** (el de las 16:30 UTC), un año completo son ~365 peticiones. La malla (EASE-Grid 2.0 de 9 km) no es lat/lon: el índice de la celda se **estima con la fórmula de la proyección y se comprueba leyendo `cell_lat` y `cell_lon` del propio archivo**; si la celda más cercana queda a más de 7 km, se rechaza (una fórmula equivocada no puede dar una celda equivocada en silencio). Misma regla de OPeNDAP que IMERG: ventana de al menos 2 × 2 celdas.
+
+**Del dato al contrato.** `harmonize/values.py` construye los valores del contrato (criterios en `harmonize/README.md`): `rain_season` (IMERG), `slope` (NASADEM), `tmax_may` (POWER), `soil_moisture_rootzone` (SMAP) y `root_depth` (lo declara el técnico). `run.py` los deja en `data/gold/<parcela>/values.partial.json`, que **no** es el `values.json` del paquete: falta `bare`. Con muy pocos años o días, el valor sale sin dato.
 
 ## Manifiesto de bronce
 

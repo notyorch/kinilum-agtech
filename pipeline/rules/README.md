@@ -27,6 +27,13 @@ Son filtros, no pesos. Una estrategia que no cumple **no se oculta**: va al fina
 | `sin_maquinaria` | Sin tractor ni maquila: sorgo y trigo quedan fuera. |
 | `calor_extremo_suelo_delgado` | Garbanzo y trigo se marcan «poco viable», con la razón visible. |
 
+## Otras reglas: maíz y suelo
+
+- `maize.v1.yaml`: días entre siembra y floración (55 a 75) y el umbral de calor que daña (35 °C). Con ellos se define la ventana de floración (`harmonize/phenology.py`).
+- `soil.v1.yaml`: profundidad de raíz por tipo de suelo declarado (tsek'el 15–25 cm, k'ankab 40–60 cm, sin declarar 15–60 cm). El valor `root_depth` sale de aquí, **no de SoilGrids**.
+
+Ambos son supuestos del equipo, sin fuente, y dicen `estado_evidencia: a_validar`: el técnico local los corrige.
+
 ## Quién lo lee
 
 - **La app** lleva un espejo en `app/src/data/crops.ts` y `app/src/data/restrictions.ts`. La prueba `app/tests/data.test.mjs` falla si el espejo y este catálogo dejan de coincidir.

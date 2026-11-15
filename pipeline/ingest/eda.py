@@ -8,6 +8,7 @@ PROPUESTA que se calibra con un técnico local.
 from __future__ import annotations
 
 import math
+from itertools import combinations
 from typing import Any
 
 import numpy as np
@@ -20,7 +21,7 @@ from .load import Params, Result
 PHYSICAL_BOUNDS: dict[str, tuple[float, float]] = {
     "PRECTOTCORR": (0, 600), "T2M": (-10, 50), "T2M_MAX": (-10, 55), "T2M_MIN": (-10, 50), "RH2M": (0, 100),
     "WS2M": (0, 60), "ALLSKY_SFC_SW_DWN": (0, 45),
-    "precipitation_sum": (0, 600), "et0_fao_evapotranspiration": (0, 15), "temperature_2m_max": (-10, 55),
+    "precipitation_sum": (0, 600), "precip_mm_day": (0, 600), "neighbor_mm_day": (0, 600), "et0_fao_evapotranspiration": (0, 15), "temperature_2m_max": (-10, 55),
     "temperature_2m_min": (-10, 50), "shortwave_radiation_sum": (0, 45),
 }
 # Mediana esperada de una variable en tierra abierta. Fuera de ese rango no es un error de captura, pero el
@@ -34,6 +35,7 @@ CLOUD_MAX = 30          # % de nubes aceptado en una escena (propuesta)
 RAIN_BIAS_WARN = 25.0   # % de sesgo entre fuentes de lluvia (propuesta)
 ET0_DIFF_WARN = 20.0    # % de diferencia de ET0 con Open-Meteo (propuesta)
 FAO56_DEFAULT_U2 = 2.0  # m/s: valor que FAO-56 propone cuando no hay viento medido
+EDGE_WARN_DEG = 0.02    # a menos de ~2 km del borde de la celda de IMERG, la vecina podría dar otro resultado
 
 
 def longest_run(flags: np.ndarray) -> int:
@@ -231,13 +233,13 @@ def build_report(results: dict[str, Result], params: Params, *, elev_m: float = 
     """Informe completo. Una etapa que no tiene sus datos se declara «por integrar»; nunca se inventa."""
     warnings: list[str] = []
     data = lambda sid: results[sid].fetch.data if sid in results and results[sid].fetch else None  # noqa: E731
-    power, om = data("power"), data("openmeteo")
+    power, om, im, nd = data("power"), data("openmeteo"), data("imerg"), data("nasadem")
     stages: dict[str, Any] = {}
 
     stages["E0"] = {"titulo": "Estado de las fuentes", "fuentes": {k: {"estado": r.status, "detalle": r.detail} for k, r in results.items()}}
 
     cov: dict[str, Any] = {}
-    for sid, series in (("power", power), ("openmeteo", om)):
+    for sid, series in (("power", power), ("openmeteo", om), ("imerg", im)):
         if series is not None:
             cov.update({f"{sid}.{k}": v for k, v in coverage(series).items()})
     for sid in ("hls_stac", "s2_earthsearch"):
@@ -246,7 +248,7 @@ def build_report(results: dict[str, Result], params: Params, *, elev_m: float = 
     stages["E1"] = {"titulo": "Cobertura temporal y huecos", "cobertura": cov}
 
     qual: dict[str, Any] = {}
-    for sid, series in (("power", power), ("openmeteo", om)):
+    for sid, series in (("power", power), ("openmeteo", om), ("imerg", im)):
         if series is not None:
             qual[sid] = quality(series)
             for name, row in qual[sid].items():
@@ -256,26 +258,46 @@ def build_report(results: dict[str, Result], params: Params, *, elev_m: float = 
         warnings.append(f"SoilGrids sin dato en este punto: {results['soilgrids'].detail}")
     stages["E2"] = {"titulo": "Calidad de los datos", "calidad": qual}
 
+    e3: dict[str, Any] = {"titulo": "Estacionalidad"}
     if power is not None:
         rain_m = monthly_percentiles(power.dates, power.col("PRECTOTCORR"), "sum")
         tmax_m = monthly_percentiles(power.dates, power.col("T2M_MAX"), "mean")
         annual = annual_totals(power.dates, power.col("PRECTOTCORR"))
-        stages["E3"] = {
-            "titulo": "Estacionalidad", "lluvia_mensual_mm": rain_m, "tmax_mensual_c": tmax_m,
-            "meses_mas_lluviosos": [m for m, _ in sorted(rain_m.items(), key=lambda kv: -kv[1]["p50"])[:5]],
-            "lluvia_anual_suma_de_medianas_mm": round(sum(v["p50"] for v in rain_m.values())),
-            "lluvia_anual_mediana_entre_anios_mm": round(float(np.median(annual))) if len(annual) else None,
+        e3.update(
+            lluvia_mensual_mm=rain_m, tmax_mensual_c=tmax_m,
+            meses_mas_lluviosos=[m for m, _ in sorted(rain_m.items(), key=lambda kv: -kv[1]["p50"])[:5]],
+            lluvia_anual_suma_de_medianas_mm=round(sum(v["p50"] for v in rain_m.values())),
+            lluvia_anual_mediana_entre_anios_mm=round(float(np.median(annual))) if len(annual) else None,
+        )
+    else:
+        e3["estado"] = "por integrar: POWER no llegó"
+    if im is not None:
+        im_annual = annual_totals(im.dates, im.col("precip_mm_day"))
+        e3["imerg"] = {
+            "lluvia_mensual_mm": monthly_percentiles(im.dates, im.col("precip_mm_day"), "sum"),
+            "lluvia_anual_mediana_entre_anios_mm": round(float(np.median(im_annual))) if len(im_annual) else None,
+            "anios_completos": int(len(im_annual)),
         }
-    else:
-        stages["E3"] = {"titulo": "Estacionalidad", "estado": "por integrar: POWER no llegó"}
+    stages["E3"] = e3
 
-    if power is not None and om is not None:
-        pair = rain_agreement(power, "PRECTOTCORR", om, "precipitation_sum", wet_mm)
-        stages["E4"] = {"titulo": "Consistencia entre fuentes de lluvia", "pares": {"POWER vs Open-Meteo": pair}}
-        if abs(pair.get("sesgo_pct_total") or 0) > RAIN_BIAS_WARN:
-            warnings.append(f"Sesgo de lluvia de {pair['sesgo_pct_total']} % entre POWER y Open-Meteo (> {RAIN_BIAS_WARN:g} %): revisar antes de usar ambas")
+    sources = {"POWER": (power, "PRECTOTCORR"), "Open-Meteo": (om, "precipitation_sum"), "IMERG": (im, "precip_mm_day")}
+    have = [n for n, (s_, _) in sources.items() if s_ is not None]
+    pairs: dict[str, Any] = {}
+    for x, y in combinations(have, 2):
+        pairs[f"{x} vs {y}"] = rain_agreement(sources[x][0], sources[x][1], sources[y][0], sources[y][1], wet_mm)
+    if im is not None:
+        pairs["IMERG celda vs vecina"] = rain_agreement(im, "precip_mm_day", im, "neighbor_mm_day", wet_mm)
+    if pairs:
+        stages["E4"] = {"titulo": "Consistencia entre fuentes de lluvia", "pares": pairs}
+        for name, pair in pairs.items():
+            if abs(pair.get("sesgo_pct_total") or 0) > RAIN_BIAS_WARN:
+                warnings.append(f"Sesgo de lluvia de {pair['sesgo_pct_total']} % en {name} (> {RAIN_BIAS_WARN:g} %): revisar antes de usar ambas")
+        cell = (results["imerg"].fetch.prov.params.get("cell") or {}) if im is not None else {}
+        if cell.get("margin_deg") is not None and cell["margin_deg"] < EDGE_WARN_DEG:
+            near = pairs["IMERG celda vs vecina"].get("sesgo_pct_total")
+            warnings.append(f"IMERG: el punto está a {cell['margin_deg']}° del borde de su celda; la celda vecina da {near} % de diferencia en la lluvia total")
     else:
-        stages["E4"] = {"titulo": "Consistencia entre fuentes de lluvia", "estado": "por integrar: hacen falta POWER y Open-Meteo"}
+        stages["E4"] = {"titulo": "Consistencia entre fuentes de lluvia", "estado": "por integrar: hacen falta al menos dos fuentes de lluvia"}
 
     supp = []
     for s in rows():
@@ -285,11 +307,15 @@ def build_report(results: dict[str, Result], params: Params, *, elev_m: float = 
                      "pixeles_limpios_en_parcela": px, "soporte_efectivo": s["support"] if res and res.status == STATUS_OK else "sin_dato"})
     stages["E5"] = {"titulo": "Nivel de soporte y píxeles limpios", "plot_side_m": params.plot_side_m, "fuentes": supp}
 
+    elev_src = "supuesto, parámetro del informe"
+    if nd is not None and nd["elevation_m"]["point"] is not None:
+        elev_m, elev_src = float(nd["elevation_m"]["point"]), "NASADEM"
+
     needed = {"T2M", "T2M_MAX", "T2M_MIN", "RH2M", "WS2M", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR"}
     if power is not None and needed <= set(power.columns):
         c = power.col
         variants = {"viento_power": c("WS2M"), "viento_fao56_2ms": np.full(len(power), FAO56_DEFAULT_U2)}
-        e6: dict[str, Any] = {"titulo": "Balance de agua preliminar", "elevacion_m": elev_m, "supuestos": ["G = 0", "albedo 0.23", f"elevación {elev_m} m (supuesto hasta integrar NASADEM)", "ea con HR media y T media"], "variantes": {}}
+        e6: dict[str, Any] = {"titulo": "Balance de agua preliminar", "elevacion_m": elev_m, "elevacion_fuente": elev_src, "supuestos": ["G = 0", "albedo 0.23", f"elevación {elev_m:g} m ({elev_src})", "ea con HR media y T media"], "variantes": {}}
         for name, u2 in variants.items():
             et = et0_pm(power.dates, params.lat, elev_m, c("T2M"), c("T2M_MAX"), c("T2M_MIN"), c("RH2M"), u2, c("ALLSKY_SFC_SW_DWN"))
             bal_m, bal_v = monthly(power.dates, c("PRECTOTCORR") - et, "sum")
@@ -310,6 +336,8 @@ def build_report(results: dict[str, Result], params: Params, *, elev_m: float = 
         stages["E6"] = e6
     else:
         stages["E6"] = {"titulo": "Balance de agua preliminar", "estado": "por integrar: POWER no llegó completo"}
+
+    stages["E7"] = {"titulo": "Terreno (NASADEM)", **nd} if nd is not None else {"titulo": "Terreno (NASADEM)", "estado": "por integrar: NASADEM no llegó"}
 
     plan, stop = degradation_plan(results)
     return {

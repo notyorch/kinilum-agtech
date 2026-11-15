@@ -131,8 +131,12 @@ def contract_value(
     assumptions: list[str] | None = None,
     derived_resolution: str | None = None,
     extra_steps: list[str] | None = None,
+    provenance: list[str] | None = None,
 ) -> dict[str, Any]:
-    """Un `ContractValue` válido contra shared/schema. Sin valor, sin rango: se declara, no se rellena."""
+    """Un `ContractValue` válido contra shared/schema. Sin valor, sin rango: se declara, no se rellena.
+
+    `provenance` reemplaza los pasos que salen de `prov` (para lo declarado por el técnico, que no se «pidió» a nadie).
+    """
     out: dict[str, Any] = {
         "variable": variable,
         "value": None if value is None else float(value),
@@ -146,7 +150,7 @@ def contract_value(
         "method": method,
         "quality": quality,
         "assumptions": assumptions or [],
-        "provenance": prov.steps(*(extra_steps or [])),
+        "provenance": provenance if provenance is not None else prov.steps(*(extra_steps or [])),
     }
     if derived_resolution:
         out["derived_resolution"] = derived_resolution

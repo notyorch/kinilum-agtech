@@ -5,10 +5,7 @@ está integrado. Así ningún estado «ok» ni ningún dato sale de código que 
 se comprueba aparte, con `python -m ingest.access`. Los secretos se leen de variables de entorno o del `.env`
 (que git ignora) y nunca se imprimen ni se guardan.
 
-Cómo se completará cada una (cuando haya token y alguien pueda comprobar un valor contra el portal):
-  - IMERG:     earthaccess, producto GPM_3IMERGDF v07 (descubrir la versión con `cmr.find_collections`),
-               celda de 0.1° más cercana; latencia de la corrida Final de hasta ~4 meses.
-  - NASADEM:   elevación y pendiente de la celda de 30 m; reemplaza el supuesto de elevación del balance de agua.
+IMERG, NASADEM y SMAP ya tienen conector (`imerg.py`, `nasadem.py`, `smap.py`). Cómo se completará cada una de las demás:
   - MODIS:     MOD13Q1 (NDVI 250 m, 16 días) del píxel de la parcela y su campo de confiabilidad.
   - SMAP L4, ECOSTRESS, GRACE: recortables; solo si queda tiempo.
   - ERA5-Land: cdsapi; las peticiones hacen fila y las muy grandes se rechazan por costo: pedir solo el punto.
@@ -26,20 +23,8 @@ def _pending(env_name: str, todo: str) -> SourcePending:
     return SourcePending(f"conector por integrar: {todo}")
 
 
-def fetch_imerg(*_: object, **__: object) -> Fetch:
-    raise _pending("EARTHDATA_TOKEN", "GPM_3IMERGDF v07 con earthaccess, sin probar")
-
-
-def fetch_nasadem(*_: object, **__: object) -> Fetch:
-    raise _pending("EARTHDATA_TOKEN", "NASADEM_HGT, elevación y pendiente de la celda de 30 m")
-
-
 def fetch_modis(*_: object, **__: object) -> Fetch:
     raise _pending("EARTHDATA_TOKEN", "MOD13Q1, serie de NDVI del píxel de la parcela")
-
-
-def fetch_smap(*_: object, **__: object) -> Fetch:
-    raise _pending("EARTHDATA_TOKEN", "SMAP L4, humedad de contexto a 9 km")
 
 
 def fetch_ecostress(*_: object, **__: object) -> Fetch:

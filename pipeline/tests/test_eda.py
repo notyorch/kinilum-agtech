@@ -166,7 +166,7 @@ def test_the_report_runs_on_what_arrived_and_declares_what_did_not():
     res = {**results(), "power": fetched("power", p), "openmeteo": fetched("openmeteo", om)}
     report = eda.build_report(res, Params(-89.42, 20.30, "2021-01-01", "2023-12-31"))
     st = report["stages"]
-    assert set(st) == {"E0", "E1", "E2", "E3", "E4", "E5", "E6"}
+    assert set(st) == {"E0", "E1", "E2", "E3", "E4", "E5", "E6", "E7"}
     assert st["E4"]["pares"]["POWER vs Open-Meteo"]["sesgo_pct_total"] == pytest.approx(-28.6, abs=0.1)
     assert any("Sesgo de lluvia" in w for w in report["warnings"]) and any("viento" in w for w in report["warnings"])
     assert report["decision_entrega"].startswith("DETENER")
@@ -181,3 +181,32 @@ def test_the_report_without_power_says_por_integrar_and_does_not_invent():
     report = eda.build_report(results(), Params(-89.42, 20.30, "2021-01-01", "2023-12-31"))
     assert report["stages"]["E3"]["estado"].startswith("por integrar") and report["stages"]["E6"]["estado"].startswith("por integrar")
     assert report["decision_entrega"].startswith("DETENER")
+
+
+def test_imerg_and_nasadem_join_the_report_and_the_cell_edge_is_a_warning():
+    from ingest import nasadem
+
+    p = synthetic_power()
+    om = Series(p.dates, {"precipitation_sum": p.col("PRECTOTCORR") * 0.7, "et0_fao_evapotranspiration": np.full(len(p), 4.5)})
+    im = Series(p.dates, {"precip_mm_day": p.col("PRECTOTCORR") * 1.1, "neighbor_mm_day": p.col("PRECTOTCORR") * 0.4})
+    prov = Provenance("GPM IMERG Final", "GPM_3IMERGDF v07", "opendap", {"cell": {"margin_deg": 0.0}})
+    terrain = nasadem.terrain(np.full((3601, 3601), 31, dtype=">i2"), -89.42, 20.30)
+    res = {**results(), "power": fetched("power", p), "openmeteo": fetched("openmeteo", om), "imerg": Result("imerg", "ok", "", Fetch(im, prov)),
+           "nasadem": Result("nasadem", "ok", "", Fetch(terrain, Provenance("NASADEM", "x", "e", {})))}
+    report = eda.build_report(res, Params(-89.42, 20.30, "2021-01-01", "2023-12-31"), elev_m=40.0)
+    st = report["stages"]
+    assert set(st["E4"]["pares"]) == {"POWER vs Open-Meteo", "POWER vs IMERG", "Open-Meteo vs IMERG", "IMERG celda vs vecina"}
+    assert st["E3"]["imerg"]["anios_completos"] == 3 and st["E3"]["imerg"]["lluvia_anual_mediana_entre_anios_mm"] > 0
+    # La elevación sale de NASADEM, no del supuesto de 40 m, y el informe lo dice.
+    assert st["E6"]["elevacion_m"] == 31.0 and st["E6"]["elevacion_fuente"] == "NASADEM"
+    assert st["E7"]["elevation_m"]["point"] == 31.0 and st["E7"]["slope_pct"]["p50"] == 0.0
+    assert any("borde de su celda" in w for w in report["warnings"])
+    json.dumps(report, default=str, allow_nan=False)
+
+
+def test_without_nasadem_the_elevation_is_the_stated_assumption_and_the_report_says_so():
+    p = synthetic_power()
+    res = {**results(), "power": fetched("power", p)}
+    st = eda.build_report(res, Params(-89.42, 20.30, "2021-01-01", "2023-12-31"), elev_m=40.0)["stages"]
+    assert st["E6"]["elevacion_m"] == 40.0 and "supuesto" in st["E6"]["elevacion_fuente"]
+    assert st["E7"]["estado"].startswith("por integrar")

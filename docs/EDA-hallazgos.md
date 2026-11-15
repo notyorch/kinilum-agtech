@@ -1,45 +1,70 @@
-# EDA: qué dicen los datos (primera corrida real)
+# EDA: qué dicen los datos
 
-Corrida del 15 de noviembre de 2026 con `python -m ingest.run --lon -89.42 --lat 20.30`. El punto es un **ejemplo cerca de Oxkutzcab** y la parcela cuadrada de 200 m es un **supuesto**: nada de esto describe todavía la parcela real. Periodo 2016–2025. Se corrió sin token de Earthdata, así que las fuentes que lo piden quedaron «por integrar».
+Corridas del 15 de noviembre de 2026 con `python -m ingest.run --lon -89.42 --lat 20.30`. El punto es un **ejemplo cerca de Oxkutzcab** y la parcela cuadrada de 200 m es un **supuesto**: nada de esto describe todavía la parcela real. Periodo 2016–2025 (SMAP, solo 2025).
 
 ## Estado de las fuentes
 
 | Estado | Fuentes |
 |---|---|
-| ok | POWER, Open-Meteo (ERA5), HLS (escenas), Sentinel-2 (escenas) |
+| ok | POWER, Open-Meteo (ERA5), **IMERG**, **NASADEM**, **SMAP L4**, HLS (escenas), Sentinel-2 (escenas) |
 | sin dato | SoilGrids |
-| por integrar (falta `EARTHDATA_TOKEN`) | IMERG, NASADEM, MODIS, SMAP, ECOSTRESS, GRACE |
-| por integrar (falta `CDS_API_KEY`) | ERA5-Land |
+| por integrar | MODIS, ECOSTRESS, GRACE, ERA5-Land y los píxeles de HLS |
 
-Decisión de entrega del plan de degradación: **DETENER**. NASADEM es del núcleo y no tiene respaldo.
+De seis valores del contrato, cinco ya salen de datos o de lo que declara el técnico (`rain`, `slope`, `heat`, `moisture` y `soil`). Falta `bare`, que necesita los píxeles de HLS.
 
-## Lo que se encontró
+## Lluvia: IMERG dirime
 
-1. **SoilGrids no tiene valores en el punto.** Respondió 200 con las 30 capas (6 propiedades × 5 profundidades) nulas, y el notebook de exploración lo daba por «ok». Ahora es «sin dato». Coincide con la regla del PRD: la profundidad de raíz sale del técnico, no de SoilGrids.
-2. **El viento de POWER es casi cero.** La mediana de `WS2M` es 0.00 m/s (a 10 m, 0.94 m/s). Con ese viento la ET0 de FAO-56 queda **22.9 % por debajo** de la de Open-Meteo. Con el valor por defecto de FAO-56 (2 m/s) queda a **−1.0 %** y la correlación diaria sube de 0.82 a 0.92. Los meses con balance de agua negativo (enero a mayo, julio, noviembre y diciembre) son los mismos con ambos vientos; cambia cuánto: en marzo, −103 mm contra −163 mm.
-3. **POWER y Open-Meteo no coinciden en cuánta lluvia cae.** POWER da 1,119 mm al año (mediana entre años) y Open-Meteo, 779 mm: POWER llueve 42.4 % más. Coinciden en cuándo (correlación mensual 0.92, acuerdo día lluvioso o seco 81 %). El notebook reportó −29.8 % porque midió al revés, (Open-Meteo − POWER) / POWER: el mismo dato, pero se lee como «POWER llueve menos». Ninguna de las dos es la verdad; IMERG y un técnico local deben arbitrar.
-4. **HLS tiene 1,803 escenas únicas y 424 limpias** (≤ 30 % de nubes), no las 3,590 y 846 del notebook: contaba cada escena dos veces por las colecciones de índices de vegetación. Nubes: mediana 56 %, p90 87 %.
-5. **En lluvias casi no hay escenas limpias.** Escenas limpias por mes del año en diez años: de junio a septiembre, 11 a 16; en marzo y abril, 73 y 80. 28 de 120 meses no tienen ninguna limpia, todos con escenas pero nubladas. La señal de «sin plantas verdes» (noviembre a marzo) está bien cubierta; la de la temporada de lluvias, floja.
-6. **Sentinel-2 como respaldo solo cubre desde enero de 2017** en este punto: 2016 no tiene escenas.
-7. **Calor de mayo (POWER, región):** máximas diarias medias de 37.1 °C (p10 35.4, p90 39.2). El día más caluroso del periodo pasó de 43 °C.
-8. **Racha seca más larga por año:** mediana de 26 días (p10 18, p90 29).
+| Par | Lluvia anual (mediana) | Sesgo | Correlación mensual |
+|---|---|---|---|
+| POWER contra IMERG | 1,125 y 1,151 mm | −1.5 % | 0.955 |
+| Open-Meteo contra IMERG | 737 y 1,151 mm | −30.8 % | 0.887 |
+| POWER contra Open-Meteo | 1,119 y 779 mm | +42.4 % | 0.922 |
+
+**IMERG y POWER coinciden; Open-Meteo (ERA5) se queda corto unos 30 %.** No hay una estación local que lo confirme, pero con dos fuentes independientes de acuerdo, la duda de la primera corrida («¿cuál es la verdad?») se resuelve a favor de IMERG: ya no hace falta decidir si Open-Meteo lo sustituye. (El notebook de exploración reportó −29.8 % porque medía al revés, (Open-Meteo − POWER) / POWER; ahora el signo está explícito.)
+
+- **IMERG Final llega hasta el 30 de septiembre de 2025**: octubre a diciembre de 2025 no existen todavía (92 días). Por eso solo hay **9 años completos de mayo a octubre (2016–2024)** y `rain_season` sale de esos.
+- **El punto cae exactamente en el borde entre dos celdas de IMERG** (20.30° N). La celda vecina da 1,157 mm al año contra 1,151 mm (0.4 %), correlación mensual 0.996 y 93 % de acuerdo día lluvioso o seco: el borde pesa poco en totales, algo más en días sueltos.
+- **Lluvia de mayo a octubre (`rain_season`):** mediana de 948 mm, con p10 de 833 y p90 de 1,191 entre los 9 años.
+
+## Humedad del suelo (SMAP L4)
+
+Humedad de la zona de raíz (0–100 cm) de la celda de 9 km más cercana (a 3.1 km del punto), un granulo por día, 2025 completo (365 de 365 días): mediana de **0.211 m³/m³** (p10 0.180, p90 0.244). Sigue a la lluvia con retraso: mínimo en mayo (0.176) y máximo en octubre (0.261). Como comprobación independiente, el 3 de junio de 2025 la humedad **superficial** sube de 0.10 a 0.185 m³/m³ el mismo día en que IMERG ve 20 mm. Es contexto de zona, no la humedad de la parcela.
+
+## Calor
+
+- **Máxima de mayo (`tmax_may`, POWER):** el día más caluroso de cada mayo; mediana de **40.1 °C** (p10 38.9, p90 41.4) entre 2016 y 2025; por año va de 37.8 a 43.2 °C. El promedio de las máximas diarias de mayo es 37.1 °C.
+- **Días de calor en la floración:** con siembra en junio, la ventana (supuesto: 55 a 75 días después de sembrar) va del 26 de julio al 13 de septiembre. Los días con máxima ≥ 35 °C en esa ventana van de **0 a 19 por año** (2019: 19, 2025: 11, siete años con 0 a 2).
+
+## Terreno (NASADEM)
+
+- **Elevación 29 m** en el punto (28 a 33 m en la parcela). Open-Meteo reporta 29.0 m y POWER 29.2 m: coinciden. El notebook suponía 40 m.
+- **Pendiente:** mediana de 6.1 % (p10 1.7, p90 7.5) con **9 píxeles completos** de ~31 m, no los 16 de la fórmula. En terreno casi plano un escalón de un metro entre píxeles ya son ~3 %: la pendiente tiene un piso de ruido y conviene leerla por clases.
+
+## Otros hallazgos
+
+1. **SoilGrids no tiene valores en el punto.** Respondió 200 con las 30 capas (6 propiedades × 5 profundidades) nulas, y el notebook de exploración lo daba por «ok». Ahora es «sin dato». La profundidad de raíz (`soil`) no depende de él: la declara el técnico.
+2. **El viento de POWER es casi cero** (mediana 0.00 m/s a 2 m; 0.94 m/s a 10 m). Con él, la ET0 de FAO-56 queda 23.0 % por debajo de la de Open-Meteo; con el valor por defecto de FAO-56 (2 m/s), a −1.0 % y la correlación diaria sube de 0.82 a 0.92. Los meses de balance de agua negativo (enero a mayo, julio, noviembre y diciembre) son los mismos con ambos vientos; cambia cuánto.
+3. **HLS tiene 1,803 escenas únicas y 424 limpias** (≤ 30 % de nubes), no las 3,590 y 846 del notebook, que contaba cada escena dos veces por las colecciones de índices de vegetación. Nubes: mediana 56 %, p90 87 %.
+4. **En lluvias casi no hay escenas limpias:** de junio a septiembre, 11 a 16 en diez años; en marzo y abril, 73 y 80. 28 de 120 meses no tienen ninguna limpia, todos con escenas pero nubladas. La señal de «sin plantas verdes» (noviembre a marzo) está bien cubierta; la de lluvias, floja.
+5. **Sentinel-2 como respaldo solo cubre desde enero de 2017** en este punto.
+6. **Racha seca más larga por año:** mediana de 26 días (p10 18, p90 29).
+7. **CMR-STAC devuelve 502 con páginas de más de ~1 MB** (cada escena pesa ~12 KB); se piden 50 por página.
 
 ## Errores del notebook de exploración que se corrigieron aquí
 
 - La fecha de Sentinel-2 fallaba por mezclar formatos con y sin fracción de segundo.
 - El informe final (E8) terminaba en error; la causa probable es que intentaba convertir en número el valor nulo de SoilGrids.
-- CMR-STAC devuelve 502 con páginas de más de ~1 MB; el notebook se salvaba por suerte según el tamaño del periodo.
-- El listado de colecciones de CMR-STAC viene paginado y solo se leía la primera página.
+- CMR-STAC devuelve 502 con páginas de más de ~1 MB y el listado de colecciones viene paginado; el notebook leía solo la primera página.
+- SoilGrids se daba por «ok» con todos los valores nulos.
 
 ## Decisiones que no son del código
 
 | Decisión | Quién | Qué cambia |
 |---|---|---|
 | Qué viento usar en el balance de agua: el de POWER, 2 m/s de FAO-56 u otra fuente | Equipo con técnico | La ET0 cambia hasta 29 %; las conclusiones cualitativas, no. |
-| Si Open-Meteo o POWER sustituye a IMERG mientras no llegue el token | Equipo | Hoy la lluvia de zona queda sin dato. |
-| Pedir HLS desde 2013 | Equipo | La cuadrícula de cubierta del paquete va de 2013 a 2025; esta corrida pidió desde 2016. |
-| Definir «temperatura máxima de mayo»: media de máximas diarias o la más alta | Equipo | Cambia el número del paquete (37.1 °C contra más de 43 °C). |
-| Token de Earthdata | Quien tenga la cuenta | **Ya hay token y el acceso a IMERG, NASADEM, MODIS y HLS está confirmado** (`python -m ingest.access`, 15 de noviembre). Falta integrar la lectura de valores; el EDA de arriba se corrió antes, sin token. |
+| Pedir HLS desde 2013 | Equipo | La cuadrícula de cubierta va de 2013 a 2025; esta corrida pidió desde 2016. |
+| «Temperatura máxima de mayo»: se tomó el **máximo del mes** (el día más caluroso), como el paquete de ejemplo | Equipo | Con el promedio de las máximas sería 37.1 °C en vez de 40.1 °C. |
+| Días de siembra a floración (55 a 75) y umbral de calor (35 °C) | Técnico local | Cambian la ventana y los días de calor; no los datos. Están en `rules/maize.v1.yaml`, «a validar». |
 | Coordenadas y tamaño de la parcela real | Equipo con técnico | Todo lo anterior depende del punto. |
 
 ## Cómo repetirlo
@@ -49,4 +74,4 @@ cd pipeline
 .venv/bin/python -m ingest.run --lon -89.42 --lat 20.30
 ```
 
-Deja el informe en `pipeline/data/eda/yuc-demo-001/` (`eda_report.json` y `eda_report.md`). Los umbrales del informe (nubes máximas 30 %, día lluvioso ≥ 1 mm, sesgos de 25 % y 20 %) son una **propuesta** que se calibra con un técnico local.
+Deja el informe en `pipeline/data/eda/yuc-demo-001/` y los valores del contrato en `pipeline/data/gold/yuc-demo-001/values.partial.json`. La primera corrida tarda unos 20 minutos por las ~3,650 peticiones de IMERG; las siguientes salen de la caché. Los umbrales del informe (nubes máximas 30 %, día lluvioso ≥ 1 mm, sesgos de 25 % y 20 %) son una **propuesta** que se calibra con un técnico local.

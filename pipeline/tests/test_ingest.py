@@ -279,10 +279,10 @@ def test_cmr_discovery_returns_short_name_and_version():
 def test_credentialed_sources_are_pending_and_never_touch_the_network(monkeypatch):
     monkeypatch.delenv("EARTHDATA_TOKEN", raising=False)
     with pytest.raises(SourcePending, match="falta EARTHDATA_TOKEN"):
-        credentialed.fetch_imerg()
+        credentialed.fetch_modis()
     monkeypatch.setenv("EARTHDATA_TOKEN", "x" * 20)
     with pytest.raises(SourcePending, match="por integrar") as e:
-        credentialed.fetch_nasadem()
+        credentialed.fetch_ecostress()
     assert "xxxx" not in str(e.value)  # el token jamás aparece en un mensaje
 
 

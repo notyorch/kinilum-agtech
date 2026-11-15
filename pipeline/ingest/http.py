@@ -13,6 +13,7 @@ import hashlib
 import http.cookiejar
 import json
 import random
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -62,6 +63,8 @@ class Client:
         self.jitter = jitter
         self.calls = 0  # peticiones reales a la red (la caché no cuenta)
         self.used: list[str] = []  # archivos de caché que sirvieron a las últimas llamadas
+        self.once: "Once | None" = None  # transporte de las descargas autenticadas (las pruebas lo reemplazan)
+        self._lock = threading.Lock()  # los conectores con muchas peticiones usan varios hilos
 
     def get_json(
         self,
@@ -81,7 +84,7 @@ class Client:
         cached = self._cache_file(key) if not sensitive else None
         if cached and cached.exists():
             c = json.loads(cached.read_text(encoding="utf-8"))
-            self.used.append(cached.name)
+            self._note(cached.name)
             return Response(c["body"], c["sha256"], c["url"], from_cache=True)
 
         payload = None if body is None else json.dumps(body).encode()
@@ -90,7 +93,7 @@ class Client:
         for attempt in range(tries):
             if attempt:
                 self.sleep(2**attempt + self.jitter())
-            self.calls += 1
+            self._count()
             try:
                 status, raw, final = self.transport(method, full, head, payload, timeout)
             except OSError as e:  # fallo de red o tiempo agotado: se reintenta
@@ -109,12 +112,60 @@ class Client:
             if cached:
                 cached.parent.mkdir(parents=True, exist_ok=True)
                 cached.write_text(json.dumps({"body": data, "sha256": sha, "url": final, "at": now_utc()}, ensure_ascii=False), encoding="utf-8")
-                self.used.append(cached.name)
+                self._note(cached.name)
             return Response(data, sha, final)
         raise SourceError(f"{shown}: sin respuesta tras {tries} intentos ({last})")
 
-    def _cache_file(self, key: str) -> Path | None:
-        return self.cache_dir / f"{key}.json" if self.cache_dir else None
+    def _cache_file(self, key: str, ext: str = "json") -> Path | None:
+        return self.cache_dir / f"{key}.{ext}" if self.cache_dir else None
+
+    def _count(self, n: int = 1) -> None:
+        with self._lock:
+            self.calls += n
+
+    def _note(self, name: str) -> None:
+        with self._lock:
+            self.used.append(name)
+
+    def get_authenticated(self, url: str, *, token: str, max_bytes: int = 2_000_000, timeout: float = 90, binary: bool = False) -> Response:
+        """Descarga con `Authorization: Bearer` (OPeNDAP, archivos de datos). Texto, o bytes si `binary`.
+
+        La URL y el token nunca se mezclan: el token solo va en el encabezado y solo a dominios de la NASA (ver
+        `fetch_prefix`). La respuesta se guarda en la caché de la fuente; no se guarda nada del token.
+        `max_bytes` es un tope: una respuesta más grande es un error, no un archivo cortado.
+        """
+        shown = urlparse(url)
+        where = f"{shown.hostname}{shown.path}"
+        key = hashlib.sha256(json.dumps(["AUTH", url], sort_keys=True).encode()).hexdigest()
+        cached = self._cache_file(key, "bin" if binary else "json")
+        if cached and cached.exists():
+            raw = cached.read_bytes()
+            self._note(cached.name)
+            if binary:
+                return Response(raw, hashlib.sha256(raw).hexdigest(), where, from_cache=True)
+            c = json.loads(raw)
+            return Response(c["body"], c["sha256"], where, from_cache=True)
+
+        self._count()
+        probe = fetch_prefix(url, token=token, nbytes=max_bytes, timeout=timeout, once=self.once, sleep=self.sleep)
+        if probe.error:
+            raise SourceError(f"{where}: {probe.error}")
+        if probe.status in (401, 403):
+            raise SourceError(f"{where}: sin acceso (HTTP {probe.status})")
+        if probe.status not in (200, 206):
+            raise SourceError(f"{where}: HTTP {probe.status}")
+        if probe.status == 206 and probe.total_bytes and probe.total_bytes > len(probe.data):
+            raise SourceError(f"{where}: el archivo ({probe.total_bytes} bytes) pasa del tope de {max_bytes}")
+        sha = hashlib.sha256(probe.data).hexdigest()
+        body: Any = probe.data if binary else probe.data.decode("utf-8", "replace")
+        if cached:
+            cached.parent.mkdir(parents=True, exist_ok=True)
+            if binary:
+                cached.write_bytes(probe.data)
+            else:
+                cached.write_text(json.dumps({"body": body, "sha256": sha, "at": now_utc()}, ensure_ascii=False), encoding="utf-8")
+            self._note(cached.name)
+        return Response(body, sha, where)
 
 
 # ---- Descargas autenticadas con Earthdata -------------------------------------------------------------------------

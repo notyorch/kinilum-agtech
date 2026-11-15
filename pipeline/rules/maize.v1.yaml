@@ -1,0 +1,22 @@
+# Maíz de temporal: lo que hace falta de su calendario para medir calor y agua en la floración — versión maize.v1
+#
+# NADA aquí está validado. Son supuestos del equipo, sin fuente: el técnico local los corrige. Un valor aquí
+# cambia el resultado de `heat_days` y de la ventana de floración, no los datos de las fuentes.
+
+rules_version: maize.v1
+fuente: null
+validado_por: null
+method: assumed
+estado_evidencia: a_validar
+
+# Días entre la siembra y la floración. La parcela se siembra a lo largo de todo el mes declarado
+# (`sowing` en pipeline/parcels/<id>.yaml): la ventana empieza con el mínimo de días contados desde el
+# primer día del mes y termina con el máximo contado desde el último.
+dias_a_floracion: [55, 75]
+
+# Temperatura máxima diaria (°C) desde la que el calor daña al cultivo en la floración. El valor viene del
+# paquete de ejemplo (`thresholds.heat_c`), que ya lo marcaba «a validar con el técnico».
+umbral_calor_c: 35
+
+# Mes de siembra → número de mes.
+meses_de_siembra: {may: 5, june: 6, july: 7}

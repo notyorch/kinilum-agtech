@@ -1,0 +1,28 @@
+# Profundidad efectiva de raíz por tipo de suelo declarado — versión soil.v1
+#
+# Para FAO-56 la profundidad de raíz sale de lo que declara el técnico, NO de SoilGrids (AGENTS.md §4).
+# Los rangos son del PRD y están «a validar con un técnico de la región». Una medición de campo
+# (`root_depth_cm` en pipeline/parcels/<id>.yaml) reemplaza el rango.
+
+rules_version: soil.v1
+fuente: null
+validado_por: null
+method: assumed
+estado_evidencia: a_validar
+
+# tipo declarado → [mínimo, máximo] en cm
+profundidad_raiz_cm:
+  tsekel: [15, 25]       # tsek'el: delgado y pedregoso, sobre roca caliza
+  kankab: [40, 60]       # k'ankab: rojo, más profundo
+  undeclared: [15, 60]   # sin declarar: todo el rango
+
+nombre:
+  tsekel: "Tsek'el"
+  kankab: "K'ankab"
+  undeclared: "Sin declarar"
+
+# Supuestos del contrato que arrastra cada tipo (enum Assumption de shared/schema).
+supuestos:
+  tsekel: [karstDepth, teamAssumption]
+  kankab: [teamAssumption]
+  undeclared: [karstDepth, teamAssumption]

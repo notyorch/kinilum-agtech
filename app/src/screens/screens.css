@@ -1,0 +1,210 @@
+.kn-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-4) 0;
+}
+
+.kn-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.kn-head__kicker {
+  display: flex;
+  gap: var(--space-2);
+}
+.kn-head__title {
+  margin: 0;
+  font: var(--text-display);
+  letter-spacing: -0.02em;
+}
+.kn-head__intro {
+  margin: 0;
+  font: var(--text-body);
+  color: var(--ink-muted);
+  max-width: 34em;
+}
+
+.kn-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--surface-raised);
+}
+.kn-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.kn-card__title {
+  margin: 0;
+  font: var(--text-title);
+  letter-spacing: -0.01em;
+}
+.kn-card__text {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--ink-muted);
+}
+
+.kn-badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font: var(--text-caption);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.kn-badge--unknown {
+  color: var(--ink-muted);
+  border: 1px dashed var(--line-strong);
+}
+.kn-badge--info {
+  color: var(--info);
+  background: var(--info-soft);
+}
+
+.kn-src {
+  flex: none;
+  display: inline-flex;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.kn-src__name {
+  padding: 0 6px;
+  background: var(--surface-sunken);
+}
+.kn-src__res {
+  padding: 0 6px;
+  color: var(--ink-muted);
+  border-left: 1px solid var(--line-strong);
+}
+
+.kn-skel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.kn-skel span {
+  display: block;
+  height: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+}
+
+/* Mi parcela: la grilla común. Medido = sólido; sin dato = diagonales. */
+.kn-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: var(--space-2);
+}
+.kn-grid__cell {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  background: var(--brand);
+}
+.kn-grid__cell--empty,
+.kn-legend__swatch.kn-legend__swatch--empty {
+  background:
+    repeating-linear-gradient(135deg, var(--line-strong) 0 1px, transparent 1px 6px),
+    var(--surface-sunken);
+}
+.kn-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font: var(--text-caption);
+  color: var(--ink-muted);
+}
+.kn-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.kn-legend__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--brand);
+}
+
+.kn-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--surface-raised);
+}
+.kn-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+.kn-list li:last-child {
+  border-bottom: 0;
+}
+.kn-list__text {
+  flex: 1;
+  min-width: 0;
+  font: var(--text-body-sm);
+}
+
+.kn-segmented {
+  display: flex;
+  padding: 3px;
+  gap: 3px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+.kn-segmented button {
+  flex: 1;
+  height: 36px;
+  border: 0;
+  border-radius: calc(var(--radius-md) - 2px);
+  background: none;
+  color: var(--ink-muted);
+  font: var(--text-label);
+  cursor: pointer;
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out;
+}
+.kn-segmented button[aria-checked='true'] {
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.kn-segmented button:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: var(--focus-ring);
+}
+
+.kn-meta {
+  margin: 0;
+  font: var(--text-data);
+  color: var(--ink-muted);
+}
+.kn-closing {
+  margin: var(--space-4) 0 0;
+  font: var(--text-body-sm);
+  color: var(--ink-muted);
+}

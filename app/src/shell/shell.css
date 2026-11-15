@@ -1,0 +1,96 @@
+/* Marco de la app: fondo, encabezado y escenario donde se deslizan las secciones. */
+html {
+  background: var(--surface);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  /* La grilla de puntos es el motivo de la marca y deja ver el vidrio de la barra. */
+  background:
+    radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0) 0 0 / 16px 16px,
+    var(--surface);
+  background-attachment: fixed;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.kn-app {
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+.kn-topbar {
+  display: flex;
+  align-items: center;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-4) 0;
+}
+
+/* Lockup oficial recortado con CSS: el SVG trae un lienzo de 1500 con mucho aire. */
+.kn-lockup {
+  --h: 28px;
+  --s: calc(var(--h) * 1500 / 284);
+  display: block;
+  overflow: hidden;
+  height: var(--h);
+  width: calc(var(--s) * 1020 / 1500);
+}
+.kn-lockup img {
+  width: var(--s);
+  height: var(--s);
+  max-width: none;
+  margin: calc(var(--s) * -608 / 1500) 0 0 calc(var(--s) * -205 / 1500);
+}
+
+.kn-stage {
+  display: grid;
+  max-width: 720px;
+  margin: 0 auto;
+  /* Lo que mide la barra más su margen, para que el final no quede debajo. */
+  padding-bottom: calc(68px + max(var(--space-3), env(safe-area-inset-bottom)) + var(--space-8));
+}
+
+/* Las dos secciones ocupan la misma celda mientras una sale y otra entra. */
+.kn-scene {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.kn-scene.is-entering {
+  animation: kn-scene-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.kn-scene.is-leaving {
+  animation: kn-scene-out 200ms ease-out both;
+  pointer-events: none;
+}
+
+@keyframes kn-scene-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--dir, 1) * 40px));
+  }
+}
+
+@keyframes kn-scene-out {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--dir, 1) * -40px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kn-scene.is-entering,
+  .kn-scene.is-leaving {
+    animation-duration: 1ms;
+  }
+}

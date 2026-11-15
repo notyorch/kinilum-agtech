@@ -1,0 +1,177 @@
+/* kinilum — generated from tokens.json */
+:root, [data-theme="dark"] {
+  --surface: #000000; /* Fondo de página. Negro puro en oscuro, como el logo. */
+  --surface-raised: #0f0f0f; /* Tarjetas, paneles, menús y popovers. */
+  --surface-sunken: #171717; /* Hover de filas, campos de entrada, celdas vacías de la grilla. */
+  --line: #242424; /* Hairlines decorativas: divisores, bordes de tarjeta. No para bordes de controles. */
+  --line-strong: #6b6b6b; /* Bordes de controles (inputs, botón secundario) y contornos de datos estimados: ≥3:1 sobre surface, surface-raised y surface-sunken. */
+  --ink: #fafafa; /* Texto principal y fondo del botón primario; legible sobre surface, surface-raised y surface-sunken. */
+  --ink-muted: #a1a1a1; /* Texto secundario, metadatos, etiquetas de sección; sobre surface, surface-raised y surface-sunken. */
+  --ink-faint: #525252; /* Solo estados deshabilitados y marcas de fondo. Nunca texto que haya que leer (no cumple 4.5:1). */
+  --on-ink: #000000; /* Texto e íconos sobre un relleno ink (etiqueta del botón primario). */
+  --brand: #0e8e65; /* Verde kinilum (verde de la bandera de Yucatán, aclarado). Exacto en ambos temas. Rellenos, el punto del logo, selección, datos destacados. Como texto solo en ≥24px; para texto chico usa brand-text. */
+  --brand-text: #34c08c; /* Texto y enlaces en verde; sobre surface, surface-raised y brand-soft. */
+  --brand-soft: #0b2a1f; /* Fondo tintado detrás de brand-text: estado positivo, opción seleccionada. */
+  --on-brand: #000000; /* Texto e íconos sobre un relleno brand. Negro en ambos temas (5.1:1); el blanco sobre verde no llega a 4.5:1. */
+  --risk: #ff9a3d; /* Riesgo que un experto debe revisar (helada, estrés hídrico, erosión, plagas). Siempre con palabra e ícono. Como texto, sobre surface, surface-raised y risk-soft. */
+  --risk-soft: #2e1a08; /* Fondo tintado detrás de texto risk. */
+  --on-risk: #000000; /* Texto sobre un relleno risk (solo para riesgo alto). */
+  --info: #52a8ff; /* Datos y fuentes: satélite, notas metodológicas. Como texto, sobre surface, surface-raised e info-soft. */
+  --info-soft: #0a1f33; /* Fondo tintado detrás de texto info. */
+  --focus: var(--brand); /* Color del anillo de foco de teclado (alias de brand); ≥3:1 sobre todas las superficies. */
+  --link: var(--brand-text); /* Enlaces: alias de brand-text. */
+  --shadow-sm: 0 0 0 1px #242424; /* Tarjetas en reposo cuando no llevan borde propio. */
+  --shadow-lg: 0 0 0 1px #2e2e2e, 0 16px 32px -8px #000000cc; /* Menús, popovers, tooltips del mapa. */
+  --focus-ring: 0 0 0 2px #000000, 0 0 0 4px #0e8e65; /* Foco de teclado: 2px del color de página y 2px de brand sólido (box-shadow, sigue el radio). */
+}
+[data-theme="light"] {
+  --surface: #ffffff;
+  --surface-raised: #fafafa;
+  --surface-sunken: #f2f2f2;
+  --line: #e5e5e5;
+  --line-strong: #858585;
+  --ink: #0a0a0a;
+  --ink-muted: #5e5e5e;
+  --ink-faint: #a3a3a3;
+  --on-ink: #ffffff;
+  --brand: #0e8e65;
+  --brand-text: #0b7a57;
+  --brand-soft: #e3f3ec;
+  --on-brand: #000000;
+  --risk: #b84a00;
+  --risk-soft: #fdeedd;
+  --on-risk: #ffffff;
+  --info: #0a66c2;
+  --info-soft: #e6f0fa;
+  --focus: var(--brand);
+  --link: var(--brand-text);
+  --shadow-sm: 0 1px 2px #0a0a0a0f;
+  --shadow-lg: 0 0 0 1px #e5e5e5, 0 16px 32px -8px #0a0a0a29;
+  --focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #0e8e65;
+}
+:root {
+  --space-1: 4px; /* Ícono a etiqueta. */
+  --space-2: 8px; /* Dentro de controles y chips; gap de la grilla. */
+  --space-3: 12px; /* Entre filas relacionadas. */
+  --space-4: 16px; /* Padding de tarjeta; margen lateral en móvil. */
+  --space-6: 24px; /* Entre bloques dentro de una tarjeta; padding de tarjeta grande. */
+  --space-8: 32px; /* Entre secciones. */
+  --space-12: 48px; /* Entre zonas de una pantalla. */
+  --space-16: 64px; /* Márgenes de portada y hero. */
+  --radius-sm: 4px; /* Chips, badges, celdas de grilla, inputs pequeños. */
+  --radius-md: 8px; /* Botones, inputs, tarjetas compactas. */
+  --radius-lg: 12px; /* Tarjetas de estrategia, paneles, mapas. */
+  --radius-full: 9999px; /* Solo puntos de estado y el punto del logo. */
+  --font-display: "DM Sans", "Geist", system-ui, sans-serif;
+  --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --text-display-xl: 700 56px/60px var(--font-display); /* Portada, hero, pantallas de presentación. */
+  --text-display: 700 36px/40px var(--font-display); /* Un título por pantalla. */
+  --text-heading: 600 24px/32px var(--font-sans); /* Encabezados de sección. */
+  --text-title: 600 18px/26px var(--font-sans); /* Títulos de tarjeta (nombre de una estrategia). */
+  --text-body: 400 16px/24px var(--font-sans); /* Texto de lectura y explicaciones. */
+  --text-body-sm: 400 14px/20px var(--font-sans); /* Interfaz densa, tablas, ayudas. */
+  --text-label: 500 14px/20px var(--font-sans); /* Botones, pestañas, etiquetas de campo. */
+  --text-caption: 500 12px/16px var(--font-sans); /* Metadatos, títulos de grupo, notas al pie. */
+  --text-metric: 500 28px/32px var(--font-mono); /* Cifra principal de una métrica (ahorro de agua, ingreso). */
+  --text-data: 400 13px/20px var(--font-mono); /* Fuentes, resoluciones, valores en tablas, coordenadas. */
+  --text-code: 400 13px/20px var(--font-mono); /* Código y nombres técnicos en documentación. */
+}
+.display-xl {
+  font-family: var(--font-display);
+  font-size: 56px;
+  line-height: 60px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.display {
+  font-family: var(--font-display);
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.heading {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.title {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.body-sm {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.label {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.caption {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.metric {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.data {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+@font-face {
+  font-family: "DM Sans";
+  src: url("fonts/DMSans-Variable-latin.woff2") format("woff2");
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("fonts/Geist-Variable-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("fonts/GeistMono-Variable-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}

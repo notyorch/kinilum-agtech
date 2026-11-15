@@ -1,0 +1,23 @@
+/* Señal, avisos y estado sin señal: solo tokens del sistema de diseño. */
+.kn-signal {
+  display: inline-flex;
+}
+
+.kn-notices {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 720px;
+  margin: var(--space-3) auto 0;
+  padding: 0 var(--space-4);
+}
+
+.kn-notices__action {
+  margin-top: var(--space-3);
+}
+
+.kn-offline__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}

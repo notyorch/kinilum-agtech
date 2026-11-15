@@ -154,7 +154,7 @@ Celular:
 
 | Carpeta | Estado |
 |---|---|
-| [app/](app/) | **La interfaz**, hecha a partir de los prototipos de diseño: barra inferior de vidrio, cinco pantallas y seis estrategias con datos de ejemplo. Todavía sin PWA, sin motor y sin cargar el paquete (ver §6). |
+| [app/](app/) | **La interfaz**, hecha a partir de los prototipos de diseño: barra inferior de vidrio, cinco pantallas y seis estrategias con datos de ejemplo. Con service worker y guardado del paquete en la Cache API (verificados en Chrome de escritorio, no en Android: ver §6); todavía sin motor y sin usar el paquete en las pantallas. |
 | [docs/](docs/) | `AGENTS-context.md` y `ARQUITECTURA-DEV.md`. El PRD ágil (`.odt`) y los starter kits (`.pptx`) no están en este repositorio. |
 | [shared/schema/](shared/schema/README.md) | **Esquema del contrato y del paquete** (valor, paquete, índice, configuración de parcela). Lo validan `npm run check:schema` y `pytest`. |
 | [pipeline/](pipeline/README.md) | **Esqueleto.** Hechos y con pruebas: `common/`, `package/` (armar, validar y publicar el paquete) y `rules/` (catálogo `crops.v1.yaml`, todo «a validar»). `simulate/`: escenarios, grilla, codificación y lectura del catálogo listos para E0–E5; `run.py` pendiente. `ingest/`: hecho para las fuentes abiertas (POWER, Open-Meteo, SoilGrids, escenas de HLS y Sentinel-2) y el EDA; IMERG, NASADEM, SMAP y los píxeles de HLS (NDVI de la parcela) leen valores reales con el token de Earthdata (que va en el `.env`, que git ignora); MODIS, ECOSTRESS y GRACE son esqueletos «por integrar» (el acceso a MODIS y HLS ya está confirmado con `python -m ingest.access`). `harmonize/values.py`: los seis valores del contrato listos (`rain_season`, `slope`, `tmax_may`, `soil_moisture_rootzone`, `root_depth` y `days_without_green_cover`); `values.json` sale completo. Sin Dockerfile todavía. Hallazgos de la primera corrida real en [docs/EDA-hallazgos.md](docs/EDA-hallazgos.md). |
@@ -169,7 +169,7 @@ Tres personas: Jorge, Isis e Isabella. Sin módulos asignados: cualquiera toma c
 
 ## 6. La app (`app/`)
 
-> **Estado en este repositorio (14 de noviembre de 2026).** «Pila», «Comandos», «Estructura», «Rutas» y «Las pantallas» describen lo que hay hoy. «Modo avión» y «Almacenamiento local» describen lo planeado y **todavía no están construidos**: no hay PWA ni service worker, la app no carga el paquete (lleva un espejo en `data/restrictions.ts`), no hay mapa de 30 m ni selector ES \| EN, y solo se guarda `kinilum.theme`.
+> **Estado en este repositorio (15 de noviembre de 2026).** «Pila», «Comandos», «Estructura», «Rutas» y «Las pantallas» describen lo que hay hoy. **Modo avión: construido y verificado en Chrome de escritorio (15 de noviembre de 2026); sin probar en Android.** Hay service worker (`sw/sw.template.js`), guardado y relectura del paquete (`src/offline/`), indicador «Con señal / Sin señal» y los dos avisos de versión nueva. Lo verifican `npm test` (lógica del paquete y del service worker, simulados), `npm run build` (`scripts/check-offline.mjs`) y una prueba a mano en Chrome con `build` + `preview` en un origen limpio: registro, precache de 12 archivos, «Listo para usar sin señal», recarga con el servidor apagado, y los dos avisos aplicándose solo al aceptar. **Falta Android real** (y Safari/Firefox). El panel integrado de Claude no admite service workers: ahí se ve «Este navegador no guarda la aplicación». **Para probar usted, use un puerto o perfil limpio:** un service worker o una caché de otra versión en el mismo `localhost:<puerto>` contamina la prueba. Las pantallas todavía leen el espejo de datos y **no el paquete**: «Listo para usar sin señal» dice que el paquete y la app están guardados, no que las pantallas lo usen. Siguen sin construir: mapa de 30 m, selector ES \| EN, manifiesto para «Instalar» y barra lateral en escritorio (el indicador va en el encabezado). De lo guardado en el celular hoy: `kinilum.theme` y `kinilum.package.<id>`.
 
 ### Pila
 
@@ -194,6 +194,7 @@ En el repo, `.claude/launch.json` define `kinilum-app` (dev, 5173).
 | Ruta | Qué contiene |
 |---|---|
 | `main.tsx` | Raíz: `ThemeProvider › AppShell › AppStateProvider › pantalla`. |
+| `offline/` | `packageStore.ts` (bajar, guardar, **releer**, avisar de datos nuevos; sin React), `shell.ts` (registro y estado del service worker), `connectivity.ts` (con señal / sin señal con prueba al sitio), `readiness.ts` (cuándo sí se puede decir «Listo»), `OfflineProvider.tsx` y `Offline.tsx` (insignia, avisos y la tarjeta de Ajustes). |
 | `shell/` | `AppShell` (encabezado, escenario con deslizamiento entre secciones), `TabBar` (barra inferior de vidrio con resorte), `icons.tsx`, `state.tsx` (objetivo, estrategia elegida, clima y lo declarado), `theme.tsx` (claro, oscuro o dispositivo), `useFlip.ts` (animación de reorden). |
 | `screens/` | `MiParcela`, `Comparar`, `QuePasaSi`, `Evidencia`, `Ajustes` y su CSS. |
 | `ds/` | **Sistema de diseño:** `tokens.css` (copiado tal cual del sistema), `components.css/.tsx`, `primitives.*` (envoltorios de Radix), fuentes. |
@@ -220,16 +221,18 @@ Ejemplo: `http://localhost:5173/#/comparar`.
 
 ### Modo avión: cómo funciona y la trampa conocida
 
-- El **shell** (HTML, JS, CSS, fuentes) lo precachea el service worker.
+- El **shell** (HTML, JS, CSS, fuentes, marca) lo precachea el service worker. `scripts/build-sw.mjs` (después de `vite build`) arma `dist/sw.js` desde `sw/sw.template.js` con la lista de archivos y una versión por contenido; sin plugins de PWA.
 - El **paquete JSON NO** va en el precache: lo guarda la app en la Cache API (`kinilum-packages-v1`) y **lo vuelve a leer** antes de mostrar «Listo para usar sin señal». Primera vez sin señal: la puerta explica que hace falta señal una sola vez; nunca dice «Listo».
-- Hay un aviso «Hay datos nuevos» y otro «Hay una versión nueva de kinilum»; ninguno cambia nada sin que el usuario acepte.
+- Hay un aviso «Hay datos nuevos» y otro «Hay una versión nueva de kinilum»; ninguno cambia nada sin que el usuario acepte. Los datos nuevos se bajan y verifican antes de soltar los viejos; la versión nueva del service worker espera hasta que el usuario toca «Actualizar».
+- **«Listo para usar sin señal» exige dos cosas:** el paquete guardado y releído (idéntico byte a byte) **y** la app guardada (el `index.html` se lee de la caché). Si falta una, se dice cuál: «Este navegador no guarda la aplicación», «Hace falta señal una sola vez» o «No pudimos guardar los datos». Un formato de paquete desconocido se rechaza y, si ya estaba guardado, se descarta para volver a bajarlo.
+- **Si el service worker da problemas en producción:** el índice y el paquete nunca pasan por él, y solo se registra en el build. Para quitarlo, publicar un `sw.js` que llame a `registration.unregister()` y vacíe las cachés `kinilum-shell-*`.
 - **Indicador «Con señal / Sin señal»** siempre a la vista (encabezado en móvil, barra lateral en escritorio, también en Ajustes). No usa solo `navigator.onLine`: además prueba si el sitio responde (al abrir, al volver a la pestaña, con los eventos `online`/`offline` y cada minuto con la pantalla a la vista). Sin señal va en azul informativo, no en naranja: no es un riesgo.
 - **`npm run dev` no registra el service worker.** El modo avión **solo se prueba con `npm run build` + `npm run preview`**, apagando el servidor o poniendo el navegador sin conexión. En `dev` el paquete siempre se descarga fresco, y la insignia dice «Desarrollo: sin modo avión».
-- `scripts/check-offline.mjs` falla el build si algún JS/CSS (incluido el del mapa) queda fuera del precache, si el paquete excede 500 KB, si lleva polígono o coordenadas, o si el nombre no lleva parcela y fecha.
+- `scripts/check-offline.mjs` falla el build si algún archivo de `dist/` (JS, CSS, fuentes, marca; incluido el del mapa cuando exista) queda fuera del precache, si el paquete excede 500 KB, si lleva polígono o coordenadas, o si el nombre no lleva parcela y fecha.
 
 ### Almacenamiento local (todo es por celular, nada sale)
 
-`kinilum.lang` · `kinilum.theme` · `kinilum.objective` (por defecto `soil`) · `kinilum.stubble` · `kinilum.restrictions` · `kinilum.package.<id>` (puntero al archivo en caché). **Importante para probar:** el empate «No podemos distinguir» solo aparece con el objetivo **Equilibrado**; el valor guardado en `kinilum.objective` cambia lo que ve cada sesión.
+`kinilum.lang` · `kinilum.theme` · `kinilum.objective` (por defecto `soil`) · `kinilum.stubble` · `kinilum.restrictions` · `kinilum.package.<id>` (puntero al archivo en caché; el archivo está en la Cache API, `kinilum-packages-v1`). Hoy solo se guardan `kinilum.theme` y `kinilum.package.<id>`. **Importante para probar:** el empate «No podemos distinguir» solo aparece con el objetivo **Equilibrado**; el valor guardado en `kinilum.objective` cambia lo que ve cada sesión.
 
 ---
 
@@ -356,7 +359,7 @@ Se unen los hallazgos en una sola lista ordenada por severidad y por cuántos us
 - Registro de la decisión (EP6, prioridad P1).
 - Ver evidencia no refleja el escenario elegido en «¿Qué pasa si…?».
 - Pasada de lenguaje llano en Comparar (sobre todo el veredicto) y pruebas reales con agricultores o técnicos.
-- Prueba en Android real (modo avión, «Instalar», rendimiento); publicar en GitHub Pages; etiqueta de política de contenido (CSP) limitada al propio sitio.
+- **Probar el modo avión en Android real** (`npm run build` + `npm run preview`, apagar el servidor o poner el teléfono sin conexión; «Instalar» pide además un manifiesto con íconos de 192 y 512 px, que no existe); rendimiento; publicar en GitHub Pages; etiqueta de política de contenido (CSP) limitada al propio sitio.
 
 **Técnico**
 - La app valida poco al cargar el paquete (solo el formato); la validación completa corre en el pipeline y en `npm run check:schema`.

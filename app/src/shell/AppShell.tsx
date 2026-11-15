@@ -5,6 +5,7 @@ import { TabBar, type TabItem } from './TabBar';
 import { useTheme } from './theme';
 import { AppStateProvider } from './state';
 import { Badge } from '../ds/components';
+import { SignalBadge, UpdateNotices } from '../offline/Offline';
 import { MiParcela } from '../screens/MiParcela';
 import { Comparar } from '../screens/Comparar';
 import { Simular } from '../screens/Simular';
@@ -89,8 +90,12 @@ export function AppShell() {
       <div className="kn-app">
         <header className="kn-topbar">
           <Lockup />
-          <Badge tone="unknown">{t.app.illustrative}</Badge>
+          <span className="kn-topbar__badges">
+            <Badge tone="unknown">{t.app.illustrative}</Badge>
+            <SignalBadge />
+          </span>
         </header>
+        <UpdateNotices />
 
         <main id="kn-main" className="kn-stage" role="tabpanel" aria-labelledby={`tab-${view.current}`}>
           {view.leaving && (

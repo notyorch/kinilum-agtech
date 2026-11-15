@@ -5,11 +5,14 @@ import './ds/components.css';
 import './ds/primitives.css';
 import { AppShell } from './shell/AppShell';
 import { ThemeProvider } from './shell/theme';
+import { OfflineProvider } from './offline/OfflineProvider';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
-      <AppShell />
+      <OfflineProvider>
+        <AppShell />
+      </OfflineProvider>
     </ThemeProvider>
   </StrictMode>,
 );

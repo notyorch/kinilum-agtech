@@ -1,4 +1,5 @@
 import { SegmentedControl } from '../ds/primitives';
+import { OfflineCard } from '../offline/Offline';
 import { t } from '../i18n/es';
 import { THEME_PREFS, useTheme } from '../shell/theme';
 import { Card, ScreenHead } from './parts';
@@ -18,6 +19,7 @@ export function Ajustes() {
           options={THEME_PREFS.map((p) => ({ value: p, label: a.themes[p] }))}
         />
       </Card>
+      <OfflineCard />
       <Card title={a.about}>
         <p className="kn-card__text">{a.aboutText}</p>
         <p className="kn-meta">{a.version}</p>

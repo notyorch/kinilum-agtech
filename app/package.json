@@ -11,7 +11,7 @@
     "test": "node --test tests/",
     "gen:schema": "node scripts/gen-schema-types.mjs",
     "check:schema": "node scripts/check-schema.mjs",
-    "build": "node scripts/gen-schema-types.mjs --check && npm test && tsc -b && vite build && node scripts/check-schema.mjs",
+    "build": "node scripts/gen-schema-types.mjs --check && npm test && tsc -b && vite build && node scripts/build-sw.mjs && node scripts/check-offline.mjs && node scripts/check-schema.mjs",
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc -b"
   },
